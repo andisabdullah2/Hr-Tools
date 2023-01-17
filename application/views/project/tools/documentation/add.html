@@ -1,0 +1,149 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        //on change suplier
+        
+        $("#tahun").change(function() {
+            var tahun = $(this).val();
+            get_project(tahun);
+        });
+
+        {if $result.tahun|default:date('Y') neq '' }
+        get_project({$result.tahun|default:date('Y')});
+        {/if}
+
+        function get_project(tahun=''){
+            if (tahun != '') {
+                $.ajax({
+                    type: 'POST',
+                    data: 'id=' + tahun,
+                    url: '{$config->site_url("project/tools/documentation/get_project_by_tahun")}',
+                    dataType: 'json',
+                    beforeSend: function(xhr) {
+                        //$('select[name="project_id"]').val('').trigger("change").attr("disabled", true);
+                        $('#submitform').attr("disabled", true);
+                    },
+                    success: function(data) {
+                        //removeOptions(document.getElementById("project_id"));
+                        //alert("Data: " + data );
+                        var str = '<option value=""></option>';
+                        var str2 = '';
+                        var project_id = '{$result.project_id|default:''}';
+                        $.each(data, function(i, value) {  
+                            var checked=(value.project_id==project_id) ? 'selected="selected"' :'';
+                            str2 = str2 + '<option value="' + value.project_id + '" '+checked+' >' + value.project_name + ' [ '+value.project_alias+']</option>';        
+                        });
+                        var str3 = str + str2;
+                        $('#project_id').append(str3);
+                        $('select[name="project_id"]').attr("disabled", false);
+                    }
+                });
+            }
+        }
+    })
+
+</script>
+<script>
+// function removeOptions(selectbox)
+// {
+//     var i;
+//     for(i=selectbox.options.length-1;i>=0;i--)
+//     {
+//         selectbox.remove(i);
+//     }
+// }
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Project</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/tools/documentation/')}">Project Documentation</a></li>
+        <li class="breadcrumb-item active">Tambah Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Tambah Data Dokumentasi</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/tools/documentation/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('project/tools/documentation/add_process')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Tahun</label>
+                            <div class="col-md-2">
+                                <select name="tahun" id="tahun" class="select2-single form-control" data-plugin="select2" data-placeholder="Pilih Tahun">
+                                    <option value=""></option>
+                                    {foreach from=$rs_tahun item=tahun}
+                                    <option value="{$tahun.tahun}" {if $result.tahun|default:date('Y') eq $tahun.tahun}selected="selected"{/if}>{$tahun.tahun}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">wajib diisi</small>
+                            </div>
+                        </div> 
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Project</label>
+                            <div class="col-md-5">
+                                <select name="project_id" id="project_id" class="select2-single form-control" data-plugin="select2" data-placeholder="Pilih Project">
+                                    <option value=""></option>
+                                </select>
+                                <small class="help-block text-danger">wajib diisi</small>
+                            </div>
+                        </div> 
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jenis Dokumen</label>
+                            <div class="col-md-4">
+                                <select name="jenis_id" class="select2-single form-control" data-plugin="select2" data-placeholder="Pilih Jenis Dokumen">
+                                    <option value=""></option>
+                                    {foreach from=$rs_jenis item=data}
+                                    <option value="{$data.jenis_id}" {if $result.jenis_id|default:'' eq $data.jenis_id} selected="selected" {/if}>{$data.doc_name|default:''}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">wajib diisi</small>
+                            </div>
+                        </div>                      
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Keterangan</label>
+                            <div class="col-md-7">
+                                <input class="form-control" name="doc_notes" type="text" value="{$result.doc_notes|default:''}"  size="60" maxlength="255" />
+                            </div>
+                        </div>                          
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Status</label>
+                            <div class="col-md-3">
+                                <select name="doc_st" class="select2-single form-control" data-plugin="select2" data-placeholder="Pilih Status">
+                                    <option value="waiting" {if $result.doc_st|default:'' eq 'waiting'}selected="selected"{/if}>WAITING</option>
+                                    <option value="done" {if $result.doc_st|default:'' eq 'done'}selected="selected"{/if}>DONE</option>
+                                </select>
+                            </div>
+                        </div>                        
+                        <div class="box-footer">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label"></label>
+                                <div class="col-md-7">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                                </div>                            
+                            </div>
+                        </div>                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

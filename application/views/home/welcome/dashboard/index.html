@@ -1,0 +1,281 @@
+<div class="lt d-flex mb-3">
+    <div class="flex">
+        <h1 class="text-md mb-1 _400">Selamat datang kembali, <span>{$com_user.nama_lengkap}</span></h1>
+        <small class="text-muted">
+            Anda login terakhir pada tanggal {$last_login[1]|default:($last_login[0]|default:'-')}
+        </small>
+    </div>
+    <div>
+        <small class="text-md text-white d-block btn btn-dark">{$hari_ini.tahun}</small>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6 col-lg-3">
+        <div class="box list-item">
+            <span class="avatar w-40 text-center rounded primary">
+                <span class="fa fa-car"></span>
+            </span>
+            <div class="list-body">
+                <h4 class="m-0 text-sm"><a href="{$config->site_url('home/task/lpj')}" style="font-weight: bold;">Jaldin</a></h4>
+                <small class="text-muted">{$total_lpj|default:0} Waiting</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="box list-item">
+            <span class="avatar w-40 text-center rounded warning">
+                <span class="fa fa-male"></span>
+            </span>
+            <div class="list-body">
+                <h4 class="m-0 text-sm"><a href="{$config->site_url('home/task/permit')}" style="font-weight: bold;">Cuti</a></h4>
+                <small class="text-muted">{$total_cuti_tahunan.total_cuti|default:0} / {$total_cuti_tahunan.total_kuota|default:0}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="box list-item">
+            <span class="avatar w-40 text-center rounded danger">
+                <span class="fa fa-ambulance"></span>
+            </span>
+            <div class="list-body">
+                <h4 class="m-0 text-sm"><a href="{$config->site_url('home/task/leave')}" style="font-weight: bold;">Ijin</a></h4>
+                <small class="text-muted">{$total_ijin_tahunan.total_sakit|default:0} S / {$total_ijin_tahunan.total_ijin|default:0} L</small>
+            </div>
+        </div>
+    </div>
+    {if $total_task|default:'0' neq '0'}
+    <div class="col-6 col-lg-3">
+        <div class="box list-item">
+            <span class="avatar w-40 text-center rounded success">
+                <span class="fa fa-check-circle fa-2x"></span>
+            </span>
+            <div class="list-body">
+                <h4 class="m-0 text-sm"><a href="{$config->site_url('home/task/approval')}" style="font-weight: bold;">Approval</a></h4>
+                <small class="text-muted">{$total_approval|default:0} Waiting</small>
+            </div>
+
+        </div>
+    </div>
+    {/if}
+</div>
+<div>
+    <div class="row no-gutters box">
+        <div class="col-sm-4">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Kedisiplinan Saya</h3>
+                    <small>Bulan {$hari_ini.bulan} ( {$total_hari_kerja|default:0} Hari Kerja )</small>
+                </div>
+                <div class="box-body">
+                    <div class="list-group box">
+                        <a href="#" class="list-group-item" onclick="return false;">
+                            <span class="float-right badge warning text-sm">{$total_keterlambatan|default:0} Hari Kerja</span>
+                            Keterlambatan
+                        </a>
+                        <a href="#" class="list-group-item" onclick="return false;">
+                            <span class="float-right badge danger text-sm">{$total_ijin|default:0} Hari Kerja</span>
+                            Ijin
+                        </a>
+                        <a href="#" class="list-group-item" onclick="return false;">
+                            <span class="float-right badge info text-sm">{$total_cuti|default:0} Hari Kerja</span>
+                            Cuti
+                        </a>
+                        <a href="#" class="list-group-item" onclick="return false;">
+                            <span class="float-right badge success text-sm">{$total_lembur|default:0} Hari Kerja</span>
+                            Lembur
+                        </a>
+                        <a href="#" class="list-group-item" onclick="return false;">
+                            <span class="float-right badge primary text-sm">{$total_jaldin|default:0} Hari Kerja</span>
+                            Perjalanan Dinas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="padding light lt">
+                <div id="chart_otp" style="height: 350px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="padding box">
+                <h6 class="mb-3">Perjalanan Dinas Saya</h6>
+                <hr />
+                <div class="streamline streamline-xs">
+                    {foreach from=$rs_jaldin item=jaldin}
+                    {if $jaldin.spt_status eq 'approved'}
+                    <div class="sl-item b-success">
+                        <div class="sl-content">
+                            <span class="sl-date text-muted">{$dtm->get_full_date($jaldin.tanggal_berangkat)}</span>
+                            <div>
+                                <a href="#" class="text-primary" onclick="return false;">{$jaldin.client_nm}</a>
+                                {$jaldin.uraian_tugas}
+                                <br />
+                                <span class="text-info">{$jaldin.lokasi_tujuan}</span>                                
+                            </div>
+                        </div>
+                    </div>
+                    {else}
+                    <div class="sl-item b-warning">
+                        <div class="sl-content">
+                            <span class="sl-date text-muted">{$dtm->get_full_date($jaldin.tanggal_berangkat)}</span>
+                            <div>
+                                <a href="#" class="text-primary" onclick="return false;">{$jaldin.client_nm}</a>
+                                {$jaldin.uraian_tugas}
+                                <br />
+                                <span class="text-info">{$jaldin.lokasi_tujuan}</span>                                
+                            </div>
+                        </div>
+                    </div>
+                    {/if}
+                    {foreachelse}
+                    <div class="sl-item b-default">
+                        <div class="sl-content">
+                            <span class="sl-date text-muted">Belum ada data perjalanan dinas yang tercatat.</span>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="padding box">
+                <h6 class="mb-3">Pengumuman / Agenda Kegiatan</h6>
+                <hr />
+                <div class="streamline">
+                    <div class="sl-item  b-">
+                        <div class="sl-content">
+                            <span class="sl-date text-muted">08 Januari 2019 Jam 08:00</span>
+                            <div>
+                                <a href="#" class="text-primary">Kegiatan Rutin</a>
+                                Pengajian Rutin Bulanan
+                                <br />
+                                <span class="text-info">Jumat, 12 Februari 2019</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sl-item  b-">
+                        <div class="sl-content">
+                            <span class="sl-date text-muted">08 Januari 2019 Jam 08:00</span>
+                            <div>
+                                <a href="#" class="text-primary">Info Sakit</a>
+                                Menjenguk Pak Anto, diharapkan yang tidak berhalangan bisa ikut.
+                                <br />
+                                <span class="text-info">Jumat, 12 Februari 2019</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="padding box">
+                <h6>
+                    Personel Information, 
+                    <small class="text-primary text-xs">{$hari_ini.hari}, {$hari_ini.tanggal} {$hari_ini.bulan} {$hari_ini.tahun}</small>
+                </h6>
+                <hr />
+                <span class="text-muted">
+                    <span class="badge badge-primary">J</span> Perjalanan Dinas
+                    <span class="badge badge-warning">C</span> Cuti
+                    <span class="badge badge-danger">S</span> Ijin Sakit
+                    <span class="badge badge-danger">I</span> Ijin Lainnya
+                </span>
+                <hr />
+                <div class="list inset">
+                    {foreach from=$rs_personel_info item=personel_info}
+                    <div class="list-item">
+                        <span class="w-24 avatar circle {if $personel_info.jenis_kode eq 'J'}primary{elseif $personel_info.jenis_kode eq 'C'}warning{else}danger{/if}">
+                            {$personel_info.jenis_kode}
+                        </span>
+                        <div class="list-body">
+                            <a href="#" class="item-title _500" onclick="return false;">
+                                {$personel_info.nama_lengkap}
+                                <br />
+                                <small class="text-muted">
+                                    {$personel_info.uraian},
+                                    <i class="text-info" style="font-weight: bold;">{$personel_info.tempat|default:'-'}</i>
+                                </small>
+                            </a>
+                            <div class="item-tag tag hide"></div>
+                        </div>
+                    </div>
+                    {foreachelse}
+                    <div class="list-item">
+                        <span class="w-24 avatar circle dark">
+                            NA
+                        </span>
+                        <div class="list-body">
+                            <a href="#" class="item-title text-muted" onclick="return false;">
+                                Tidak ada personil yang tercatat sedang berhalangan.
+                            </a>
+                            <div class="item-tag tag hide"></div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Single Chart OTP
+        options_otp_chart = {
+            chart: {
+                renderTo: 'chart_otp',
+                type: 'column',
+                height: 350
+            },
+            legend: {
+                enabled: false
+            },
+            title: {
+                text: 'On Time Performance'
+            },
+            subtitle: {
+                text: 'Tahun {$hari_ini.tahun}'
+            },
+            xAxis: {
+                categories: [],
+                title: {
+                    text: 'BULAN'
+                }
+            },
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    text: 'PROSENTASE'
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    colorByPoint: true
+                }
+            },
+            series: []
+        };
+        // Get Data Chart
+        url = "{$config->site_url('home/welcome/dashboard/get_data_chart_otp')}";
+        $.getJSON(url, function (result) {
+            options_otp_chart.xAxis.categories = result.categories;
+            options_otp_chart.series = result.data_series;
+            options_otp_chart.colors = result.colors;
+            var chart_otp = new Highcharts.Chart(options_otp_chart);
+        });
+    });
+</script>

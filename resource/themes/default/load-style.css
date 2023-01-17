@@ -1,0 +1,11 @@
+/* CSS Document */
+/* created by @kintar-2017 */
+
+/* BEGIN GLOBAL MANDATORY STYLES */
+@import url(../default/plugins/font-awesome/css/font-awesome.min.css);
+@import url(../default/plugins/bootstrap/dist/css/bootstrap.min.css);
+@import url('css/app.css');
+@import url('css/style.css');
+@import url('css/theme/primary.css');
+@import url('../default/plugins/uniform/uniform.css');
+@import url('css/custom.css');

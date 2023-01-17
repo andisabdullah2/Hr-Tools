@@ -1,0 +1,62 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Monitoring</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/lembur/monitoring/')}">Pengajuan Lembur</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Formulir Permohonan Lembur</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/lembur/monitoring/download/'|cat:$result.overtime_id)}" class="btn btn-success"><i class="fa fa-print"></i> Cetak</a>
+                                <a href="{$config->site_url('kepegawaian/lembur/monitoring/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>                                
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table" width="100%">
+                        <tr class="headrow">
+                            <th colspan="4">SURAT PERINTAH LEMBUR</th>
+                        </tr>
+                        <tr>
+                            <td width='15%'>Project</td>
+                            <td width='35%'>{$result.project_alias|upper|default:''}</td>
+                            <td width='15%'>Tanggal</td>
+                            <td width='35%'>{$dtm->get_full_date($result.overtime_date|default:'')|upper}</td>
+                        </tr>
+                        <tr>
+                            <td>Keterangan</td>
+                            <td>{$result.overtime_reason|upper|default:''}</td>
+                            <td>Waktu</td>
+                            <td>{$result.overtime_start|default:''} - {$result.overtime_end|default:''}</td>
+                        </tr>
+                        <tr class="headrow">
+                            <th colspan="4">Karyawan</th>
+                        </tr>
+                        {foreach from=$rs_personel key=no item=personel}
+                        <tr>
+                            <td colspan="4">{$no = $no + 1}{$no}. {$personel.nama_lengkap|upper}</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

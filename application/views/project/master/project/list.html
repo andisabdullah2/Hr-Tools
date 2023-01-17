@@ -1,0 +1,124 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Project</a></li>
+        <li class="breadcrumb-item active">Project Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Project Data</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/master/project/add/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-search">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('project/master/project/search_process')}" method="post">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" name="project" value="{$search.project_name|default:''}" class="form-control" placeholder="Nama Project"/>
+                            </div>                            
+                            <div class="col-md-3">
+                                <input type="text" name="client" value="{$search.client_nm|default:''}" class="form-control" placeholder="Nama Client"/>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select name="struktur_cd" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Unit Kerja">
+                                        <option value=""></option>
+                                        {foreach $rs_unit as $data}
+                                        <option value="{$data.struktur_cd}" {if $data.struktur_cd|default:'' eq $search.struktur_cd|default:''} selected="selected" {/if}>{$data.struktur_nama|default:''}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <select name="tahun" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih Tahun">
+                                        <option value=""></option>
+                                        {foreach from=$rs_tahun item=tahun}
+                                        <option value="{$tahun.tahun}" {if $search.tahun|default:'' eq $tahun.tahun}selected="selected"{/if}>{$tahun.tahun}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button type="submit" class="btn dark" name="save" value="Cari"><i class="fa fa-search"></i> Cari</button>
+                                    <button type="submit" class="btn white" name="save" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                                </div>                              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <!-- notification template -->
+                        <!-- {include file="base/templates/notification.html"} -->
+                        <!-- end of notification template -->
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="4%" class="text-center">No</th>
+                                    <th width="8%" class="text-center">Year</th>
+                                    <th width="18%" class="text-center">Client</th>
+                                    <th width="20%" class="text-center">Project</th>
+                                    <th width="10%" class="text-center">Status</th>
+                                    <th width="10%" class="text-center">Project Start</th>
+                                    <th width="10%" class="text-center">Project End</th>
+                                    <th width="10%" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$rs_id item=result}
+                                <tr>
+                                    <td align='center'>{$no++}.</td>
+                                    <td align='center'>{$result.tahun}</td>
+                                    <td>{$result.client_nm|upper|default:''}</td>
+                                    <td>{$result.project_name|upper|default:''}</td>
+                                    <td align='center'>{$result.project_st|upper|default:''}</td>
+                                    <td align='center'>{$result.project_start}</td>
+                                    <td align='center'>{$result.project_end}</td>
+                                    <td align="center">
+                                            <a href="{$config->site_url('project/master/project/edit/'|cat:$result.project_id)}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                            <a href="{$config->site_url('project/master/project/delete/'|cat:$result.project_id)}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>                                                        
+                                    </td>
+                                </tr>    
+                                {foreachelse}
+                                <tr>
+                                    <td colspan="9">Data not found!</td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                    </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <nav class="pull-right">
+                                <ul class="pagination">
+                                    <li class="page-item"></li>{$pagination.data|default:''}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

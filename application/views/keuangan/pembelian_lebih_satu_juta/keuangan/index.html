@@ -1,0 +1,124 @@
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">Permintaan Barang > 1jt</a></li>
+        <li class="breadcrumb-item active">Persetujuan oleh Keuangan</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Daftar Persetujuan Permintaan Barang > 1jt</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('keuangan/pembelian_lebih_satu_juta/keuangan/search_process/')}" method="post">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <p class="form-control-static">
+                                    Uraian
+                                </p>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" name="uraian" class="form-control" placeholder="Cari dengan nama uraian" value="{$search.uraian|default:''}">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <button class="btn btn-info" type="submit" name="save" value="Cari"><i class="fa fa-search mr5"></i>&nbsp; Cari</button>
+                                    <button class="btn btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh mr5"></i>&nbsp; Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr> 
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="10%" class="text-center">Tanggal</th>
+                                    <th width="40%" class="text-center">Uraian</th>
+                                    <th width="15%" class="text-center">Asal Pengajuan</th>
+                                    <th width="15%" class="text-center">Nominal Pengajuan</th>
+                                    <th width="15%" class="text-center">Status</th>
+                                    <th width="5%" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$rs_id item=result}
+                                <tr>
+                                    <td class="text-center">{$no++}</td>
+                                    <td class="text-center">{$dtm->get_date_short_only($result.advance_tanggal)|upper}</td>
+                                    <td>
+                                        {$result.item_uraian|upper|default:'-'}<br>
+                                        <small>{$result.advance_uraian|default:'-'}</small>
+                                    </td>
+                                    <td>{$result.struktur_singkatan|upper|default:'-'}</td>
+                                    <td>
+                                        <span>Rp</span>
+                                        <span class="pull-right">{$result.advance_total_requested|number_format:2:",":"."|default:'-'}</span>
+                                    </td>
+                                    <td>
+                                        {if $result.advance_status eq 'approved' && $result.process_st eq 'approve'}
+                                        <span class="badge badge-success"><i class="fa fa-check"></i> {$result.task_label|default:'-'}</span>
+                                        <br>
+                                        <small>{$result.task_desc|default:''}</small>
+                                        {elseif $result.advance_status eq 'rejected' && $result.process_st eq 'reject'}
+                                        <span class="badge badge-danger"><i class="fa fa-times"></i> {$result.task_label|default:'-'}</span>
+                                        <br>
+                                        <small>{$result.task_desc|default:''}</small>
+                                        {elseif $result.advance_status eq 'waiting' && $result.process_st eq 'waiting'}
+                                        <span class="badge badge-warning"><i class="fa fa-clock-o"></i> {$result.task_label|default:'-'}</span>
+                                        <br>
+                                        <small>{$result.task_desc|default:''}</small>
+                                        {elseif $result.advance_status eq 'draft'}
+                                        <span class="badge badge-warning"><i class="fa fa-clock-o"></i> Draft</span>
+                                        {/if}
+                                    </td>
+                                    <td class="text-center">
+                                        {if $result.process_st eq 'waiting'}
+                                    	<a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/keuangan/detail/'|cat:$result.trx_id)}" class="btn btn-xs white text-primary" data-toggle="tooltip" title="Persetujuan"><i class="fa fa-pencil"></i></a>
+                                        {else}
+                                        <a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/keuangan/detail/'|cat:$result.trx_id)}" class="btn btn-xs white text-primary" data-toggle="tooltip" title="Monitoring"><i class="fa fa-eye"></i></a>
+                                        {/if}
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td class="text-center text-muted" colspan="7">
+                                        <div class="m-t-b-50">
+                                            <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                            <small>Data belum ada.</small><br>
+                                            <small>Data persetujuan Permintaan Barang > 1jt oleh <b>keuangan</b> akan muncul disini.</small>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    {if !empty($pagination.total)}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

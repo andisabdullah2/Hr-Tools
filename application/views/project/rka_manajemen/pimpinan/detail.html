@@ -1,0 +1,208 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        //
+        $('#btn-approve').click(function(event) {
+            var parent = $(this).closest('form');
+            parent.find('[name="process_st"]').val('approve');
+            swal({
+                title: "Konfirmasi Pengajuan",
+                text: "Lanjutkan konfirmasi rencana pengajuan ini?",
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonText: "Lanjutkan",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    parent.submit();
+                }
+            });
+        });
+        //
+        $('#btn-reject').click(function(event) {
+            var parent = $(this).closest('form');
+            parent.find('[name="process_st"]').val('reject');
+            swal({
+                title: "Tolak Pengajuan",
+                text: "Lanjutkan penolakan rencana pengajuan ini?",
+                type: 'error',
+                showCancelButton: true,
+                confirmButtonText: "Lanjutkan",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    parent.submit();
+                }
+            });
+        });
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">RKA Manajemen</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/rka_manajemen/pimpinan/')}">Persetujuan oleh Pimpinan</a></li>
+        <li class="breadcrumb-item active">Pengajuan {$detail.project_alias|cat:' / '|cat:$detail.project_name}</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Pengajuan {$detail.project_alias|cat:' / '|cat:$detail.project_name}</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/rka_manajemen/pimpinan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table class="table" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Project</td>
+                            <th width="80%">{$detail.project_alias|cat:' / '|cat:$detail.project_name|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Biaya</td>
+                            <th width="80%">Rp {number_format($detail.nilai_biaya, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Catatan</td>
+                            <th width="80%">{$detail.pengajuan_catatan|default:'-'}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <p class="pad-all">
+                        Berikut merupakan daftar item dari pengajuan : 
+                    </p>
+                    <div class="streamline mb-2">
+                        {foreach from=$rs_id item=data}
+                        <div class="sl-item">
+                            <div class="sl-left"></div>
+                            <div class="sl-content">
+                                <div class="box">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            {$data.perusahaan_nama|upper} ( {$data.kode_akun_alias|cat:' / '|cat:$data.nama_akun|upper} )
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed">
+                                                <thead>
+                                                    <tr> 
+                                                        <th width="5%" class="text-center">No</th>
+                                                        <th width="45%" class="text-center">Keterangan</th>
+                                                        <th width="15%" class="text-center">Satuan</th>
+                                                        <th width="10%" class="text-center">Jumlah</th>
+                                                        <th width="25%" class="text-center">Biaya</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {foreach from=$data['detail'] item=item_detail}
+                                                    <tr>
+                                                        <td class="text-center">{$item_detail.detail_no}</td>
+                                                        <td>{$item_detail.detail_uraian|upper}</td>
+                                                        <td class="text-center">{$item_detail.detail_satuan|upper}</td>
+                                                        <td class="text-center">{$item_detail.detail_volume}</td>
+                                                        <td class="clearfix">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($item_detail.detail_sub_total, 2, ',', '.')}
+                                                            </div>
+                                                        </td>                           
+                                                    </tr>
+                                                    {foreachelse}
+                                                    <tr>
+                                                        <td class="text-center text-muted" colspan="6">
+                                                            <br>
+                                                            <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                            <i>Belum ada detail pengajuan</i>
+                                                            <br><br>
+                                                        </td>
+                                                    </tr>
+                                                    {/foreach}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th class="text-center" colspan="4">Biaya Item</th>
+                                                        <td class="clearfix text-center">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($data.detail_sub_total, 2, ',', '.')}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {foreachelse}
+                        <div class="sl-item">
+                            <div class="sl-left"></div>
+                            <div class="sl-content text-muted text-center">
+                                <br>
+                                <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                <i>Belum ada item pengajuan</i>
+                                <br><br>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            {if ($detail.process_st eq 'waiting')}
+            <form action="{$config->site_url('project/rka_manajemen/pimpinan/pengajuan_process')}" method="post" class="form-horizontal">
+                <input type="hidden" name="process_id" value="{$detail.process_id}">
+                <input type="hidden" name="process_st">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">Catatan Persetujuan</h4>
+                    </div>
+                    <div class="box-divider m-0"></div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <textarea name="catatan" class="form-control" placeholder="Isi dengan Catatan Persetujuan jika diperlukan" rows="7"></textarea>
+                        </div>
+                    </div>
+                    <div class="box-footer text-right">
+                        <button type="button" id="btn-approve" class="btn btn-success">
+                            <i class="fa fa-check"></i>&nbsp;&nbsp;Setujui Pengajuan
+                        </button>
+                        <button type="button" id="btn-reject" class="btn btn-danger">
+                            <i class="fa fa-times"></i>&nbsp;&nbsp;Tolak Pengajuan
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {else}
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Catatan Persetujuan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <p class="form-control-static">{$detail.catatan}</p>
+                    </div>
+                </div>
+            </div>
+            {/if}
+        </div>
+    </div>
+</section>

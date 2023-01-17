@@ -1,0 +1,172 @@
+{literal}
+<script type="text/javascript">
+    $(document).ready(function () 
+    {
+        $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-default'
+        });
+    });
+
+function SomeDeleteRowFunction(btndel) 
+{
+    if (typeof(btndel) == "object") {
+        $(btndel).closest("tr").remove();
+    } else {
+        return false;
+    }
+}
+
+function addField () 
+{
+    var rowCount = $('#myTable tr').length;
+
+    var myTable = document.getElementById("myTable");
+    var currentIndex = myTable.rows.length;
+    var currentRow = myTable.insertRow(-1);
+    var kode = (rowCount+1).toString();
+    var idlampiran = 'lampiran'+kode;
+
+    var lampiran = "<input type='hidden' name='idlampiran[]' value='"+kode+"'> <input type='file' name='lampiran"+kode+"' id='lampiran"+kode+"' class='form-control file-styled' />";
+    var button = "<button class='btn btn-icon btn-sm btn-outline b-danger text-danger' onclick='SomeDeleteRowFunction(this);'><i class='fa fa-times'></i></button>";
+
+    var currentCell = currentRow.insertCell(0);
+    currentCell.innerHTML = lampiran;
+    var currentCell = currentRow.insertCell(1);
+    currentCell.innerHTML = button;
+    //
+    $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-default'
+        });
+}
+
+</script>
+{/literal}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Project</a></li>
+        <li class="breadcrumb-item active">Project Documentation</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Dokumentasi Pekerjaan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/tools/documentation/add/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-search">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('project/tools/documentation/search_process')}" method="post">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="text" name="project" value="{$search.project|default:''}" class="form-control" placeholder="Nama Project"/>
+                            </div>                            
+                            <div class="col-md-3">
+                                <input type="text" name="client" value="{$search.client|default:''}" class="form-control" placeholder="Nama Client"/>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="status" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Status">
+                                        <option value=""></option>
+                                        <option value="done" {if $search.status|default:'' eq 'done'} selected="selected" {/if}>DONE</option>
+                                        <option value="waiting" {if $search.status|default:'' eq 'waiting'} selected="selected" {/if}>WAITING</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="tahun" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih Tahun">
+                                        <option value=""></option>
+                                        {foreach from=$rs_tahun item=tahun}
+                                        <option value="{$tahun.tahun}" {if $search.tahun|default:'' eq $tahun.tahun}selected="selected"{/if}>{$tahun.tahun}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button type="submit" class="btn dark" name="save" value="Cari"><i class="fa fa-search"></i> Cari</button>
+                                    <button type="submit" class="btn white" name="save" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                                </div>                              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="10%" class="text-center">Target Tanggal</th>
+                                    <th width="25%" class="text-center">Project</th>
+                                    <th width="15%" class="text-center">Nama Dokumen</th>
+                                    <th width="5%" class="text-center">Status</th>
+                                    <th width="5%" class="text-center">File</th>
+                                    <th width="10%" class="text-center">Last Update</th>
+                                    <th width="10%" class="text-center">Update By</th>
+                                    <th width="15%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$rs_id key=no item=result}
+                                <tr {if ($no % 2) <> 0}class="blink-row"{/if}>
+                                    <td class="text-center">{$no+1}.</td>
+                                    <td class="text-center">{$dtm->get_short_date($result.project_start)|upper|default:''}</td>
+                                    <td>{$result.project_name|default:''}</td>                                
+                                    <td>{$result.doc_notes|upper|default:''}</td>
+                                    <td class="text-center">
+                                        {if $result.doc_st eq 'done'}
+                                        <span class="badge success">DONE</span>
+                                        {elseif $result.doc_st eq 'waiting'}
+                                        <span class="badge warning">WAITING</span>
+                                        {/if}
+                                    </td>
+                                    <td class="text-center">
+                                        {$result.jumlah_file|default:'0'}
+                                    </td>
+                                    <td class="text-center">{$dtm->get_short_date($result.last_update|default:'')}</td>
+                                    <td class="text-center">{$result.mdb_name|default:''}</td>
+                                    <td class="text-center">
+                                        <a href="{$config->site_url('project/tools/documentation/detail/'|cat:$result.doc_id)}" class="btn btn-xs white text-primary"><i class="fa fa-info-circle"></i></a>
+                                        <a href="{$config->site_url('project/tools/documentation/edit/'|cat:$result.doc_id)}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                        <a href="{$config->site_url('project/tools/documentation/delete/'|cat:$result.doc_id)}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>                                                        
+                                    </td>
+                                </tr>    
+                                {foreachelse}
+                                <tr>
+                                    <td colspan="9">Data not found!</td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

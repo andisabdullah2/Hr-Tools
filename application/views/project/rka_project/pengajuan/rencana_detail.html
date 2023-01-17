@@ -1,0 +1,514 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        //select 2
+        $("select").select2();
+        // auto numeric
+        $('.autonumeric').autoNumeric('init',  {
+            aSep: '.',
+            aDec: ',',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+        // event ketika modal tambah tampil
+        $('#modal-add-detail').on('show.bs.modal', function (e) {
+            // get realted data
+            let dataItem = e.relatedTarget;
+            $(this).find('[name="item_id"]').val($(dataItem).attr('item-id'));
+            $(this).find('[name="detail_no"]').val($(dataItem).attr('detail-no'));
+            // register event
+            $(this).find('[name="detail_harga"]').keyup(function (event) {
+                let modal = $('#modal-add-detail');
+                let total = parseFloat($(this).autoNumeric('get')) * parseInt($(modal).find('[name="detail_volume"]').val());
+                $(modal).find('[name="detail_sub_total"]').autoNumeric('set', total);
+            });
+            $(this).find('[name="detail_volume"]').change(function (event) {
+                let modal = $('#modal-add-detail');
+                var total = parseFloat($(modal).find('[name="detail_harga"]').autoNumeric('get')) * parseInt($(this).val());
+                $(modal).find('[name="detail_sub_total"]').autoNumeric('set', total);
+            });
+        });
+        // event ketika modal edit tampil
+        $('#modal-edit-detail').on('show.bs.modal', function (e) {
+            // get realted data
+            let dataItem = e.relatedTarget;
+            $(this).find('[name="detail_id"]').val($(dataItem).attr('detail-id'));
+            $(this).find('[name="detail_no"]').val($(dataItem).attr('detail-no'));
+            $(this).find('[name="detail_uraian"]').val($(dataItem).attr('detail-uraian'));
+            $(this).find('[name="detail_satuan"]').val($(dataItem).attr('detail-satuan'));
+            $(this).find('[name="detail_volume"]').val($(dataItem).attr('detail-volume'));
+            $(this).find('[name="detail_harga"]').autoNumeric('set',$(dataItem).attr('detail-harga'));
+            $(this).find('[name="detail_sub_total"]').autoNumeric('set',$(dataItem).attr('detail-sub-total'));
+            // register event
+            $(this).find('[name="detail_harga"]').keyup(function (event) {
+                let modal = $('#modal-edit-detail');
+                let total = parseFloat($(this).autoNumeric('get')) * parseInt($(modal).find('[name="detail_volume"]').val());
+                $(modal).find('[name="detail_sub_total"]').autoNumeric('set', total);
+            });
+            $(this).find('[name="detail_volume"]').change(function (event) {
+                let modal = $('#modal-edit-detail');
+                var total = parseFloat($(modal).find('[name="detail_harga"]').autoNumeric('get')) * parseInt($(this).val());
+                $(modal).find('[name="detail_sub_total"]').autoNumeric('set', total);
+            });
+        });
+        // event ketika modal delete tampil
+        $('#modal-delete-detail').on('show.bs.modal', function (e) {
+            // get realted data
+            let dataItem = e.relatedTarget;
+            $(this).find('[name="detail_id"]').val($(dataItem).attr('detail-id'));
+            $(this).find('[name="detail_no"]').val($(dataItem).attr('detail-no'));
+            $(this).find('[name="detail_uraian"]').val($(dataItem).attr('detail-uraian'));
+            $(this).find('[name="detail_satuan"]').val($(dataItem).attr('detail-satuan'));
+            $(this).find('[name="detail_volume"]').val($(dataItem).attr('detail-volume'));
+            $(this).find('[name="detail_harga"]').autoNumeric('set',$(dataItem).attr('detail-harga'));
+            $(this).find('[name="detail_sub_total"]').autoNumeric('set',$(dataItem).attr('detail-sub-total'));
+        });
+        // verifikasi
+        $('.btn-verifikasi').click(function(event) {
+            var url = $(this).attr('href');
+            swal({
+                title: "Verifikasi Biaya",
+                text: "Apakah total biaya pengajuan detail dengan biaya pengajuan item sudah sama?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: "Sudah",
+                cancelButtonText: "Belum",
+            }).then((result) => {
+                if (result.value) {
+                    window.location = url;
+                }
+            });
+            return false;
+        });
+        // konfirmasi
+        $('#btn-konfirmasi').click(function(event) {
+            var url = $(this).attr('href');
+            swal({
+                title: "Konfirmasi Proses",
+                text: "Pengajuan yang sudah diproses tidak dapat dibatalkan, lanjutkan proses pengajuan?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    window.location = url;
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Rencana & Anggaran</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/rka_project/pengajuan/')}">RKA Project</a></li>
+        <li class="breadcrumb-item active">Detail Item</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content" >
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Tambah Data Pengajuan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/rka_project/pengajuan/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/rka_project/pengajuan/update_rencana/'|cat:$rs_project_plant.plan_id)}">1. Data Rencana</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/rka_project/pengajuan/rencana_item/'|cat:$rs_project_plant.plan_id)}">2. Rencana Item</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">3. Rencana Detail</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-striped" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Project</td>
+                            <th width="80%">: {$rs_project_plant.project_alias|cat:' / '|cat:$rs_project_plant.project_name|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Pendapatan</td>
+                            <th width="80%">: Rp {number_format($rs_project_plant.nilai_pendapatan, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Pajak</td>
+                            <th width="80%">: Rp {number_format($rs_project_plant.nilai_pajak, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Anggaran</td>
+                            <th width="80%">: Rp {number_format($rs_project_plant.nilai_anggaran, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Biaya</td>
+                            <th width="80%">: Rp {number_format($rs_project_plant.nilai_biaya, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Catatan</td>
+                            <th width="80%">: {$rs_project_plant.catatan|default:'-'}</th>
+                        </tr>
+                    </table>
+                    <p class="pad-all">
+                        Berikut data item dari pengajuan yang di ajukan :
+                    </p>
+                    <div class="streamline mb-2">
+                        <div class="sl-item">
+                            <div class="sl-left"></div>
+                            <div class="sl-content">
+                                {foreach from=$rs_project_item item=item}
+                                <div class="box">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">{$item.group_title|upper|default:''} - {$item.nama_akun|upper|default:''|cat:' ( '|cat:$item.perusahaan_nama|upper|default:''|cat:' )'}</h4>
+                                        <div class="box-tool">
+                                            <ul class="nav nav-xs">
+                                                <li class="nav-item">
+                                                    <a href="#" class="btn warn" item-id="{$item.item_id|default:''}" detail-no="{$item.detail_no|default:''}" data-toggle="modal" data-target="#modal-add-detail"><i class="fa fa-plus"></i>&nbsp;&nbsp;Tambah Detail</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th width="5%" class="text-center">No</th>
+                                                <th width="40%" class="text-center">Keterangan</th>
+                                                <th width="15%" class="text-center">Satuan</th>
+                                                <th width="10%" class="text-center">Jumlah</th>
+                                                <th width="20%" class="text-center">Biaya</th>
+                                                <th width="10%" class="text-center"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {foreach from=$item.detail_item key=index item=detail}
+                                                <tr>
+                                                    <td class="text-center">{$index+1}</td>
+                                                    <td>{$detail.detail_uraian|upper}</td>
+                                                    <td class="text-center">{$detail.detail_satuan|upper}</td>
+                                                    <td class="text-center">{$detail.detail_volume}</td>
+                                                    <td class="clearfix">
+                                                        <div class="pull-left">
+                                                            Rp
+                                                        </div>
+                                                        <div class="pull-right">
+                                                            {number_format($detail.detail_sub_total, 2, ',', '.')}
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="#" detail-id="{$detail.detail_id|default:''}" detail-no="{$detail.detail_no|default:''}" detail-satuan="{$detail.detail_satuan|default:''}" detail-uraian="{$detail.detail_uraian|default:''}" detail-volume={$detail.detail_volume|default:''} detail-harga="{$detail.detail_harga|default:''}" detail-sub-total="{$detail.detail_sub_total|default:''}" data-toggle="modal" data-target="#modal-edit-detail" class="btn btn-xs white text-success">
+                                                            <i class="fa fa-edit"></i></a>
+                                                        <a href="#" detail-id="{$detail.detail_id|default:''}" detail-no="{$detail.detail_no|default:''}" detail-satuan="{$detail.detail_satuan|default:''}" detail-uraian="{$detail.detail_uraian|default:''}" detail-volume={$detail.detail_volume|default:''} detail-harga="{$detail.detail_harga|default:''}" detail-sub-total="{$detail.detail_sub_total|default:''}" data-toggle="modal" data-target="#modal-delete-detail" class="btn btn-xs white text-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            {foreachelse}
+                                            <tr>
+                                                <td colspan="10" align="center" class="pad-all">
+                                                    <br>
+                                                    <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                    <i>Belum ada item pengajuan</i>
+                                                    <br><br>
+                                                </td>
+                                            </tr>
+                                            {/foreach}
+                                            <tfoot>
+                                                {if ($item.item_total neq $item.total_detail)}
+                                                    <tr>
+                                                        <th class="text-center" colspan="4">Total Biaya Detail</th>
+                                                        <td class="clearfix text-center text-danger" colspan="2">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($item.total_detail, 2, ',', '.')}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" colspan="4">Biaya Pengajuan Item</th>
+                                                        <td class="clearfix text-center" colspan="2">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($item.item_total, 2, ',', '.')}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {else}
+                                                    <tr>
+                                                        <th class="text-center" colspan="4">Total Biaya Detail</th>
+                                                        <td class="clearfix text-center" colspan="2" rowspan="2" style="vertical-align: middle;">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($item.total_detail, 2, ',', '.')}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" colspan="4">Biaya Pengajuan Item</th>
+                                                    </tr>
+                                                {/if}
+                                                <tr>
+                                                    <th class="text-center" colspan="4">Verifikasi Biaya</th>
+                                                    <td class="text-center" colspan="2">
+                                                        <a href="{$config->site_url('project/rka_project/pengajuan/verifikasi_process/'|cat:$item.item_id)}" class="btn btn-xs btn-outline b-info text-info btn-verifikasi btn-block" data-nama="{$item.nama_akun|cat:' ( '|cat:$item.perusahaan_nama|cat:' )'|upper}">
+                                                            <i class="fa fa-check"></i>&nbsp;&nbsp;VERIFIKASI
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                {foreachelse}
+                                <div class="text-center">
+                                    <br>
+                                    <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                    <i>Belum ada item pengajuan</i>
+                                    <br><br>
+                                </div>
+                            </div>
+                        </div>
+                    {/foreach}
+                    </div>
+                </div>
+                <div class="box-footer clearfix">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <a class="btn btn-success" id="btn-konfirmasi"  href="{$config->site_url('project/rka_project/pengajuan/pengajuan_process/'|cat:$rs_project_plant.plan_id)}">Proses Pengajuan &nbsp; <i class="fa fa-paper-plane"></i></a>
+                        </div>
+                        <div class="pull-left">
+                            <a class="btn btn-primary" href="{$config->site_url('project/rka_project/pengajuan/process_pengajuan/'|cat:$rs_project_plant.plan_id)}"><i class="fa fa-arrow-left"></i> &nbsp; Step Sebelumnya</a>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
+</section>
+<!-- Modal add item -->
+<form action="{$config->site_url('project/rka_project/pengajuan/add_rencana_detail_process')}" method="post">
+    <div class="modal fade" id="modal-add-detail" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Tambah Detail Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="plan_id" value="{$rs_project_plant.plan_id|default:''}" />
+                        <input type="hidden" name="item_id" value="{$result.item_id|default:''}" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor</label>
+                            <div class="col-md-2">
+                                <input type="number" name="detail_no" class="form-control" min="0" value="{$result|default:''}" readonly>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="detail_uraian" class="form-control" maxlength="255" value="{$result.detail_uraian|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Satuan</label>
+                            <div class="col-md-3">
+                                <input type="text" name="detail_satuan" class="form-control" maxlength="50" value="{$result.detail_satuan|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="number" name="detail_volume" class="form-control" min="0" value="{$result.detail_volume|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="detail_harga" class="form-control autonumeric" value="{$result.detail_harga|default:''}" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Total</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="text" name="detail_sub_total" class="form-control autonumeric" disabled="" value="{$result.detail_sub_total|default:''}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal add item -->
+<form action="{$config->site_url('project/rka_project/pengajuan/update_rencana_detail_process')}" method="post">
+    <div class="modal fade" id="modal-edit-detail" tabindex="-1" role="dialog" aria-labelledby="modal-editLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-editLabel">Edit Detail Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="plan_id" value="{$rs_project_plant.plan_id|default:''}" />
+                        <input type="hidden" name="detail_id" value="{$result.detail_id|default:''}" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor</label>
+                            <div class="col-md-2">
+                                <input type="number" name="detail_no" class="form-control" min="0" value="{$result|default:''}" readonly>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="detail_uraian" class="form-control" maxlength="255" value="{$result.detail_uraian|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Satuan</label>
+                            <div class="col-md-3">
+                                <input type="text" name="detail_satuan" class="form-control" maxlength="50" value="{$result.detail_satuan|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="number" name="detail_volume" class="form-control" min="0" value="{$result.detail_volume|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="detail_harga" class="form-control autonumeric" value="{$result.detail_harga|default:''}" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Total</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="text" name="detail_sub_total" class="form-control autonumeric" disabled="" value="{$result.detail_sub_total|default:''}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal delete item -->
+<form action="{$config->site_url('project/rka_project/pengajuan/delete_rencana_detail_process')}" method="post"  onsubmit="return confirm('Apakah anda yakin akan menghapus data berikut ini?');">
+    <div class="modal fade" id="modal-delete-detail" tabindex="-1" role="dialog" aria-labelledby="modal-deleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-deleteLabel">Hapus Detail Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Apakah anda yakin akan menghapus data berikut ini?</p>
+                    <div class="form-horizontal">
+                        <input type="hidden" name="plan_id" value="{$rs_project_plant.plan_id|default:''}" />
+                        <input type="hidden" name="detail_id" value="{$result.detail_id|default:''}" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor</label>
+                            <div class="col-md-2">
+                                <input type="number" name="detail_no" class="form-control" min="0" value="{$result|default:''}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="detail_uraian" class="form-control" maxlength="255" value="{$result.detail_uraian|default:''}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Satuan</label>
+                            <div class="col-md-3">
+                                <input type="text" name="detail_satuan" class="form-control" maxlength="50" value="{$result.detail_satuan|default:''}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="number" name="detail_volume" class="form-control" min="0" value="{$result.detail_volume|default:''}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" disabled name="detail_harga" class="form-control autonumeric" value="{$result.detail_harga|default:''}" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Total</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="text" name="detail_sub_total" class="form-control autonumeric" disabled="" value="{$result.detail_sub_total|default:''}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i>&nbsp;HAPUS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

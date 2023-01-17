@@ -1,0 +1,74 @@
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        // Default file input style
+        $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-default'
+        });
+    });
+
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/')}">Data Karyawan</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}">{$result.nama_lengkap|default:''}</a></li>
+        <li class="breadcrumb-item active">Edit Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Edit Data Karyawan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">  
+                    <form action="{$config->site_url('kepegawaian/master/pegawai/edit_foto_process')}" method="post" id="form" data-plugin="parsley" data-option="{}" novalidate="" class="form-horizontal adminex-form" enctype="multipart/form-data">
+                        <input name="user_id" type="hidden"  value="{$result.user_id|default:''}" />
+                        <input name="foto_old" type="hidden"  value="{$result.foto_name|default:''}" />
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Foto Karyawan</label>
+                                    <div class="col-md-4">
+                                        <img src="{$employee_img|default:''}" alt="" style="height: 160px; background-color: #fff; border: 1px solid #ccc; padding: 5px; margin-bottom:7px;" />
+                                        <div class="form-file">
+                                            <input type="file" name="employee_img" class="form-control file-styled" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                
+                        <div class="row" style="margin-top:10px; margin-left:-10px;">
+                            <div class="col-md-6 no-padding-right" style="">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label"></label>
+                                    <div class="col-md-6 no-padding">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button> &nbsp
+                                        <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                
+                    </form>
+                </div>                                
+            </div>
+        </div>
+    </div>
+</section>

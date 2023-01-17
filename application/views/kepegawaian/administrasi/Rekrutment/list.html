@@ -1,0 +1,103 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item active">Rekrutment</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Rekrutment</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/administrasi/Rekrutment/add/')}"
+                                    class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah
+                                    Data</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-search clearfix">
+                    <form action="{$config->site_url('kepegawaian/administrasi/Rekrutment/search_process/')}"
+                        method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <input type="text" name="judul" value="{$search.judul|default:''}"
+                                            class="form-control" placeholder="Nama Agenda" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn  btn-info" type="submit" name="save" value="Cari"><i
+                                                class="fa fa-search"></i>&nbsp; Cari</button>
+                                        <button class="btn  btn-warning" type="submit" name="save" value="Reset"><i
+                                                class="fa fa-refresh"></i>&nbsp; Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                            <th width="4%">No</th>
+                            <th width="13%">Agenda</th>
+                            <th width="20%">Priode</th>
+                            <th width="12%">Media</th>
+                            <th width="11%">Jumlah Pelamar</th>
+                            <th width="11%">Status</th>
+                            <th width="11%"></th>
+                        </tr>
+                        {foreach from=$rs_id item=result}
+                        {assign var=total_data_presented value=$total_data_presented+1}
+                        <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                            <td align="center">{$no++}.</td>
+                            <td align="center">{$result.judul}</td>
+                            <td align="center">{$result.periode_start} - {$result.periode_end}
+                            <td align="center">{$result.nama} </a></td>
+                            <td align="center">{$result.jumlah_pelamar}</td>
+                            <td align="center"><font style="color: blue;">{$result.status}</font></td>
+                            <td align="center">
+                                <a href="{$config->site_url('kepegawaian/administrasi/Rekrutment/edit/'|cat:$result.rekrutmen_id)}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                <a href="{$config->site_url('kepegawaian/administrasi/Rekrutment/ubah_lolos_administrasi/'|cat:$result.rekrutmen_id)}"
+                                    class="btn btn-xs white text-success"> Details </a>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                            <td colspan="9">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+                <div class="box-body pt-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total
+                                    {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <nav class="pull-right">
+                                <ul class="pagination">
+                                    <li class="page-item"></li>{$pagination.data|default:''}</li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

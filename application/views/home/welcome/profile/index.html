@@ -1,0 +1,336 @@
+
+<section class="content">
+    <!-- notification template -->
+    {include file="base/templates/notification.html"}
+    <!-- end of notification template-->
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="content-main " id="content-main">
+                    <div>
+                        <div class="item">
+                            <div class="item-bg">
+                                <img src="{$com_user.user_img}" alt="" class="blur opacity-3" />
+                            </div>
+                            <div class="p-4">
+                                <div class="row mt-3">
+                                    <div class="col-sm-7">
+                                        <div class="media">
+                                            <div class="avatar w-96">
+                                                <div class="profile-img-container">
+                                                    <img class="profile-img img-circle img-responsive"
+                                                        src="{$com_user.user_img}" alt="" />
+                                                    <a class="edit" href="#">
+                                                        <span class="fa fa-upload fa-4x"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="media-body mx-3 mb-2">
+                                                <h4>
+                                                    {$com_user.nama_lengkap|default:''}
+                                                </h4>
+                                                <p>
+                                                    <span class="text-success">
+                                                        {if $com_user.jabatan_struktural_st eq '1'}
+                                                        {$com_user.jabatan_struktural|default:'-'}
+                                                        {else}
+                                                        {$com_user.jabatan_fungsional|default:'-'}
+                                                        {/if}
+                                                    </span>
+                                                    <small
+                                                        class="text-danger">{$com_user.struktur_nama|default:'Department'}</small>
+                                                </p>
+                                                <p class="text-muted"><span
+                                                        class="m-r">{$com_user.user_mail|default:'-'}</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="white bg b-b px-3">
+                            <div class="row">
+                                <div class="col-sm-6 order-sm-1">
+                                    <div class="py-4 clearfix nav-active-theme">
+                                        <ul class="nav nav-pills nav-sm">
+                                            <li class="nav-item mr-2">
+                                                <a class="btn btn-md btn-info active"
+                                                    href="{$config->site_url('home/welcome/profile')}">
+                                                    <i class="fa fa-user mr-2"></i>
+                                                    Data Pribadi
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="btn btn-md btn-dark"
+                                                    href="{$config->site_url('home/welcome/profile/account_settings')}">
+                                                    <i class="fa fa-key mr-2"></i>
+                                                    Ganti Password
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="padding">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="tab-content">
+                                        <div class="box-body">
+                                            <div class="row mb-2">
+                                                <div class="col-5">
+                                                    <small class="text-muted">Nomor Induk Pegawai</small>
+                                                    <div class="_500">{$pegawai.pegawai_nip|default:''|upper}</div>
+                                                </div>
+                                                <div class="col-7">
+                                                    <small class="text-muted">Tempat / Tanggal lahir</small>
+                                                    <div class="_500">{$pegawai.tempat_lahir|default:'-'|upper} /
+                                                        {$dtm->get_full_date($pegawai.tanggal_lahir|default:'')|default:'-'|upper}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-5">
+                                                    <small class="text-muted">Nama Lengkap</small>
+                                                    <div class="_500">{$pegawai.nama_lengkap|default:''|upper}</div>
+                                                </div>
+                                                <div class="col-7">
+                                                    <small class="text-muted">Nomor Telepon</small>
+                                                    <div class="_500">{$pegawai.nomor_telepon|default:'-'|upper}</div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-5">
+                                                    <small class="text-muted">Departemen</small>
+                                                    <div class="_500">{$pegawai.struktur_nama|default:'-'|upper}</div>
+                                                </div>
+                                                <div class="col-7">
+                                                    <small class="text-muted">Alamat Domisili</small>
+                                                    <div class="_500">{$pegawai.alamat_tinggal|default:'-'|upper}</div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-5">
+                                                    <small class="text-muted">Jabatan</small>
+                                                    <div class="_500">
+                                                        {if $pegawai.jabatan_struktural_st eq '1'}
+                                                        {$pegawai.jabatan_struktural|default:'-'|upper}
+                                                        {else}
+                                                        {$pegawai.jabatan_fungsional|default:'-'|upper}
+                                                        {/if}
+                                                    </div>
+                                                </div>
+                                                <div class="col-7">
+                                                    <small class="text-muted">Email</small>
+                                                    <div class="_500">{$pegawai.user_mail|default:'-'|upper}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <fieldset style="padding-right: 40px; padding-left: 40px; padding-bottom: 40px">
+                            <!-- notification template -->
+                            {include file="base/templates/notification.html"}
+                            <!-- end of notification template-->
+                            <form action="{$config->site_url('home/welcome/profile/ajax_upload_files')}" method="post">
+                                <div class="table-responsive pt-2">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th width="5%" class="text-center">No</th>
+                                                <th width="30%" class="text-center">Field</th>
+                                                <th width="15%" class="text-center">Nomor Dokumen</th>
+                                                <th width="15%" class="text-center">Lampiran</th>
+                                                <th width="20%" class="text-center"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="show">
+                                            {foreach from=$rs_files item=result}
+                                            <tr>
+                                                <td class="text-center">{$no++}.</td>
+                                                <td>
+                                                    {$result.file_title}
+                                                    <br>
+                                                    <small>{$result.file_desc}</small>
+                                                    <br />
+                                                    ( Format File : {$result.file_allowed}, Max : {$result.file_size}KB
+                                                    )
+                                                    <br />
+                                                    <b style="color: red;">* Wajib diupload</b>
+                                                </td>
+                                                <td>
+                                                    <center>
+                                                        <input class="form-control" required name="file_no"
+                                                            value="{$result.file_no|default:''}"
+                                                            placeholder="Nomor Dokumen" type="text" autocomplete="off"
+                                                            id="file_no_{$result.pegawai_files_id|default:$no}">
+                                                    </center>
+
+
+                                                </td>
+                                                <td>
+                                                    <center>
+
+                                                        <div id="files-{$result.pegawai_files_id|default:$no}"
+                                                            class="list-group">
+                                                            {if $result.files_id neq ''}
+                                                            <div class="text-primary" style="font-weight: 400;">
+                                                                <label class="form-control-static">
+                                                                    <a
+                                                                        href="{$config->site_url('home/welcome/profile/download/'|cat:$result.file_name)}"><span
+                                                                            class="fa fa-download"></span>
+                                                                        {$result.file_title}</a>
+                                                                </label>
+                                                            </div>
+
+                                                            {else}
+
+                                                            <div class="text-danger">
+                                                                File persyaratan belum diupload!
+                                                            </div>
+                                                            {/if}
+                                                        </div>
+                                                        <div class="progress progress-md"
+                                                            id="progress-{$result.pegawai_files_id|default:$no}"
+                                                            style="margin: 5px 0; display: none;">
+                                                            <div
+                                                                class="progress-bar progress-bar-striped progress-bar-animated bg-green">
+                                                            </div>
+                                                        </div>
+                                                    </center>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="custom-file" style="border: 1px solid rgba(0, 0, 0, 0.164);">
+                                                        <input type="file" {if $result.pegawai_files_id eq '' } required
+                                                            {/if} class="custom-file-input" name="file_upload"
+                                                            data-max-size="{$result.file_size|default:0}"
+                                                            accept="{$result.file_allowed|replace:'|':',.'}"
+                                                            title="{$result.pegawai_files_id|default:$no}" />
+                                                        <label class="custom-file-label">File</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {foreachelse}
+                                            <tr>
+                                                <td colspan="8">Data tidak ditemukan!</td>
+                                            </tr>
+                                            {/foreach}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Update Foto Pofil -->
+<div class="modal fade" id="modal_edit" role="dialog" aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content box-shadow-md mb-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Foto Profil</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('home/welcome/profile/edit_foto_process')}"
+                method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input name="page" type="hidden" value="profil" />
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Browse Foto</label>
+                        <div class="col-md-8">
+                            <div class="form-file">
+                                <input type="file" name="user_img_upload" class="form-control file-styled" />
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal footer-->
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                        <button class="btn primary">Upload dan Update</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //edit foto
+        $(".edit").click(function () {
+            $('#modal_edit').modal('show');
+        });
+        $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-dark'
+        });
+        // upload files
+        $('.custom-file-input').change(function () {
+            if ($(this).val() === '' || $(this).val() === undefined) {
+                return;
+            }
+            // set template
+            // var files_id = "{$result.files_id}"; // id files
+            var pegawai_files_id = $(this).prop('title'); // persyaratan id // file yang diupload
+            var file_no = $('#file_no_' + pegawai_files_id).val(); // file yang diupload
+            var progress = '#progress-' + pegawai_files_id;
+            var file_lok = '#files-' + pegawai_files_id;
+            // var maxSize = fileInput.data('max-size');
+            var file_size = $(this).data('max-size');
+            // console.log(file_size);
+            if (this.files[0].size > file_size * 1000) {
+                alert('File anda terlalu besar!');
+                // this.value = "";
+            } else {
+                // this file rede for upload
+                var formData = new FormData();
+                // formData.append('files_id',files_id);
+                formData.append('file', this.files[0]);
+                formData.append('pegawai_files_id', pegawai_files_id);
+                formData.append('file_no', file_no);
+                // ajax
+                $.ajax({
+                    url: '{$config->site_url("home/welcome/profile/prosse_upload")}',
+                    type: 'post',
+                    dataType: 'json',
+                    data: formData,
+                    xhr: function () {
+                        var xhr = $.ajaxSettings.xhr();
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', function (evt) {
+                                var percent = Math.round((evt.loaded / evt.total) * 100);
+                                $(progress + ' > .progress-bar').css('width', percent + "%");
+                                $(progress + ' > .progress-bar').html(percent + '%');
+                            }, false);
+                        }
+                        return xhr;
+                    },
+                    beforeSend: function () {
+                        $(progress).css('display', 'block');
+                        $(file_lok).css('display', 'none');
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        // remove loading
+                        file = '<label class="form-control-static">';
+                        file += '      <a href="' + data.url + '"><b><i class="fa fa-download"></i> ' + data.message + '</b></a>';
+                        file += ' </label>';
+                        $(file_lok).html(file);
+                        // remove loading
+                        $(progress).css('display', 'none');
+                        $(file_lok).css('display', 'block');
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'json');
+            };
+
+        });
+    });
+</script>

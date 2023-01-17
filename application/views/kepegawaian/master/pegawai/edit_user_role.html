@@ -1,0 +1,107 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/')}">Data Karyawan</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}">{$result.nama_lengkap|default:''}</a></li>
+        <li class="breadcrumb-item active">Edit Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Edit User Role</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="pad-btm">
+                        <form class="form-horizontal" action="{$config->site_url('kepegawaian/master/pegawai/user_role_search_process/')}" method="post">
+                            <input type="hidden" name="user_id" value="{$result.user_id|default:''}">
+                            <div class="row" style="margin-bottom:20px;">
+                                <div class="col-sm-3">
+                                    <select name="group_id" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Semua Group">
+                                        <option value=""></option>
+                                        {foreach from=$rs_group item=data}
+                                        <option value="{$data.group_id}" {if $search.group_id|default:'' eq $data.group_id}selected="selected"{/if}>{$data.group_name|default:''|upper}</option>
+                                        {/foreach}
+                                    </select>                                                        
+                                </div>
+                                <div class="col-sm-4">
+                                    <button class="btn btn-dark" type="submit" name="save" value="Cari"><i class="fa fa-search mr5"></i>&nbsp; Cari</button>
+                                    <button class="btn btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh mr5"></i>&nbsp; Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table nomargin table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width='10%' class="text-center">#</th>
+                                    <th width='25%' class="text-center">Group</th>
+                                    <th width='20%' class="text-center">Role Name</th>
+                                    <th width='35%' class="text-center">Role Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach $rs_roles as $role}
+                                <tr>
+
+                                    <td class="text-center">
+                                        <input id="{$role.role_id}-{$result.user_id}" class="toggle-switch" type="checkbox" {if in_array($role.role_id, $roles_checked)}checked{/if} data="{if in_array($role.role_id, $roles_checked)}1{else}0{/if}">
+                                               <label for="{$role.role_id}-{$result.user_id}"></label>
+                                    </td>
+                                    <td>{$role.group_name}</td>
+                                    <td>{$role.role_nm}</td>
+                                    <td>{$role.role_desc}</td>
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td colspan="4">Data tidak ditemukan!</td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".select-2").select2();
+        $('.toggle-switch').click(function () {
+            var post_data = "params=" + $(this).attr('id') + "&data=" + $(this).attr('data');
+            $.ajax({
+                url: "{$config->site_url('kepegawaian/master/pegawai/change_roles_settings')}",
+                type: "POST",
+                data: post_data,
+                success: function (result)
+                {
+                    document.getElementById(result['id']).setAttribute("data", result['data']);
+                },
+                error: function ()
+                {
+
+                }
+            });
+        });
+    });
+</script>

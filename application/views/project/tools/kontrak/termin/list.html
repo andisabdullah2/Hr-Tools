@@ -1,0 +1,478 @@
+<script type="text/javascript">
+  $(document).ready(function () {
+    // $(".nilai").autoNumeric("init", {
+    //   aSep: ".",
+    //   aDec: ",",
+    //   aSign: "Rp ",
+    //   unSetOnSubmit: true,
+    // });
+
+    new AutoNumeric.multiple(".nilai", {
+      digitGroupSeparator: ".",
+      decimalCharacter: ",",
+      currencySymbol: "Rp ",
+      unformatOnSubmit: true,
+    });
+
+    $("#termin_tanggal").change(function () {
+      var tanggal = new Date($(this).val());
+      $("#termin_bulan").val(tanggal.getMonth() + 1);
+      $("#termin_tahun").val(tanggal.getFullYear());
+    });
+    $("#termin_tanggal_edit").change(function () {
+      var tanggal = new Date($(this).val());
+      $("#termin_bulan_edit").val(tanggal.getMonth() + 1);
+      $("#termin_tahun_edit").val(tanggal.getFullYear());
+    });
+
+    //add
+    $(".add").click(function () {
+      $("#modal_add").modal("show");
+    });
+
+    // edit
+    $(".edit").click(function () {
+      new AutoNumeric(".nilai_edit", {
+        digitGroupSeparator: ".",
+        decimalCharacter: ",",
+        currencySymbol: "Rp ",
+        unformatOnSubmit: false,
+      });
+
+      $("#termin_tanggal_edit").val($(this).data("termin_tanggal")).change();
+      $("#termin_id_edit").val($(this).data("termin_id")).change();
+      $("#termin_tahun_edit").val($(this).data("termin_tahun")).change();
+      $("#termin_bulan_edit").val($(this).data("termin_bulan")).change();
+      $("#termin_nilai").val($(this).data("termin_nilai")).change();
+      $("#termin_status").val($(this).data("termin_status")).change();
+      $("#termin_uraian").val($(this).data("termin_uraian")).change();
+      $("#modal_edit").modal("show");
+    });
+  });
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+    <li class="breadcrumb-item"><a href="#">Project</a></li>
+    <li class="breadcrumb-item">
+      <a href="{$config->site_url('project/tools/kontrak/')}"
+        >Project Kontrak / Termin</a
+      >
+    </li>
+    <li class="breadcrumb-item active">Edit Data</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-12">
+      <!-- Basic Forms -->
+      <div class="box">
+        <div class="box-header with-border">
+          <h4 class="box-title">Edit Data Termin</h4>
+          <div class="box-tool">
+            <ul class="nav nav-xs">
+              <li class="nav-item">
+                <a 
+                  {if $limit == "true"} 
+                    style="pointer-events: none;" class="btn btn-outline btn-secondary text-secondary" 
+                  {else}
+                    class="add btn btn-outline b-primary text-primary"
+                  {/if}
+                  data-target="#modal_add"
+                  data-toggle="modal"
+                  ><i class="fa fa-plus"></i> Tambah Data</a
+                >
+                <a
+                  href="{$config->site_url('project/tools/kontrak/')}"
+                  class="btn btn-outline b-primary text-primary"
+                  ><i class="fa fa-arrow-left"></i> Kembali</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!--<div class="box-divider m-0"></div>-->
+        <div class="b-b nav-active-bg">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{$config->site_url('project/tools/kontrak/edit/'|cat:$kontrak_id|default:'')}"
+                >Data Kontrak</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active">Data Termin</a>
+            </li>
+          </ul>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <!-- notification template -->
+          {include file="base/templates/notification.html"}
+          <!-- end of notification template-->
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th width="5%">No</th>
+                  <th width="8%">Tahun</th>
+                  <th width="10%">Bulan</th>
+                  <th width="15%">Tanggal</th>
+                  <th width="15%">Nilai</th>
+                  <th width="10%">Status</th>
+                  <th width="25%">Keterangan</th>
+                  <th width="10%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {foreach from=$rs_id item=result}
+                <tr {if ($no % 2) <>
+                  1}class="blink-row"{/if}>
+                  <td align="center">{$no++}.</td>
+                  <td align="center">{$result.termin_tahun}</td>
+                  <td align="center">
+                    {$dtm->get_bulan($result.termin_bulan)}
+                  </td>
+                  <td align="center">
+                    {$dtm->get_full_date($result.termin_tanggal)}
+                  </td>
+                  <td>
+                    Rp. {number_format($result.termin_nilai, 0, ',', '.')}
+                  </td>
+                  <td align="center">
+                    {if $result.termin_status == 'waiting'}
+                    <span class="badge badge-warning"
+                      >{$result.termin_status|upper}</span
+                    >
+                    {elseif $result.termin_status == 'lunas'}
+                    <span class="badge badge-success"
+                      >{$result.termin_status|upper}</span
+                    >
+                    {elseif $result.termin_status == 'cancel'}
+                    <span class="badge badge-danger"
+                      >{$result.termin_status|upper}</span
+                    >
+                    {/if}
+                  </td>
+                  <td>{$result.termin_uraian|upper|default:"-"}</td>
+                  <td align="center">
+                    <a
+                      data-target="#modal_edit"
+                      data-toggle="modal"
+                      class="edit btn btn-xs white text-success edit"
+                      data-termin_uraian="{$result.termin_uraian}"
+                      data-termin_id="{$result.termin_id}"
+                      data-termin_status="{$result.termin_status}"
+                      data-termin_nilai="{$result.termin_nilai}"
+                      data-termin_tahun="{$result.termin_tahun}"
+                      data-termin_bulan="{$result.termin_bulan}"
+                      data-termin_tanggal="{$result.termin_tanggal}"
+                      ><i class="fa fa-edit"></i
+                    ></a>
+                    <a
+                      onclick="return confirm('Apakah anda yakin akan menghapus data ini?');"
+                      href="{$config->site_url('project/tools/kontrak/delete_termin_process/'|cat:$result.termin_id)}"
+                      class="btn btn-xs white text-danger"
+                      ><i class="fa fa-trash"></i
+                    ></a>
+                  </td>
+                </tr>
+                {foreachelse}
+                <tr>
+                  <td colspan="8">Data not found!</td>
+                </tr>
+                {/foreach}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--MODAL ADD-->
+<!--===================================================-->
+<div
+  class="modal fade"
+  id="modal_add"
+  role="dialog"
+  aria-labelledby="demo-default-modal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content box-shadow-md mb-3">
+      <!--Modal header-->
+      <div class="modal-header">
+        <h5 class="modal-title">Tambah data termin</h5>
+      </div>
+      <form
+        class="form-horizontal"
+        action="{$config->site_url('project/tools/kontrak/add_termin_process/')}"
+        method="post"
+      >
+        <input
+          type="hidden"
+          value="{$kontrak_id}"
+          name="kontrak_id"
+          class="form-control"
+        />
+        <input
+          type="hidden"
+          value="{$nomor_termin}"
+          name="termin_nomor"
+          class="form-control"
+        />
+        <!--Modal body-->
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Nomor Termin</label>
+            <div class="col-sm-9 col-form-label"><b>{$nomor_termin}</b></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Tanggal</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  id="termin_tanggal"
+                  name="termin_tanggal"
+                  type="text"
+                  class="form-control"
+                  data-plugin="datepicker"
+                  data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}"
+                  placeholder="Tanggal Termin"
+                  maxlength="10"
+                />
+                <span class="input-group-addon">
+                  <span class="fa fa-calendar"></span>
+                </span>
+              </div>
+              <small class="help-block text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Bulan</label>
+            <div class="col-sm-9">
+              <input
+                autocomplete="off"
+                id="termin_bulan"
+                class="form-control"
+                name="termin_bulan"
+                type="text"
+              />
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Tahun</label>
+            <div class="col-sm-9">
+              <input
+                autocomplete="off"
+                id="termin_tahun"
+                class="form-control"
+                name="termin_tahun"
+                type="text"
+              />
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Nilai</label>
+            <div class="col-sm-9">
+              <input
+                autocomplete="off"
+                class="form-control nilai"
+                name="termin_nilai"
+                type="text"
+              />
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Status</label>
+            <div class="col-sm-6">
+              <select
+                name="termin_status"
+                class="form-control"
+                data-plugin="select2"
+                data-option="{}"
+                data-placeholder="Status"
+              >
+                <option value=""></option>
+                <option value="waiting">WAITING</option>
+                <option value="cancel">CANCEL</option>
+                <option value="lunas">LUNAS</option>
+              </select>
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Keterangan</label>
+            <div class="col-sm-9">
+              <textarea
+                class="form-control"
+                rows="3"
+                name="termin_uraian"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <!--Modal footer-->
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn dark-white" type="button">
+            Close
+          </button>
+          <button class="btn primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--===================================================-->
+<!--End MODAL ADD-->
+<!--MODAL EDIT-->
+<!--===================================================-->
+<div
+  class="modal fade"
+  id="modal_edit"
+  role="dialog"
+  aria-labelledby="demo-default-modal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content box-shadow-md mb-3">
+      <!--Modal header-->
+      <div class="modal-header">
+        <h5 class="modal-title">Edit data termin</h5>
+      </div>
+      <form
+        class="form-horizontal"
+        action="{$config->site_url('project/tools/kontrak/edit_termin_process/')}"
+        method="post"
+      >
+        <input
+          autocomplete="off"
+          type="hidden"
+          value="{$kontrak_id}"
+          name="kontrak_id"
+          class="form-control"
+        />
+        <input
+          autocomplete="off"
+          type="hidden"
+          id="termin_id_edit"
+          value="{$result.termin_id}"
+          name="termin_id"
+          class="form-control"
+        />
+        <!--Modal body-->
+        <div class="modal-body">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Tanggal</label>
+            <div class="col-sm-9">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  id="termin_tanggal_edit"
+                  name="termin_tanggal"
+                  type="text"
+                  class="form-control"
+                  data-plugin="datepicker"
+                  data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}"
+                  placeholder="Tanggal Termin"
+                  maxlength="10"
+                />
+                <span class="input-group-addon">
+                  <span class="fa fa-calendar"></span>
+                </span>
+              </div>
+              <small class="help-block text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Bulan</label>
+            <div class="col-sm-9">
+              <input
+                autocomplete="off"
+                id="termin_bulan_edit"
+                class="form-control"
+                name="termin_bulan"
+                type="text"
+              />
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Tahun</label>
+            <div class="col-sm-9">
+              <input
+                autocomplete="off"
+                id="termin_tahun_edit"
+                class="form-control"
+                name="termin_tahun"
+                type="text"
+              />
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Nilai</label>
+            <div class="col-sm-9">
+              <input
+                autocomplete="off"
+                id="termin_nilai"
+                class="form-control nilai_edit"
+                name="termin_nilai"
+                type="text"
+              />
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Status</label>
+            <div class="col-sm-6">
+              <select
+                id="termin_status"
+                name="termin_status"
+                class="form-control"
+                data-plugin="select2"
+                data-option="{}"
+                data-placeholder="Status"
+              >
+                <option value=""></option>
+                <option value="waiting">WAITING</option>
+                <option value="cancel">CANCEL</option>
+                <option value="lunas">LUNAS</option>
+              </select>
+              <small class="form-text text-danger">wajib diisi</small>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Keterangan</label>
+            <div class="col-sm-9">
+              <textarea
+                id="termin_uraian"
+                class="form-control"
+                rows="3"
+                name="termin_uraian"
+              >
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <!--Modal footer-->
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn dark-white" type="button">
+            Close
+          </button>
+          <button class="btn primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--===================================================-->
+<!--End MODAL EDIT-->

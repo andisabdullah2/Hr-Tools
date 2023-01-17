@@ -1,0 +1,202 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Monitoring</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/jaldin/monitoring/')}">Pengajuan Jalan Dinas</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Surat Tugas</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/jaldin/monitoring/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>                                
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                <!-- notification template -->
+				{include file="base/templates/notification.html"}
+				<!-- end of notification template-->
+					<div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Item Anggaran</label>
+                                <div class="col-md-7">
+                                    {if $detail.kode_item neq ''}
+                                    <label class="form-control-static"><b>[{$detail.kode_item|default:''}] {$detail.item_uraian|default:''}</b></label>  
+                                    {/if}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Project</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.project_name|default:''} [{$detail.project_alias|default:''}]</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Nama Karyawan</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.nama_lengkap|default:''}</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Berangkat</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_berangkat|default:'')}, Jam {$detail.waktu_berangkat|default:'-'}</b></label>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Pulang</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_pulang|default:'')}, Jam {$detail.waktu_pulang|default:'-'} [{$detail.total_hari|default:''} Hari]</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Lokasi</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.lokasi_tujuan|default:''}</b></label>  
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Uraian</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.uraian_tugas|default:''}</b></label>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                        	<a href="{$config->site_url('kepegawaian/jaldin/monitoring/surat_tugas/'|cat:$detail.spt_id|default:'')}" class="btn btn-success btn-sm"><i class="fa fa-print"></i> CETAK SURAT TUGAS</a>
+                        </div>
+                    </div>
+                    <hr />
+                    {$total_biaya = 0}
+                    {if !empty($rs_advance)}
+                    <div class="row">
+                    	<div class="col-md-12">
+                    		<div class="box-header">
+	                    		<h7 class="text-info"><b>ADVANCE PERJALANAN DINAS</b></h7>
+	                    		<div class="box-tool">
+		                        <ul class="nav nav-xs">
+		                            <li class="nav-item">
+		                                <a href="{$config->site_url('kepegawaian/jaldin/monitoring/advance/'|cat:$detail.spt_id|default:'')}" class="btn btn-success btn-sm"><i class="fa fa-print"></i> DOWNLOAD</a>
+		                            </li>
+		                        </ul>
+		                    </div>
+	                    	</div>
+	                    	<div class="table-responsive">
+	                    		<table class="table table-bordered">
+	                    			<thead>
+	                    				<tr>
+											<th width="5%" align="center"><b>No</b></th>
+											<th width="25%" align="center"><b>Uraian</b></th>
+											<th width="55%" align="center"><b>Keterangan</b></th>
+											<th width="15%" align="center"><b>Jumlah</b></th>
+									    </tr>
+	                    			</thead>
+	                    			<tbody>
+	                    				{$no = 1}
+									    {foreach from=$rs_advance item=data}
+									    <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+											<td align="center">{$no++}</td>
+											<td>{$data.jenis_biaya}</td>
+											<td>{$data.keterangan}</td>
+											<td align="right">{number_format($data.jumlah, 0, ',', '.')}</td>
+									    </tr>
+									    {$total_biaya = $total_biaya + $data.jumlah}
+									    {foreachelse}
+									    <tr>
+											<td colspan="4">Data not found!</td>
+									    </tr>
+									    {/foreach}
+									    <tr class="red-row">
+											<td colspan="3" align="center"><b style="font-size: 16px;">TOTAL</b></td>
+											<td align="right"><b style="font-size: 16px;">Rp. {number_format($total_biaya, 0, ',', '.')}</b></td>
+									    </tr>
+	                    			</tbody>
+	                    		</table>
+	                    	</div>
+                    	</div>
+                    </div>
+                    {/if}
+                    <hr />
+                    {if !empty($rs_lpj)}
+                    <div class="row">
+                    	<div class="col-md-12">
+                    		<div class="box-header">
+	                    		<h7 class="text-info"><b>LAPORAN PERJALANAN DINAS</b></h7>
+	                    		<div class="box-tool">
+		                        <ul class="nav nav-xs">
+		                            <li class="nav-item">
+		                                <a href="{$config->site_url('kepegawaian/jaldin/monitoring/lpj/'|cat:$detail.spt_id|default:'')}" class="btn btn-success btn-sm"><i class="fa fa-print"></i> DOWNLOAD LPJ</a>
+		                            </li>
+		                        </ul>
+		                    </div>
+	                    	</div>
+	                    	<div class="table-responsive">
+	                    		<table class="table table-bordered">
+	                    			<thead>
+	                    				<tr>
+											<th width="4%" align="center"><b>No</b></th>
+											<th width="10%" align="center"><b>Tanggal</b></th>
+											<th width="46%" align="center"><b>Uraian</b></th>
+											<th width="15%" align="center"><b>Kredit</b></th>
+											<th width="15%" align="center"><b>Debet</b></th>
+									    </tr>
+	                    			</thead>
+	                    			<tbody>
+	                    				{$no = 1}
+									    {$total_debit = 0}
+									    {$total_kredit = $total_biaya}
+									    {foreach from=$rs_lpj item=data}
+									    <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+											<td align="center">{$no++}</td>
+											<td align="center">{$dtm->get_short_date($data.tanggal)}</td>
+											<td>{$data.keterangan|default:''}</td>
+											<td align="right">{number_format($data.kredit, 0, ',', '.')}</td>
+											<td align="right">{number_format($data.debit, 0, ',', '.')}</td>
+									    </tr>
+									    {$total_debit = $total_debit + $data.debit}
+									    {$total_kredit = $total_kredit + $data.kredit}
+									    {foreachelse}
+									    <tr>
+											<td colspan="5">Data not found!</td>
+									    </tr>
+									    {/foreach}
+									    <tr>
+											<td colspan="3" align="center"><b style="font-size: 16px;">SALDO</b></td>
+											<td align="right"><b style="font-size: 16px;">{number_format($total_kredit, 2, ',', '.')}</b></td>
+											<td align="right"><b style="font-size: 16px;">{number_format($total_debit, 2, ',', '.')}</b></td>
+									    </tr>
+									    <tr>
+											<td colspan="3" align="center"><b style="font-size: 16px;">SISA / KEKURANGAN</b></td>
+											<td align="right"></td>
+											<td align="right">
+											    {$total_sisa = $total_kredit - $total_debit}
+											    <b style="font-size: 16px; {if $total_sisa < 0}color: red;{/if}">{number_format(($total_sisa), 2, ',', '.')}</b>
+											</td>
+									    </tr>
+	                    			</tbody>
+	                    		</table>
+	                    	</div>
+                    	</div>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

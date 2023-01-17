@@ -1,0 +1,158 @@
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Finance</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Perencanaan</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('keuangan/rencana/manajemen/')}">RKA Manajemen</a></li>
+        <li class="breadcrumb-item active">Rencana Output</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Rencana Output</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('keuangan/rencana/manajemen/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('keuangan/rencana/manajemen/edit/'|cat:$detail.plan_id)}">1. Data Rencana</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('keuangan/rencana/manajemen/item/'|cat:$detail.plan_id)}">2. Rencana Item</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('keuangan/rencana/manajemen/detail/'|cat:$detail.plan_id)}">3. Rencana Detail</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">4. Rencana Output</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="alert alert-warning alert-dismissible">
+                        <small><b><i class="icon fa fa-exclamation-triangle"></i>&nbsp; Informasi! </b></small>
+                        <small>Pastikan rencana item atau rencana detail sudah Anda tambahkan untuk bisa melakukan mengirimkan data rencana pengajuan ini. Apabila data pengajuan ini tidak dikirim atau ingin dijadikan <b>draft</b> sementara, tekan tombol <b><i class="fa fa-check"></i> Simpan Draft</b> yang ada dibawah.</small>
+                    </div>
+                    <table class="table" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Project</td>
+                            <th width="80%">{$detail.project_alias|cat:' / '|cat:$detail.project_name|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Biaya</td>
+                            <th width="80%">Rp. {number_format($detail.nilai_biaya, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Catatan</td>
+                            <th width="80%">{$detail.catatan|default:'-'}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <br>
+                    <form method="post" action="{$config->site_url('keuangan/rencana/manajemen/output_process')}">
+                        <input type="hidden" name="plan_id" value="{$detail.plan_id|default:''}">
+                        <input type="hidden" name="project_id" value="{$detail.project_id|default:''}">
+                        <input type="hidden" name="kode_output" value="{$detail.kode_output|default:''}">
+                        <div class="form-group row">
+                            <label class="col-md-12 control-label"><b>Rencana Output</b></label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jenis Output</label>
+                            <div class="col-md-3">
+                                <select name="jenis_kode_output" class="form-control select2-single" data-plugin="select2" data-placeholder="PILIH OUTPUT" style="width: 100%;">
+                                    <option value=""></option>
+                                    {foreach from=$rs_js_output item=data}
+                                    <option value="{$data.jenis_kode_output}" {if $data.jenis_kode_output eq $detail.jenis_kode_output|default:''}selected{/if}>{$data.nama_output}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jenis Kegiatan</label>
+                            <div class="col-md-6">
+                                <select name="jenis_kode_kegiatan" class="form-control select2-single" data-plugin="select2" data-placeholder="PILIH KEGIATAN" style="width: 100%;">
+                                    <option value=""></option>
+                                    {foreach from=$rs_js_kegiatan item=data}
+                                    <option value="{$data.jenis_kode_kegiatan}" {if $data.jenis_kode_kegiatan eq $detail.jenis_kode_kegiatan|default:''}selected{/if}>{$data.nama_kegiatan}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Program</label>
+                            <div class="col-md-6">
+                                <select name="kode_kegiatan" class="form-control select2-single" data-plugin="select2" data-placeholder="PILIH PROGRAM" style="width: 100%;">
+                                    <option value=""></option>
+                                    {foreach from=$rs_kegiatan item=data}
+                                    <option value="{$data.kode_kegiatan}" {if $data.kode_kegiatan eq $detail.kode_kegiatan|default:''}selected{/if}>[{$data.tahun}] {$data.nama_program}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-8">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                                <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-footer clearfix">
+                    <form method="post" action="{$config->site_url('keuangan/rencana/manajemen/send_process')}" onsubmit="return confirm('Apakah Anda yakin akan mengirim data ini?')">
+                        <input type="hidden" name="plan_id" value="{$detail.plan_id|default:''}">
+                        <div class="pull-right">
+                            <a class="btn btn-success" href="{$config->site_url('keuangan/rencana/manajemen')}"><i class="fa fa-check"></i> Simpan Draft</a>
+                            <button type="submit" class="btn btn-success">Proses Pengajuan &nbsp;<i class="fa fa-paper-plane"></i></button>
+                        </div>
+                        <div class="pull-left">
+                            <a class="btn btn-default" href="{$config->site_url('keuangan/rencana/manajemen/detail/'|cat:$detail.plan_id|default:'')}"><i class="fa fa-arrow-left"></i>&nbsp; Sebelumnya</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('select[name=jenis_kode_kegiatan]').on('change', function(){
+            var jenis_kode_kegiatan = $(this).val();
+            var struktur_cd = "{$detail.struktur_cd|default:''}";
+
+            $.ajax({
+                type: 'POST',
+                data: 'jenis_kode_kegiatan=' + jenis_kode_kegiatan + "&struktur_cd=" + struktur_cd,
+                url: '{$config->site_url("keuangan/rencana/manajemen/list_kegiatan")}',
+                dataType: 'json',
+                success: function(data) {
+                    kegiatan = '';
+                    $.each(data, function(key, value){
+                        kegiatan += '<option value="' + value.kode_kegiatan + '">' + '[' + value.tahun + '] ' + value.nama_program + '</option>';
+                    });
+                    $('select[name=kode_kegiatan]').html(kegiatan);
+                }
+            });
+        })
+    })
+</script>

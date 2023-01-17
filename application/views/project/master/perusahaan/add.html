@@ -1,0 +1,122 @@
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        // Default file input style
+        $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-default'
+        });
+    });
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <!-- </h1> -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/master/perusahaan/')}"> Bendera / Perusahaan </a></li>
+        <li class="breadcrumb-item active">Tambah Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Tambah Data Perusahaan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/master/perusahaan/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('project/master/perusahaan/add_process')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nama Perusahaan</label>
+                            <div class="col-md-6">
+                                <input class="form-control" name="perusahaan_nama" type="text" value="{$result.perusahaan_nama|default:''}" />
+                                <small class="help-block text-danger">*wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Alamat</label>
+                            <div class="col-md-8">
+                                <input class="form-control" name="perusahaan_alamat" type="text" value="{$result.perusahaan_alamat|default:''}" />
+                                <small class="help-block text-danger">*wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Kota</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="perusahaan_kota" type="text" value="{$result.perusahaan_kota|default:''}" />
+                                <small class="help-block text-danger">*wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Provinsi</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="perusahaan_propinsi" type="text" value="{$result.perusahaan_propinsi|default:''}" />
+                                <small class="help-block text-danger">*wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Email</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="perusahaan_email" type="text" value="{$result.perusahaan_email|default:''}" />
+                                <small class="help-block text-danger">*wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Telepon</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="perusahaan_telepon" type="text" value="{$result.perusahaan_telepon|default:''}" />
+                                <small class="help-block text-danger">*wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor NPWP</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="npwp_nomor" type="text" value="{$result.npwp_nomor|default:''}" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Tanggal NPWP</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal" name="permit_date" value="{$result.permit_date|default:''}" maxlength="10" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Logo Perusahaan</label>
+                            <div class="col-md-6">
+                                <div class="form-file">
+                                    <input type="file" name="logo_file_name" class="form-control file-styled" />
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="box-footer clearfix">                       
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-8">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                                <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

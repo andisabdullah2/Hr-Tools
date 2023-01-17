@@ -1,0 +1,256 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        // biaya
+        $(".biaya").autoNumeric("init", {
+            aSep: '.',
+            aDec: ',',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+
+        //edit
+        $(".edit").click(function() {
+            $('#advance_id').val($(this).data('id'));
+            $("#jenis_id_edit").val($(this).data('jenis_id')).change();
+            $('#jumlah_edit').autoNumeric('set', $(this).data('jumlah'));
+            $('#keterangan_edit').val($(this).data('keterangan'));
+            $('#modal_edit').modal('show');
+        });
+
+    })
+</script>
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">Perjalanan Dinas</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/jaldin/advance')}">Advance Perjalanan Dinas</a></li>
+        <li class="breadcrumb-item active">Detail Perjalanan Dinas</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Detail Advance Perjalanan Dinas</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/jaldin/advance')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Item Anggaran</label>
+                                    <div class="col-md-7">
+                                        {if $detail.kode_item neq ''}
+                                        <label class="form-control-static"><b>[{$detail.kode_item|default:''}] {$detail.item_uraian|default:''}</b></label>  
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Project</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.project_name|default:''} [{$detail.project_alias|default:''}]</b></label>  
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Nama Karyawan</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.nama_lengkap|default:''}</b></label>  
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Berangkat</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_berangkat|default:'')}, Jam {$detail.waktu_berangkat|default:'-'}</b></label>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Pulang</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_pulang|default:'')}, Jam {$detail.waktu_pulang|default:'-'}</b></label>  
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Lokasi</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.lokasi_tujuan|default:''}</b></label>  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 control-label">Uraian</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.uraian_tugas|default:''}</b></label>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-divider m-0"></div>
+                    <br/>
+                    <div class="clearfix">
+                        <div class="pull-right">
+                            <ul class="nav nav-xs">
+                                <li class="nav-item" >
+                                    <button data-target="#modal_default" data-toggle="modal" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br/>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="6" class="table-info">Rincian Advance Perjalanan Dinas</th>
+                        </tr>
+                        <tr>
+                            <th width="5%" class="text-center">No</th>
+                            <th width="25%" class="text-center">Uraian</th>
+                            <th width="45%" class="text-center">Keterangan</th>
+                            <th width="15%" class="text-center">Jumlah</th>
+                            <th width="10%" class="text-center"></th>
+                        </tr>
+                        {$no = 1}
+                        {$total_biaya = 0}
+                        {foreach from=$rs_id item=data}
+                        <tr>
+                            <td class="text-center">{$no++}</td>
+                            <td>{$data.jenis_biaya}</td>
+                            <td>{$data.keterangan}</td>
+                            <td class="text-right">{number_format($data.jumlah, 0, ',', '.')}</td>
+                            <td class="text-center">
+                                <a type="button" class="btn btn-xs white text-success edit" data-toggle="modal" data-id="{$data.advance_id}" data-jenis_id="{$data.jenis_id|default:''}" data-keterangan="{$data.keterangan|default:''}" data-jumlah="{$data.jumlah|default:''}" data-status="{$data.kredit_status|default:''}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                <a href="{$config->site_url({'kepegawaian/jaldin/advance/advance_delete_process/'|cat:$detail.spt_id|cat:'/'|cat:$detail.process_id|cat:'/'|cat:$data.advance_id|default:''})}" class="btn btn-xs white text-danger" onclick="return confirm('Apakah anda yakin akan menghapus data berikut ini?');"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {$total_biaya = $total_biaya + $data.jumlah}
+                        {foreachelse}
+                        <tr>
+                            <td colspan="5">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                        <tr class="red-row">
+                            <td colspan="3" class="text-center"><b style="font-size: 16px;">TOTAL</b></td>
+                            <td class="text-right"><b style="font-size: 16px;">Rp. {number_format($total_biaya, 0, ',', '.')}</b></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-footer" align="right">
+                    <a href="{$config->site_url('kepegawaian/jaldin/advance/download/'|cat:$detail.spt_id|cat:'/'|cat:$detail.process_id)}" class="btn btn-default"><i class="fa fa-file-excel-o"></i> CETAK</a> &nbsp
+                    <a href="{$config->site_url('kepegawaian/jaldin/advance/approve_process/'|cat:$detail.spt_id|cat:'/'|cat:$detail.process_id)}" class="btn btn-success" onclick="return confirm('Apakah anda yakin akan memproses data berikut ini?');"><i class="fa fa-sign-in"></i> LANJUTKAN</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- .modal -->
+<div id="modal_default" class="modal" data-backdrop="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tambah Data</h5>
+      </div>
+        <form action="{$config->site_url('kepegawaian/jaldin/advance/advance_add_process')}" method="post" class="form-horizontal">
+        <input type="hidden" name="spt_id" value="{$detail.spt_id}" />
+        <input type="hidden" name="process_id" value="{$detail.process_id}" />
+            <div class="modal-body p-lg">
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">Biaya</label>
+                    <div class="col-md-9">
+                        <select name="jenis_id" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih Jenis Biaya" style="width: 100%">
+                            <option value=""></option>
+                            {foreach from=$rs_jenis item=data}
+                                <option value="{$data.jenis_id}">{$data.jenis_biaya|default:''}</option>
+                            {/foreach}
+                        </select>
+                        <small class="help-block text-danger col-form-label">wajib diisi</small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">Jumlah</label>
+                    <div class="col-md-9">
+                        <input type="text" name="jumlah" value="" class="form-control biaya" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">Keterangan</label>
+                    <div class="col-md-9">
+                        <input type="text" name="keterangan" maxlength="255" value="" class="form-control" />
+                        <small class="help-block text-danger col-form-label">wajib diisi</small>
+                    </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">Tutup</button>
+            <button type="submit" class="btn primary p-x-md" >Simpan</button>
+          </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div>
+</div>
+<!-- / .modal -->
+
+<!-- .modal -->
+<div id="modal_edit" class="modal" data-backdrop="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Data</h5>
+      </div>
+        <form action="{$config->site_url('kepegawaian/jaldin/advance/advance_edit_process')}" method="post" class="form-horizontal">
+            <div class="modal-body p-lg">
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">Biaya</label>
+                    <div class="col-md-9">
+                        <select name="jenis_id" id="jenis_id_edit" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih Jenis Biaya" style="width: 100%">
+                            <option value=""></option>
+                            {foreach from=$rs_jenis item=data}
+                                <option value="{$data.jenis_id}">{$data.jenis_biaya|default:''}</option>
+                            {/foreach}
+                        </select>
+                        <input type="hidden" name="spt_id" value="{$detail.spt_id}" />
+                        <input type="hidden" name="process_id" value="{$detail.process_id}" />
+                        <input type="hidden" name="advance_id" id="advance_id" />
+                        <small class="help-block text-danger col-form-label">wajib diisi</small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">Jumlah</label>
+                    <div class="col-md-9">
+                        <input type="text" name="jumlah" id="jumlah_edit" value="" class="form-control biaya" />
+                        <small class="help-block text-danger col-form-label">wajib diisi</small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">Keterangan</label>
+                    <div class="col-md-9">
+                        <input type="text" name="keterangan" id="keterangan_edit" maxlength="255" value="" class="form-control" />
+                        <small class="help-block text-danger col-form-label">wajib diisi</small>
+                    </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">Tutup</button>
+            <button type="submit" class="btn primary p-x-md" >Simpan</button>
+          </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div>
+</div>
+<!-- / .modal -->

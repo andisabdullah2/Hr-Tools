@@ -1,0 +1,149 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        //
+        $('#btn-delete').click(function(event) {
+            var parent = $(this).closest('form');
+            swal({
+                title: "Konfirmasi Hapus",
+                text: "Pengajuan yang sudah dihapus tidak dapat dikembalikan lagi, hapus pengajuan ini?",
+                type: 'error',
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    parent.submit();
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<!-- breadcrumb -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Advance & Pembelian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('keuangan/advance_umum/pengajuan')}">Advance Umum</a></li>
+        <li class="breadcrumb-item active">Hapus Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Hapus Data Pengajuan Advance Umum</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('keuangan/advance_umum/pengajuan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-striped" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nomor Pengajuan</td>
+                            <th width="80%">{$detail.advance_no}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Tanggal Pengajuan</td>
+                            <th width="80%">{$dtm->get_full_date($detail.advance_tanggal)|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Item Anggaran</td>
+                            <th width="80%">{'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Uraian</td>
+                            <th width="80%">{$detail.advance_uraian|default:'-'}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Biaya Diajukan</td>
+                            <th width="80%">Rp {number_format($detail.advance_total_requested, 2, ',', '.')}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <p class="pad-all">
+                        Berikut merupakan daftar rincian dari pengajuan : 
+                    </p>
+                    <!-- Basic Forms -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Daftar Rincian dari Pengajuan</h4>
+                        </div>
+                        <div class="box-body">
+                        <p class="text-danger">
+                            * Pengajuan yang sudah dihapus tidak dapat dikembalikan lagi, hapus pengajuan ini?
+                        </p>
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr> 
+                                            <th width="5%" class="text-center">No</th>
+                                            <th width="50%" class="text-center">Uraian</th>
+                                            <th width="5%" class="text-center">Jumlah</th>
+                                            <th width="15%" class="text-center">Total</th>
+                                            <th width="25%" class="text-center">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {$no = 1}
+                                        {foreach from=$rs_id item=data}
+                                        <tr>
+                                            <td class="text-center">{$no++}</td>
+                                            <td>{$data.item_uraian|upper}</td>
+                                            <td class="text-center">{$data.item_jumlah}</td>
+                                            <td class="clearfix">
+                                                <div class="pull-left">
+                                                    Rp
+                                                </div>
+                                                <div class="pull-right">
+                                                    {number_format($data.item_total, 2, ',', '.')}
+                                                </div>
+                                            </td>
+                                            <td>{$data.item_keterangan|upper}</td>                           
+                                        </tr>
+                                        {foreachelse}
+                                        <tr>
+                                            <td class="text-center text-muted" colspan="6">
+                                                <br>
+                                                <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                <i>Belum ada rincian pengajuan</i>
+                                                <br><br>
+                                            </td>            
+                                        </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer clearfix">
+                    <form action="{$config->site_url('keuangan/advance_umum/pengajuan/delete_process')}" method="post">
+                        <input type="hidden" name="trx_id" value="{$detail.trx_id}">
+                        <div class="form-group row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" id="btn-delete" class="btn btn-danger">
+                                    <i class="fa fa-trash">&nbsp;&nbsp;Hapus</i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

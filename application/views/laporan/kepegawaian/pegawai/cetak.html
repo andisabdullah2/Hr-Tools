@@ -1,0 +1,214 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Report & Analytics</a></li>
+        <li class="breadcrumb-item"><a href="#">Laporan Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('laporan/kepegawaian/pegawai/')}">Data Pegawai</a></li>
+        <li class="breadcrumb-item active">Cetak Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Cetak Data Pegawai</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('laporan/kepegawaian/pegawai/download/'|cat:$result.user_id)}"  class="btn btn-success" ><i class="fa fa-print"></i> Cetak </a> 
+                                <a href="{$config->site_url('laporan/kepegawaian/pegawai/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <h6 class="box-title">Data Pegawai</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Nama Lengkap</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.nama_lengkap|default:''}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Jenis Kelamin</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">
+                                        {if {$result.jenis_kelamin|default:''} eq 'L'}Laki-laki{/if}
+                                        {if {$result.jenis_kelamin|default:''} eq 'P'}Perempuan{/if}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Tempat Lahir	</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.tempat_lahir|default:''}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Tanggal Lahir</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$dtm->get_full_date($result.tanggal_lahir|default:'')}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Nomor Telepon</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.nomor_telepon|default:''}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Nomor ID</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.nomor_identitas|default:''}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Jenis Identitas</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.jenis_identitas|default:''}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Alamat Asal</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.alamat_ktp|default:''}</p>   
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Alamat Sekarang</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.alamat_tinggal|default:''}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Email</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.user_mail|default:''}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <h6 class="box-title">Data Pendidikan</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Nama Instansi</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.edu_instansi_nm|default:''}</p>   
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Alamat Instansi</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.edu_instansi_address|default:''}</p>   
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Tahun Lulus</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.edu_graduation_year|default:''}</p>   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Jenjang Pendidikan</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.edu_grade|default:''}</p>   
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Spesialisasi</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.edu_spezialitation|default:''}</p>   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <h6 class="box-title">Informasi Kepegawaian</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">NIK</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.pegawai_nip|default:''}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Status Pegawai</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.pegawai_status|default:''|upper}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Unit Kerja</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.struktur_nama|default:''|upper}</p>
+                                </div>
+                            </div>                                
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Jabatan Struktural</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.jabatan_nama|default:''}</p>
+                                </div>
+                            </div>                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Tanggal Masuk</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$dtm->get_full_date($result.tanggal_masuk|default:'')}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Tanggal Keluar</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$dtm->get_full_date($result.tanggal_keluar|default:'')}</p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Jabatan Fungsional</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext">{$result.jabatan_fungsional|default:''}</p>
+                                </div>
+                            </div>                                   
+                        </div>                            
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <h6 class="box-title">Attachment</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label">Foto</label>
+                                <div class="col-md-8">
+                                    <p class="form-control-plaintext"><img class="img-thumbnail" src='{$BASEURL}{$default_image}' /></p>   
+                                </div>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,376 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // set var
+        var trx_id = '{$detail.trx_id}';
+        // numeric
+        $(".numeric").autoNumeric("init", {
+            aSep: '.',
+            aDec: ',',
+            mDec: '0',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+        //
+        $('#btn-konfirmasi').click(function(event) {
+            var url = $(this).attr('href');
+            swal({
+                title: "Konfirmasi Proses",
+                text: "Pengajuan yang sudah diproses tidak dapat dibatalkan, lanjutkan proses pengajuan?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    window.location = url;
+                }
+            });
+            return false;
+        });
+        // modal add
+        $('#modal-add').on('shown.bs.modal', function (e) {
+            var target = $(e.relatedTarget);
+            var parent = $('#modal-add');
+            // input data
+            parent.find('[name="trx_id"]').val( trx_id );
+        });
+        // modal edit
+        $('#modal-edit').on('shown.bs.modal', function (e) {
+            var target = $(e.relatedTarget);
+            var parent = $('#modal-edit');
+            // input data
+            parent.find('[name="data_id"]').val(target.attr('data-data_id'));
+            parent.find('[name="trx_id"]').val(trx_id);
+            parent.find('[name="item_uraian"]').val(target.attr('data-item_uraian'));
+            parent.find('[name="item_satuan"]').val(target.attr('data-item_satuan'));
+            parent.find('[name="item_jumlah"]').val(target.attr('data-item_jumlah'));
+            parent.find('[name="item_total"]').autoNumeric('set', target.attr('data-item_total'));
+        });
+        // modal delete
+        $('#modal-delete').on('shown.bs.modal', function (e) {
+            var target = $(e.relatedTarget);
+            var parent = $('#modal-delete');
+            // input data
+            parent.find('[name="data_id"]').val(target.attr('data-data_id'));
+            parent.find('[name="trx_id"]').val(trx_id);
+            parent.find('.item_uraian').html(target.attr('data-item_uraian'));
+            parent.find('.item_jumlah').html(target.attr('data-item_jumlah'));
+            parent.find('.item_satuan').html(target.attr('data-item_satuan'));
+            parent.find('.item_total').html(target.attr('data-item_total'));
+        });
+    });
+</script>
+<!-- breadcrumb -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Advance & Pembelian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan')}">Permintaan Barang > 1jt</a></li>
+        <li class="breadcrumb-item active">Rincian Pengajuan</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Rincian Pengajuan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/edit/'|cat:$detail.trx_id)}">1. Data Pengajuan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/item/'|cat:$detail.trx_id)}">2. Rincian Pengajuan</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="alert alert-warning alert-dismissible">
+                        <small><b><i class="icon fa fa-exclamation-triangle"></i>&nbsp; Informasi! </b></small>
+                        <small>Pastikan rincian pengajuan sudah Anda tambahkan untuk bisa melakukan mengirimkan pengajuan ini. Apabila data pengajuan ini tidak dikirim atau ingin dijadikan <b>draft</b> sementara, tekan tombol <b><i class="fa fa-check"></i> Simpan Draft</b> yang ada dibawah.</small>
+                    </div>
+                    <table class="table table-striped" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nomor Pengajuan</td>
+                            <th width="80%">{$detail.advance_no|default:'-'}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Tanggal Pengajuan</td>
+                            <th width="80%">{$dtm->get_full_date($detail.advance_tanggal)|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Item Anggaran</td>
+                            <th width="80%">{'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Uraian</td>
+                            <th width="80%">{$detail.advance_uraian|default:'-'}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Biaya Diajukan</td>
+                            <th width="80%">Rp {number_format($detail.advance_total_requested, 2, ',', '.')}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <p class="pad-all">
+                        Berikut merupakan daftar rincian dari pengajuan : 
+                    </p>
+                    <!-- Basic Forms -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Daftar Rincian dari Pengajuan</h4>
+                            <div class="box-tool">
+                                <ul class="nav nav-xs">
+                                    <li class="nav-item">
+                                        <a href="#" class="btn btn-xs warn"  data-toggle="modal" data-target="#modal-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;Tambah Item</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr> 
+                                            <th width="5%" class="text-center">No</th>
+                                            <th width="42%" class="text-center">Nama Barang</th>
+                                            <th width="13%" class="text-center">Jumlah</th>
+                                            <th width="10%" class="text-center">Spesifikasi Barang</th>
+                                            <th width="20%" class="text-center">Harga</th>
+                                            <th width="10%" class="text-center"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach from=$rs_id key=key item=data}
+                                        <tr>
+                                            <td class="text-center">{$key+1}</td>
+                                            <td>{$data.item_uraian|upper|default:'-'}</td>
+                                            <td class="text-center">{$data.item_jumlah|default:'-'}</td>
+                                            <td class="text-center">{$data.item_satuan|default:'-'}</td>
+                                            <td>
+                                                <span>Rp</span>
+                                                <span class="pull-right">
+                                                    {number_format($data.item_total, 2, ',', '.')}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#" class="btn btn-xs white text-success" data-toggle="modal" data-target="#modal-edit" data-data_id="{$data.data_id}" data-item_uraian="{$data.item_uraian}" data-item_jumlah="{$data.item_jumlah}" data-item_total="{$data.item_total}" data-item_satuan="{$data.item_satuan}"><i class="fa fa-edit"></i></a>
+                                                <a href="#" class="btn btn-xs white text-danger" data-toggle="modal" data-target="#modal-delete" data-data_id="{$data.data_id}" data-item_uraian="{$data.item_uraian|upper}" data-item_jumlah="{$data.item_jumlah}" data-item_total="Rp. {$data.item_total|number_format:2:',':'.'}" data-item_satuan="{$data.item_satuan}"><i class="fa fa-trash"></i></a>
+                                            </td>                            
+                                        </tr>
+                                        {foreachelse}
+                                        <tr>
+                                            <td class="text-center text-muted" colspan="6">
+                                                <div class="m-t-b-50">
+                                                    <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                    <small>Belum ada rincian pengajuan.</small><br>
+                                                    <small>Tambahkan item pengajuan melalui tombol <b>Tambah Item</b> yang terdapat pada kanan atas.</small>
+                                                </div>
+                                            </td>            
+                                        </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer clearfix">
+                    <div class="pull-left">
+                        <div class="form-group">
+                            <a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/edit/'|cat:$detail.trx_id)}" class="btn btn-default">
+                                <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Step Sebelumnya
+                            </a>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div class="form-group">
+                            <a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan')}" class="btn btn-success">
+                                <i class="fa fa-check"></i>&nbsp;&nbsp;Simpan Draft
+                            </a>
+                            <a href="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/pengajuan_process/'|cat:$detail.trx_id)}" class="btn btn-success" id="btn-konfirmasi">
+                                <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Proses Pengajuan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal Add -->
+<form action="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/item_add_process')}" method="post">
+    <div class="modal fade" id="modal-add" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Tambah Rincian Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="trx_id" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nama Barang</label>
+                            <div class="col-md-7">
+                                <input type="text" name="item_uraian" class="form-control" maxlength="255" value="{$result.item_uraian|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="text" name="item_jumlah" class="form-control" oninput="this.value=this.value.replace(/[^0-9]/g,'');" value="{$result.item_jumlah|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Spesifikasi Barang</label>
+                            <div class="col-md-2">
+                                <input type="text" name="item_satuan" class="form-control" value="{$result.item_satuan|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <input type="text" name="item_total" class="form-control numeric" value="{$result.item_total|default:''}" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- End Modal Add -->
+<!-- Modal Edit -->
+<form action="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/item_edit_process')}" method="post">
+    <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Ubah Rincian Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="data_id" />
+                        <input type="hidden" name="trx_id" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nama Barang</label>
+                            <div class="col-md-7">
+                                <input type="text" name="item_uraian" class="form-control" maxlength="255">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="text" name="item_jumlah" class="form-control" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Spesifikasi Barang</label>
+                            <div class="col-md-2">
+                                <input type="text" name="item_satuan" class="form-control">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <input type="text" name="item_total" class="form-control numeric" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- End Modal Edit -->
+<!-- Modal -->
+<form action="{$config->site_url('keuangan/pembelian_lebih_satu_juta/pengajuan/item_delete_process')}" method="post" onsubmit="return confirm('Rincian item yang sudah dihapus tidak dapat dikembalikan lagi, hapus rincian pengajuan ini?')">
+    <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Hapus Rincian Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="data_id" />
+                        <input type="hidden" name="trx_id" />
+                        <div class="alert alert-danger alert-dismissible">
+                            <small><b><i class="icon fa fa-exclamation-triangle"></i>&nbsp; Informasi! </b></small>
+                            <small>Data item pengajuan yang sudah dihapus tidak dapat dikembalikan lagi.</small>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nama Barang</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">: <strong class="item_uraian"></strong></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">: <strong class="item_jumlah"></strong></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Spesifikasi Barang</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">: <strong class="item_satuan"></strong></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">: <strong class="item_total"></strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

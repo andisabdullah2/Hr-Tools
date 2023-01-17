@@ -1,0 +1,81 @@
+<script type="text/javascript">
+    // jquery
+    $(document).ready(function () {
+        // ajax upload images
+        $("#reload_captcha").click(function () {
+            // ajax process
+            $.ajax({
+                url: '{$config->site_url("login/welcome/ajax_reload_captcha")}',
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $("#captcha_image").html();
+                },
+                success: function (data) {
+                    $("#captcha_image").html(data.image);
+                }
+            });
+        });
+    });
+</script>
+<div class="py-5 text-center w-100">
+    <div class="mx-auto w-xxl w-auto-xs">
+        <div class="px-3">
+            <!-- notification template -->
+            {include file="base/templates/notification.html"}
+            <!-- end of notification template-->
+            <form action="{$config->site_url('login/welcome/login_process')}" method="post" autocomplete="off">
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <div class="input-group-addon" style="width: 36px;">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Masukkan Username" name="username" maxlength="50" tabindex="1" required="required" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <div class="input-group-addon" style="width: 36px;">
+                            <i class="fa fa-key"></i>
+                        </div>
+                        <input type="password" class="form-control" placeholder="Masukkan Password" name="password" maxlength="50" tabindex="2" required="required" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <div class="form-group">
+                            <div class="input-group mb-2">
+                                <div class="input-group-addon" style="width: 36px;">
+                                    <i class="fa fa-key"></i>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Kode Captcha" name="captcha" maxlength="50" tabindex="2" required="required" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="text-right" id="captcha_image">
+                            {$captcha.image|default:''}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7"></div>
+                    <div class="col-5">
+                        <div class="text-right">
+                            <a href="#" id="reload_captcha">
+                                <i class="fa fa-refresh"></i> Reload Captcha
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <button type="submit" class="btn btn-lg btn-block primary">
+                    <span class="fa fa-arrow-right" style="margin-right: 5px;"></span> Masuk
+                </button>
+            </form>
+            <div class="my-4">
+                <a href="{$config->site_url('login/welcome/lupa_password')}" class="text-danger"><i class="fa fa-lock m-r-5"></i> Lupa Password?</a>
+            </div>
+        </div>
+    </div>
+</div>

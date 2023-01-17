@@ -1,0 +1,563 @@
+body {
+    color: #666;
+}
+
+.dark {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+.box-tool {
+    position: absolute;
+    right: 16px;
+    top: 8px;
+}
+
+.box-search {
+    padding: 1.5rem 1rem;
+    border-top: 1px solid #EEEFF0;
+}
+
+.paging-label {
+    padding: .5rem .75rem;
+    display: block;
+}
+
+.table td,
+.table th {
+    padding: .5rem;
+    vertical-align: top;
+    border-top: 1px solid #e9ecef;
+}
+
+.table > thead > tr > th {
+    text-align: center;
+}
+
+.navbar-brand {
+    padding-top: .425rem;
+    padding-bottom: .2125rem;
+}
+
+.mt-100 {
+    margin-top: 100px;
+}
+
+.padding {
+    padding: 1rem;
+}
+
+.nav-text {
+    font-weight: 400;
+}
+
+.breadcrumb {
+    background-color: rgba(0, 0, 0, 0);
+    padding: .75rem 0;
+}
+
+.breadcrumb-item.active {
+    color: #61A7FD;
+}
+
+@media (min-width: 992px) {
+    .app-aside,
+    .app-aside .scroll {
+        width: 15rem;
+    }
+}
+
+.no-padding-right {
+    /* padding-right: 0 !important; */
+    margin-right: -50px !important;
+    /* background-color:grey; */
+}
+
+.form-control-tgl{
+    /* display: block; */
+    /* width: 100%; */
+    padding: .375rem .75rem;
+    margin-right:5px;
+    /* font-size: 1rem; */
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-image: none;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.d-sm-flex-custom{
+    border: 1px solid rgba(120, 130, 140, 0.13);
+}
+
+.input-group-custom{
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 150px;	
+}
+.input-group-addon-custom{
+    padding: .375rem .75rem;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: center;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    border-color: rgba(120, 130, 140, 0.2) !important;
+    background-color: transparent;
+    color: inherit;	
+}
+
+/* FORM WIZARD */
+/*======================================*/
+.wz-nav-off > li a {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default !important;
+}
+.wz-icon-inline li > a .icon-wrap {
+    display: inline-block;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: inherit;
+}
+.wz-icon-bw li > a .icon-wrap,
+.wz-icon-bw li > a p {
+    transition: all 0.5s;
+}
+.wz-icon-bw li.active ~ li > a .icon-wrap {
+    color: #758697;
+    background-color: rgba(0, 0, 0, 0.17);
+    transition: all 0.5s;
+}
+.wz-icon-bw li:not(.active) > a p {
+    color: #758697 !important;
+    transition: all 0.5s;
+}
+/* FORM WIZARD : Classic */
+/*======================================*/
+.wz-classic {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: block;
+    position: relative;
+}
+.wz-classic li,
+.wz-steps li {
+    transition: all 0.5s;
+}
+.wz-classic li > a {
+    color: inherit;
+    display: block;
+    text-align: center;
+    padding: 20px 0;
+}
+.wz-classic li > a .icon-wrap {
+    display: inline-block;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: inherit;
+}
+.wz-classic:after,
+.wz-steps:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+.wz-classic .active ~ li {
+    color: inherit;
+    background-color: inherit;
+}
+.wz-classic .active ~ li a {
+    opacity: .5;
+}
+
+.btn-rounded-custom{
+    border-radius: 50%;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    /* display:block; */
+    /* height: 20px; */
+    /* width: 20px; */
+    /* border-radius: 50%; */
+    /* border: 1px solid red;     */
+}
+
+.text-semibold {
+    font-weight: 600;
+}
+
+/* PROGRESSBAR */
+/*======================================*/
+.progress-custom {
+    height: 12px;
+    margin-bottom: 15px;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.progress-custom-bar {
+    font-size: 10px;
+    background-color: #42a5f5;
+    line-height: 1.05em;
+    box-shadow: none;
+}
+.progress-custom-light-base {
+    background-color: #fff;
+}
+.progress-custom-dark-base {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.progress-custom-xl {
+    height: 30px;
+    margin-bottom: 20px;
+}
+.progress-custom-xl .progress-custom-bar {
+    font-size: 13px;
+    line-height: 30px;
+}
+.progress-custom-lg {
+    height: 20px;
+    margin-bottom: 20px;
+}
+.progress-custom-lg .progress-custom-bar {
+    font-size: 13px;
+    line-height: 20px;
+}
+.progress-custom-md {
+    height: 8px;
+    margin-bottom: 5px;
+}
+.progress-custom-md .progress-custom-bar {
+    font-size: 5px;
+    line-height: 8px;
+}
+.progress-custom-sm {
+    height: 4px;
+    margin-bottom: 5px;
+}
+.progress-custom-sm .progress-custom-bar {
+    font-size: 0;
+    line-height: 4px;
+}
+.progress-custom-xs {
+    height: 2px;
+    margin-bottom: 10px;
+}
+.progress-custom-xs .progress-custom-bar {
+    font-size: 0;
+    line-height: 2px;
+}
+.progress-custom-bar-light {
+    background-color: #fff;
+}
+.progress-custom-bar-primary {
+    background-color: #42a5f5;
+}
+.progress-custom-bar-info {
+    background-color: #00bcd4;
+}
+.progress-custom-bar-success {
+    background-color: #8bc34a;
+}
+.progress-custom-bar-warning {
+    background-color: #ffa726;
+}
+.progress-custom-bar-danger {
+    background-color: #ef5350;
+}
+.progress-custom-bar-mint {
+    background-color: #26a69a;
+}
+.progress-custom-bar-purple {
+    background-color: #ba68c8;
+}
+.progress-custom-bar-pink {
+    background-color: #ec407a;
+}
+.progress-custom-bar-dark {
+    background-color: #263238;
+}
+
+/* FORM WIZARD : Steps */
+/*======================================*/
+.wz-heading {
+    position: relative;
+}
+.wz-heading .progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    background-color: transparent;
+}
+.wz-heading.wz-w-label .progress {
+    margin-top: -0.5em;
+}
+.wz-steps {
+    margin: 0;
+    padding: 10px 0;
+    list-style: none;
+    /* display: block; */
+    position: relative;
+
+}
+.wz-steps li > a {
+    color: inherit;
+    display: block;
+    text-align: center;
+    padding: 0;
+    margin-right:5rem;
+    margin-left:5rem;
+}
+.wz-steps li > a .icon-wrap {
+    display: inline-block;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.wz-steps li .wz-desc {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+.wz-steps li:not(.active) .wz-icon {
+    display: none;
+}
+.wz-steps .active ~ li {
+    color: inherit;
+}
+.wz-steps .active ~ li a {
+    opacity: .5;
+}
+.wz-steps .active ~ li .wz-icon {
+    display: inline-block;
+}
+.wz-steps .active .wz-icon-done,
+.wz-steps .active ~ li .wz-icon-done {
+    display: none;
+}
+.wz-steps .active .wz-desc {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.subtitle-form{
+    display: block;
+    font-size: 1.1em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.borderless td, .borderless th {
+    border: none;
+}
+
+.profile-img-container {
+    position: relative;
+    display: inline-block; 
+    overflow: hidden;
+}
+
+.profile-img-container:hover a {
+    opacity: 0.7; 
+    top: 20px; 
+    z-index: 500;
+}
+
+.profile-img-container a {
+    display: block;
+    position: absolute;
+    top: -100%;
+    opacity: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    color: inherit;
+}
+
+.profile-img-container:hover img{
+    border:3px solid #999;
+    color: white;
+    opacity:0.3;
+}
+
+.user-profile h4 {
+    margin: 0 0 5px 0;
+    padding: 0;
+    font-size: 14px;
+    color: #4E5357;
+    background: none;
+    font-weight: bold;
+}
+
+.user-profile h5 {
+    margin: 0 0 5px 0;
+    padding: 0;
+    font-size: 12px;
+    color: #4E5357;
+    font-weight: normal;
+}
+
+.user-profile p {
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
+    color: #777777;
+}
+
+.user-profile img {
+    float: left;
+    margin: 0 10px 0 0;
+    padding: 0;
+    width: 90px;
+    height: 100px;
+}
+
+.user-profile ul {
+    width: 100%;
+    padding: 0 0;
+    list-style: none;
+    overflow:hidden;
+}
+
+.user-profile li {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 47%;
+}
+
+.user-profile a {
+    display: block;
+    margin: 0;
+    padding: 0px 0 4px 5px;
+    font-size: 12px;
+    color: #656565;
+}
+
+.user-profile a:hover {
+    color: #1F9DCA;
+    text-decoration: none;
+}
+
+
+.dashboard-sidebar-box {
+    margin: 0 0 2px 0;
+    padding: 0;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #E4E4E4;
+}
+
+.dashboard-sidebar-box h3 {
+    margin: 0 0 5px 0;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #424242;
+}
+
+.dashboard-sidebar-box h4 {
+    margin: 0 0 5px 0;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #FF0031;
+    background: none;
+    font-weight: bold;
+}
+
+.dashboard-sidebar-box p {
+    margin: 0 0 5px 0;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: #2F3942;
+}
+
+.dashboard-sidebar-box table {
+    margin: 0 10px;
+    padding: 0;
+    border-collapse: collapse;
+    color: #515151;
+    font-size: 11px;
+    background-color: #fff;
+    font-family: tahoma;
+}
+
+.dashboard-sidebar-box table td {
+    margin: 0;
+    padding: 4px 6px;
+    border-bottom: 1px dashed #edebeb;
+    font-family: tahoma;
+}
+
+.dashboard-sidebar-box table a {    
+    margin: 0;
+    padding: 0;
+    color: #0E70DD;
+}
+
+@media(min-width: 768px){
+    .pull-right-d{
+        float: right;
+    }
+}
+
+@media(max-width: 768px){
+    .cl-m{
+        margin-bottom: 20px;
+    }
+}
+
+.box-shadow-0 .box-no-shadow{
+    box-shadow: none;
+}
+
+.m-t-b-50{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.table thead tr th,
+.table tr th{
+    vertical-align: middle;
+}
+
+.alert ul {
+    list-style: none;
+    padding: 0;
+}
+
+.alert ul li {
+    list-style: none;
+    padding: 0;
+}
+
+.mr-1 {
+    margin-right: 2px;
+}
+
+.table {
+    font-size:  11px;
+}

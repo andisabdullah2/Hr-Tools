@@ -1,0 +1,110 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <!-- <h1> -->
+    <!-- Human Resource Tools -->
+    <!-- </h1> -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item active">Presensi Online</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Data Presensi Karyawan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/administrasi/presensi/add/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a> 
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-search clearfix">
+                    <form action="{$config->site_url('kepegawaian/administrasi/presensi/proses_cari/')}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-2">
+                                        <div class="input-group">
+                                                <select name="bulan" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Bulan">
+                                                <option value="" selected="selected" disabled="disabled">Bulan</option>
+                                                <option value="01" {if {$search.bulan|default:''} eq "01"}selected="selected"{/if}>Januari</option>
+                                                <option value="02" {if {$search.bulan|default:''} eq "02"}selected="selected"{/if}>Februari</option>
+                                                <option value="03" {if {$search.bulan|default:''} eq "03"}selected="selected"{/if}>Maret</option>
+                                                <option value="04" {if {$search.bulan|default:''} eq "04"}selected="selected"{/if}>April</option>
+                                                <option value="05" {if {$search.bulan|default:''} eq "05"}selected="selected"{/if}>Mei</option>
+                                                <option value="06" {if {$search.bulan|default:''} eq "06"}selected="selected"{/if}>Juni</option>
+                                                <option value="07" {if {$search.bulan|default:''} eq "07"}selected="selected"{/if}>Juli</option>
+                                                <option value="08" {if {$search.bulan|default:''} eq "08"}selected="selected"{/if}>Agustus</option>
+                                                <option value="09" {if {$search.bulan|default:''} eq "09"}selected="selected"{/if}>September</option>
+                                                <option value="10" {if {$search.bulan|default:''} eq "10"}selected="selected"{/if}>Oktober</option>
+                                                <option value="11" {if {$search.bulan|default:''} eq "11"}selected="selected"{/if}>November</option>
+                                                <option value="12" {if {$search.bulan|default:''} eq "12"}selected="selected"{/if}>Desember</option>
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group">
+                                                <input tabindex="1" maxlength="4" size="4" type="number" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy', autoclose:true,clearBtn: true, viewMode:'years',minViewMode:'years'}{/literal}" placeholder="Tahun" name="tahun" value="{$search.tahun|default:''}" style="height:33px;font-weight: bold; text-align: center;"/>
+                                                <span class="input-group-addon-custom" style="height:33px">
+                                                <span class="fa fa-calendar"></span>
+                                                </span>
+                                        </div>
+                                    </div>                                    
+                                    <div class="col-md-2">
+                                        <button class="btn  btn-dark" type="submit" name="save" value="Cari"><i class="fa fa-search"></i>&nbsp; Cari</button>
+                                        <button class="btn  btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh"></i>&nbsp; Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                            <th width="2%">No</th>
+                            <th width="6%">NIP</th>
+                            <th width="8%">Tanggal</th>
+                            <th width="8%">Waktu</th>
+                            <th width="4%">Status</th>
+                        </tr>
+                        {foreach from=$rs_presensi item=result}
+                        <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                            <td align="center">{$no++}.</td>                 
+                            <td align="center"><b>{$result.presensi_nip}</b></td>
+                            <td align="center"><b>{$result.presensi_tanggal}</b></td>
+                            <td align="center"><b>{$result.presensi_waktu}</b></td>
+                            <td align="center"><b>{$result.presensi_status}</b></td>                            
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                            <td colspan="11">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,100 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Pendukung</a></li>
+        <li class="breadcrumb-item active">Lokasi Presensi</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Data Lokasi Presensi</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/lokasi_presensi/add/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a>                          
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-search clearfix">
+                    <form action="{$config->site_url('kepegawaian/master/lokasi_presensi/proses_cari/')}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <select name="nama" data-plugin="select2" class="select2-single form-control" data-placeholder="Lokasi">                                        
+                                            <option value=""></option>
+                                            {foreach from=$rs_lokasi item=data}
+                                                <option value="{$data.nama}" {if {$search.nama|default:''} eq $data.nama}selected="selected"{/if}>{$data.nama}</option>
+                                            {/foreach}
+                                        </select>                                        
+                                    </div>                                                    
+                                    <div class="col-md-2">
+                                        <button class="btn  btn-dark" type="submit" name="save" value="Cari"><i class="fa fa-search"></i>&nbsp; Cari</button>
+                                        <button class="btn  btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh"></i>&nbsp; Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>                
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                                <th width="2%">No</th>
+                                <th width="8%">Lokasi</th>
+                                <th width="14%">Deskripsi</th>                                
+                                <th width="8%">Latitude</th>
+                                <th width="8%">Longitude</th>
+                                <th width="4%">Maksimal Jarak</th>        
+                                <th width="4%"></th>                        
+                        </tr>
+                        {foreach from=$rs_lokasi item=result}
+                        {assign var=total_data_presented value=$total_data_presented+1}
+                        <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                                <td align="center">{$no++}.</td>                                
+                                <td align="center">{$result.nama}</td>                                
+                                <td align="center">{$result.deskripsi}</td>                                                                                                                             
+                                <td align="center">{$result.latitude}</td>                                                                                                                             
+                                <td align="center">{$result.longitude}</td>                                                                                                                             
+                                <td align="center">{$result.maks_jarak}</td>                                                                                                                                                             
+                                <td align="center">
+                                    <a href="{$config->site_url('kepegawaian/master/lokasi_presensi/edit/'|cat:$result.lokasi_id)}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                    <a href="{$config->site_url('kepegawaian/master/lokasi_presensi/delete/'|cat:$result.lokasi_id)}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                                <td colspan="6">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+                <div class="box-body pt-0">
+                        <div class="row">
+                                <div class="col-md-6">
+                                        <ul class="pagination">
+                                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                                        </ul>
+                                </div>
+                                <div class="col-md-6">
+                                        <nav class="pull-right">
+                                                <ul class="pagination">
+                                                        <li class="page-item"></li>{$pagination.data|default:''} </li>
+                                                </ul>
+                                        </nav>
+                                </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

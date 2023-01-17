@@ -1,0 +1,300 @@
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Finance</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Perencanaan</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('keuangan/rencana/manajemen/')}">RKA Manajemen</a></li>
+        <li class="breadcrumb-item active">Monitoring Pengajuan {$detail.project_alias|default:''}</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-9">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Monitoring Pengajuan {$detail.project_alias|default:''}</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('keuangan/rencana/manajemen/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#plan" data-toggle="tab">1. Data Rencana</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#item" data-toggle="tab">2. Rencana Item</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#detail" data-toggle="tab">3. Rencana Detail</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#output" data-toggle="tab">4. Rencana Output</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="tab-content p-3 mb-3">
+                        <div class="tab-pane animate fadeIn active" id="plan">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="col-md-12 control-label"><b>Data Rencana Pengajuan</b></label>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Project</label>
+                                        <div class="col-md-9">
+                                            : <label class="control-label"><b>{$detail.project_alias|cat:' / '|cat:$detail.project_name|upper}</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Nilai Pendapatan</label>
+                                        <div class="col-md-9">
+                                            : <label class="control-label"><b>Rp. {$detail.nilai_pendapatan|number_format:2:",":"."|default:'0'}</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Nilai Pajak</label>
+                                        <div class="col-md-9">
+                                            : <label class="control-label"><b>Rp. {$detail.nilai_pajak|number_format:2:",":"."|default:'0'}</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Nilai Anggaran</label>
+                                        <div class="col-md-9">
+                                            : <label class="control-label"><b>Rp. {$detail.nilai_anggaran|number_format:2:",":"."|default:'0'}</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Nilai Biaya</label>
+                                        <div class="col-md-9">
+                                            : <label class="control-label"><b>Rp. {$detail.nilai_biaya|number_format:2:",":"."|default:'0'}</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Catatan</label>
+                                        <div class="col-md-9">
+                                            : <label class="control-label"><b>{$detail.catatan|upper|default:'-'}</b></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane animate fadeIn" id="item">
+                            <label><b>Daftar Item</b></label>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th width="5%" class="text-center">No</th>
+                                        <th width="40%" class="text-center">Perusahaan</th>
+                                        <th width="30%" class="text-center">Grup Item</th>
+                                        <th width="10%" class="text-center">Volume</th>
+                                        <th width="15%" class="text-center">Total</th>
+                                    </tr>
+                                    {foreach from=$rs_item key=key item=data}
+                                    <tr>
+                                        <td class="text-center">{$key+1}</td>
+                                        <td>{$data.nama_akun|cat:' ( '|cat:$data.perusahaan_nama|cat:' )'|upper}</td>
+                                        <td>{$data.group_title|upper|default:'-'}</td>
+                                        <td class="text-center">{$data.item_volume|default:'-'}</td>
+                                        <td class="text-right">Rp. {$data.item_total|number_format:2:",":"."|default:'0'}</td>
+                                    </tr>
+                                    {foreachelse}
+                                    <tr>
+                                        <td class="text-center text-muted" colspan="5">
+                                            <div class="m-t-b-50">
+                                                <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                <small>Data item pengajuan tidak ada.</small>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane animate fadeIn" id="detail">
+                            <label><b>Daftar Detail</b></label>
+                            <div class="streamline mb-2">
+                                {foreach from=$rs_detail item=data}
+                                <div class="sl-item">
+                                    <div class="sl-left"></div>
+                                    <div class="sl-content">
+                                        <div class="box">
+                                            <div class="box-header with-border">
+                                                <h4 class="box-title">
+                                                    {$data.nama_akun|cat:' ( '|cat:$data.perusahaan_nama|cat:' )'|upper} / {$data.group_title|upper}
+                                                </h4>
+                                            </div>
+                                            <div class="box-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-condensed">
+                                                        <thead>
+                                                            <tr> 
+                                                                <th width="5%" class="text-center">No</th>
+                                                                <th width="40%" class="text-center">Keterangan</th>
+                                                                <th width="15%" class="text-center">Satuan</th>
+                                                                <th width="10%" class="text-center">Jumlah</th>
+                                                                <th width="15%" class="text-center">Harga</th>
+                                                                <th width="15%" class="text-center">Biaya</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {foreach from=$data.rs_detail key=key item=item}
+                                                            <tr>
+                                                                <td class="text-center">{$key+1}</td>
+                                                                <td>{$item.detail_uraian|upper|default:'-'}</td>
+                                                                <td class="text-center">{$item.detail_satuan|upper}</td>
+                                                                <td class="text-center">{$item.detail_volume}</td>
+                                                                <td>
+                                                                    <span>Rp. </span>
+                                                                    <span class="pull-right">{$item.detail_harga|number_format:2:",":"."}</span>
+                                                                </td>
+                                                                <td>
+                                                                    <span>Rp. </span>
+                                                                    <span class="pull-right">{$item.detail_sub_total|number_format:2:",":"."|default:'0'}
+                                                                    </span>
+                                                                </td>                 
+                                                            </tr>
+                                                            {foreachelse}
+                                                            <tr>
+                                                                <td class="text-center text-muted" colspan="6">
+                                                                    <div class="m-t-b-50">
+                                                                        <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                                        <small>Data detail item pengajuan tidak ada.</small><br>
+                                                                        <small>Semua data detail pada item pengajuan yang bersangkutan akan muncul disini.</small>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            {/foreach}
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th class="text-center" colspan="5">Total Biaya Detail</th>
+                                                                <td class="{if ($data.item_total neq $data.total_detail_sub_total)}text-danger{/if}">
+                                                                    <span><b>Rp. </b></span>
+                                                                    <span class="pull-right">
+                                                                        <b>{$data.total_detail_sub_total|number_format:2:",":"."}</b>
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th class="text-center" colspan="5">Biaya Pengajuan Item</th>
+                                                                <td>
+                                                                    <span><b>Rp. </b></span>
+                                                                    <span class="pull-right">
+                                                                        <b>{$data.item_total|number_format:2:",":'.'|default:'0'}</b>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {foreachelse}
+                                <div class="sl-item">
+                                    <div class="sl-left"></div>
+                                    <div class="sl-content text-muted text-center">
+                                        <div class="m-t-b-50">
+                                            <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                            <small>Tidak ada pengajuan item!</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div class="tab-pane animate fadeIn" id="output">
+                            <div class="form-group row">
+                                <label class="col-md-12 control-label"><b>Data Rencana Output</b></label>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Jenis Output</label>
+                                <div class="col-md-8">
+                                    : <label class="control-label"><b>{$detail.nama_output|default:'-'}</b></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Jenis Kegiatan</label>
+                                <div class="col-md-8">
+                                    : <label class="control-label"><b>{$detail.nama_kegiatan|default:'-'}</b></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Program</label>
+                                <div class="col-md-8">
+                                    : <label class="control-label"><b>[{$detail.tahun|default:'-'}] {$detail.nama_program|default:'-'}</b></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title"><i class="fa fa-binoculars"></i>&nbsp;&nbsp;Tahapan Pengajuan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <div class="streamline">
+                        {foreach from=$rs_process item=data}
+                        <div class="sl-item {if $data.process_st eq 'waiting'}b-warning{elseif $data.process_st eq 'approve'}b-success{else}b-danger{/if}">
+                            <div class="sl-icon">
+                                {if $data.process_st eq 'waiting'}
+                                <i class="fa fa-clock-o"></i>
+                                {elseif $data.process_st eq 'approve'}
+                                <i class="fa fa-check"></i>
+                                {else}
+                                <i class="fa fa-times"></i>
+                                {/if}
+                            </div>
+                            <div class="sl-content">
+                                <div class="sl-date text-info">{$data.task_desc|default:'-'}</div>
+                                <small>
+                                    {if $data.task_number eq '1'}
+                                    <span>Diajukan oleh {$data.create_by_name|default:'-'} pada {$dtm->get_full_date($data.create_date)|default:'-'}</span>
+                                    {else}
+                                    {if !empty($data.process_flow_id)}
+                                    {if $data.process_st eq 'waiting'}
+                                    <span>{$data.label|default:'-'}</span>
+                                    {else}
+                                    <span>{$data.label} oleh {$data.mdb_finish_name|default:'-'} pada {$dtm->get_full_date($data.mdd_finish)|default:'-'}</span>
+                                    {/if}
+                                    {/if}
+                                    {if !empty($data.catatan)}
+                                    <br>
+                                    <span><i class="fa fa-file-text-o"></i> Dengan Catatan: {$data.catatan}</span>
+                                    {/if}
+                                    {/if}
+                                </small>
+                            </div>
+                        </div>
+                        {foreachelse}
+                        <div class="text-center text-muted">
+                            <div class="m-t-b-50">
+                                <i class="fa fa-3x fa-sort-amount-asc"></i> <br><br>
+                                <small>Belum ada tahapan pengajuan.</small><br>
+                                <small>Proses tahapan pengajuan bisa dilihat disini.</small>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,248 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        //
+        $('#btn-approve').click(function(event) {
+            var parent = $(this).closest('form');
+            parent.find('[name="process_st"]').val('approve');
+            swal({
+                title: "Konfirmasi Pengajuan",
+                text: "Lanjutkan konfirmasi rencana pengajuan ini?",
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonText: "Lanjutkan",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    parent.submit();
+                }
+            });
+        });
+        //
+        $('#btn-reject').click(function(event) {
+            var parent = $(this).closest('form');
+            parent.find('[name="process_st"]').val('reject');
+            swal({
+                title: "Tolak Pengajuan",
+                text: "Lanjutkan penolakan rencana pengajuan ini?",
+                type: 'error',
+                showCancelButton: true,
+                confirmButtonText: "Lanjutkan",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    parent.submit();
+                }
+            });
+        });
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">Permintaan Barang <= 1jt</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('keuangan/pembelian_kurang_satu_juta/ga')}">Verifikasi oleh GA</a></li>
+        <li class="breadcrumb-item active">Pengajuan {'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-9">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Pengajuan {'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('keuangan/pembelian_kurang_satu_juta/ga/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-striped" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nomor Pengajuan</td>
+                            <th width="80%">{$detail.advance_no|default:'-'}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Tanggal Pengajuan</td>
+                            <th width="80%">{$dtm->get_full_date($detail.advance_tanggal)|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Item Anggaran</td>
+                            <th width="80%">{'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Uraian</td>
+                            <th width="80%">{$detail.advance_uraian|default:'-'}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Biaya Diajukan</td>
+                            <th width="80%">Rp {number_format($detail.advance_total_requested, 2, ',', '.')}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <p class="pad-all">
+                        Berikut merupakan daftar rincian dari pengajuan : 
+                    </p>
+                    <!-- Basic Forms -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Daftar Rincian dari Pengajuan</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr> 
+                                            <th width="5%" class="text-center">No</th>
+                                            <th width="47%" class="text-center">Nama Barang</th>
+                                            <th width="13%" class="text-center">Jumlah</th>
+                                            <th width="10%" class="text-center">Spesifikasi Barang</th>
+                                            <th width="25%" class="text-center">Harga</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach from=$rs_id key=key item=data}
+                                        <tr>
+                                            <td class="text-center">{$key+1}</td>
+                                            <td>{$data.item_uraian|upper|default:'-'}</td>
+                                            <td class="text-center">{$data.item_jumlah|default:'-'}</td>
+                                            <td class="text-center">{$data.item_satuan|default:'-'}</td>
+                                            <td>
+                                                <span>Rp</span>
+                                                <span class="pull-right">
+                                                    {number_format($data.item_total, 2, ',', '.')}
+                                                </span>
+                                            </td>                     
+                                        </tr>
+                                        {foreachelse}
+                                        <tr>
+                                            <td class="text-center text-muted" colspan="5">
+                                                <div class="m-t-b-50">
+                                                    <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                    <small>Belum ada rincian pengajuan.</small><br>
+                                                    <small>Data item pengajuan akan tampil disini.</small>
+                                                </div>
+                                            </td>            
+                                        </tr>
+                                        {/foreach}
+                                    </tbody>
+                                    {if !empty($rs_id)}
+                                    <tfoot>
+                                    	<tr>
+                                    		<td class="text-center" colspan="4"><b>Total Rincian</b></td>
+                                    		<td>
+                                    			<span>Rp</span>
+                                    			<span class="pull-right"><b>{$detail.total_rincian|number_format:2:",":"."|default:'0'}</b></span>
+                                    		</td>
+                                    	</tr>
+                                    </tfoot>
+                                    {/if}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+            	</div>
+            </div>
+            {if $detail.process_st eq 'waiting'}
+            <form action="{$config->site_url('keuangan/pembelian_kurang_satu_juta/ga/pengajuan_process')}" method="post" class="form-horizontal">
+            	<input type="hidden" name="trx_id" value="{$detail.trx_id|default:''}">
+                <input type="hidden" name="process_id" value="{$detail.process_id|default:''}">
+                <input type="hidden" name="process_st">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h4 class="box-title">Catatan Persetujuan</h4>
+                    </div>
+                    <div class="box-divider m-0"></div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <textarea name="catatan" class="form-control" placeholder="Isi dengan Catatan Persetujuan jika diperlukan" rows="7">{$result.catatan|default:''}</textarea>
+                        </div>
+                    </div>
+                    <div class="box-footer text-right">
+                        <button type="button" id="btn-approve" class="btn btn-success">
+                            <i class="fa fa-check"></i>&nbsp;&nbsp;Setujui Pengajuan
+                        </button>
+                        <button type="button" id="btn-reject" class="btn btn-danger">
+                            <i class="fa fa-times"></i>&nbsp;&nbsp;Tolak Pengajuan
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {else}
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Catatan Persetujuan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <p class="form-control-static">{$detail.catatan|default:'-'}</p>
+                    </div>
+                </div>
+            </div>
+            {/if}
+        </div>
+        <div class="col-md-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Catatan Pengajuan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <div class="streamline">
+                        {foreach from=$rs_process item=data}
+                        <div class="sl-item {if $data.process_st eq 'waiting'}b-warning{elseif $data.process_st eq 'approve'}b-success{else}b-danger{/if}">
+                            <div class="sl-icon">
+                                {if $data.process_st eq 'waiting'}
+                                <i class="fa fa-clock-o"></i>
+                                {elseif $data.process_st eq 'approve'}
+                                <i class="fa fa-check"></i>
+                                {else}
+                                <i class="fa fa-times"></i>
+                                {/if}
+                            </div>
+                            <div class="sl-content">
+                                <div class="sl-date text-info">{$data.task_desc|default:'-'}</div>
+                                <small>
+                                    {if $data.task_number eq '1'}
+                                    <span>Diajukan oleh {$data.send_by_name|default:'-'} pada {$dtm->get_full_date($data.send_date)|default:'-'}</span>
+                                    {else}
+                                    {if !empty($data.process_flow_id)}
+                                    {if $data.process_st eq 'waiting'}
+                                    <span>{$data.label|default:'-'}</span>
+                                    {else}
+                                    <span>{$data.label} oleh {$data.mdb_finish_name|default:'-'} pada {$dtm->get_full_date($data.mdd_finish)|default:'-'}</span>
+                                    {/if}
+                                    {/if}
+                                    {if !empty($data.catatan)}
+                                    <br>
+                                    <span><i class="fa fa-file-text-o"></i> Dengan Catatan: {$data.catatan}</span>
+                                    {/if}
+                                    {/if}
+                                </small>
+                            </div>
+                        </div>
+                        {foreachelse}
+                        <div class="text-center text-muted">
+                            <div class="m-t-b-50">
+                                <i class="fa fa-3x fa-sort-amount-asc"></i> <br><br>
+                                <small>Belum ada tahapan pengajuan.</small><br>
+                                <small>Proses tahapan pengajuan bisa dilihat disini.</small>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

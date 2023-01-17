@@ -1,0 +1,593 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        // hide loading
+        $(".wait").hide();
+        //select 2
+        $("select").select2();
+        // auto numeric
+        $('.autonumeric').autoNumeric('init',  {
+            aSep: '.',
+            aDec: ',',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+        // event ketika modal tambah tampil
+        $('#modal-add-item').on('show.bs.modal', function (e) {
+            $(this).find('.label-notification').text('');
+            // register event
+            $(this).find('[name="item_harga"]').keyup(function (event) {
+                let modal = $('#modal-add-item');
+                let total = parseFloat($(this).autoNumeric('get')) * parseInt($(modal).find('[name="item_volume"]').val());
+                $(modal).find('[name="item_total"]').autoNumeric('set', total);
+            });
+            $(this).find('[name="item_volume"]').change(function (event) {
+                let modal = $('#modal-add-item');
+                var total = parseFloat($(modal).find('[name="item_harga"]').autoNumeric('get')) * parseInt($(this).val());
+                $(modal).find('[name="item_total"]').autoNumeric('set', total);
+            });
+        });
+        // evet ketika modal edit tampil
+        $('#modal-edit-item').on('show.bs.modal', function (e) {
+            // get realted data
+            let dataItem = e.relatedTarget;
+            let perusahaan_id =  $(dataItem).attr('perusahaan-id');
+            let kode_akun = $(dataItem).attr('kode-akun');
+            // initial data update
+            $(this).find('[name="group_id"]').val($(dataItem).attr('group-id')).prop('selected', 'selected').select2();
+            $(this).find('[name="perusahaan_id"]').val(perusahaan_id).prop('selected', 'selected').select2();
+            $(this).find('[name="perusahaan_id"]').change();
+            $(this).find('[name="item_no"]').val($(dataItem).attr('item-no'));
+            $(this).find('[name="item_uraian"]').val($(dataItem).attr('item-uraian'));
+            $(this).find('[name="item_satuan"]').val($(dataItem).attr('item-satuan'));
+            $(this).find('[name="item_volume"]').val($(dataItem).attr('item-volume'));
+            $(this).find('[name="item_harga"]').autoNumeric('set',$(dataItem).attr('item-harga'));
+            $(this).find('[name="item_total"]').autoNumeric('set',$(dataItem).attr('item-total'));
+            $(this).find('[name="item_id"]').val($(dataItem).attr('item-id'));
+            $(this).find('.kode_akun').val($(dataItem).attr('kode-akun'));
+            // register event
+            $(this).find('[name="item_harga"]').keyup(function (event) {
+                let modal = $('#modal-edit-item')
+                let total = parseFloat($(this).autoNumeric('get')) * parseInt($(modal).find('[name="item_volume"]').val());
+                $(modal).find('[name="item_total"]').autoNumeric('set', total);
+            });
+            $(this).find('[name="item_volume"]').change(function (event) {
+                let modal = $('#modal-edit-item')
+                var total = parseFloat($(modal).find('[name="item_harga"]').autoNumeric('get')) * parseInt($(this).val());
+                $(modal).find('[name="item_total"]').autoNumeric('set', total);
+            });
+        })
+        // evet ketika modal delete tampil
+        $('#modal-delete-item').on('show.bs.modal', function (e) {
+            // get realted data
+            let dataItem = e.relatedTarget;
+            // initial data update
+            $(this).find('#nama_akun').text($(dataItem).attr('group-title'));
+            $(this).find('#nama_perusahaan').text($(dataItem).attr('perusahaan-nama'));
+            $(this).find('#nama_akun').text($(dataItem).attr('nama-akun'));
+            $(this).find('#nomor').text($(dataItem).attr('item-no'));
+            $(this).find('#uraian').text($(dataItem).attr('item-uraian'));
+            $(this).find('#satuan').text($(dataItem).attr('item-satuan'));
+            $(this).find('#jumlah').text($(dataItem).attr('item-volume'));
+            $(this).find('[name="item_harga"]').autoNumeric('set',$(dataItem).attr('item-harga'));
+            $(this).find('#harga').text($(this).find('[name="item_harga"]').val());
+            $(this).find('[name="item_total"]').autoNumeric('set',$(dataItem).attr('item-total'));
+            $(this).find('#total').text($(this).find('[name="item_total"]').val());
+            $(this).find('[name="item_id"]').val($(dataItem).attr('item-id'));
+        })
+        // ajax
+        $('#perusahaan_id_add').change(function(event) {
+            var parent = $(this).closest('form');
+            var perusahaan_id = $(this).val();
+            // proses
+            $.ajax({
+                url: '{$config->site_url("project/rka_project/pengajuan/ajax_change_perusahaan")}',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    perusahaan_id : perusahaan_id
+                },
+                success: function(data) {
+                    parent.find('[name="kode_akun"]').prop('disabled', false);
+                    if ( data.status == "success" ) {
+                        parent.find('[name="kode_akun"]').html(data.html);
+                    } else {
+                        parent.find('[name="kode_akun"]').html('<option value="-" selected>'+data.html+'</option>');
+                    }
+                    parent.find('[name="kode_akun"]').change();
+                },
+                error: function(data, xhr) {
+                    parent.find('[name="kode_akun"]').prop('disabled', true);
+                    parent.find('[name="kode_akun"]').html('<option value="-" selected>'+xhr.status + " " + xhr.statusText+'</option>');
+                    parent.find('[name="kode_akun"]').change();
+                },
+                beforeSend: function(xhr) {
+                    parent.find('[name="kode_akun"]').prop('disabled', true);
+                    parent.find('[name="kode_akun"]').html('<option value="-" selected>Loading ...</option>');
+                    parent.find('[name="kode_akun"]').change();
+                }
+            });
+        });
+        $('#perusahaan_id_edit').change(function(event) {
+            var parent = $(this).closest('form');
+            var perusahaan_id = $(this).val();
+            var kode_akun = parent.find('.kode_akun').val();
+            // proses
+            $.ajax({
+                url: '{$config->site_url("project/rka_project/pengajuan/ajax_change_perusahaan_edit")}',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    perusahaan_id : perusahaan_id,
+                    kode_akun : kode_akun,
+                },
+                success: function(data) {
+                    parent.find('[name="kode_akun"]').prop('disabled', false);
+                    if ( data.status == "success" ) {
+                        parent.find('[name="kode_akun"]').html(data.html);
+                    } else {
+                        parent.find('[name="kode_akun"]').html('<option value="-" selected>'+data.html+'</option>');
+                    }
+                    parent.find('[name="kode_akun"]').change();
+                },
+                error: function(data, xhr) {
+                    parent.find('[name="kode_akun"]').prop('disabled', true);
+                    parent.find('[name="kode_akun"]').html('<option value="-" selected>'+xhr.status + " " + xhr.statusText+'</option>');
+                    parent.find('[name="kode_akun"]').change();
+                },
+                beforeSend: function(xhr) {
+                    parent.find('[name="kode_akun"]').prop('disabled', true);
+                    parent.find('[name="kode_akun"]').html('<option value="-" selected>Loading ..</option>');
+                    parent.find('[name="kode_akun"]').change();
+                }
+            });
+        });
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Rencana & Anggaran</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/rka_project/pengajuan/')}">RKA Project</a></li>
+        <li class="breadcrumb-item active">Data Item</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content" >
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Tambah Data Pengajuan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/rka_project/pengajuan/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/rka_project/pengajuan/update_rencana/'|cat:$rs_project_plant.plan_id)}">1. Data Rencana</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">2. Rencana Item</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/rka_project/pengajuan/rencana_detail/'|cat:$rs_project_plant.plan_id)}">3. Rencana Detail</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-striped" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Project</td>
+                            <th width="80%">{$rs_project_plant.project_alias|cat:' / '|cat:$rs_project_plant.project_name|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Pendapatan</td>
+                            <th width="80%">Rp {number_format($rs_project_plant.nilai_pendapatan, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Pajak</td>
+                            <th width="80%">Rp {number_format($rs_project_plant.nilai_pajak, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Anggaran</td>
+                            <th width="80%">Rp {number_format($rs_project_plant.nilai_anggaran, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Biaya</td>
+                            <th width="80%">Rp {number_format($rs_project_plant.nilai_biaya, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Catatan</td>
+                            <th width="80%">{$rs_project_plant.catatan|default:'-'}</th>
+                        </tr>
+                    </table>
+                    <p class="pad-all">
+                        Berikut data item dari pengajuan yang di ajukan :
+                    </p>
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Daftar Item dari Pengajuan</h4>
+                            <div class="box-tool">
+                                <ul class="nav nav-xs">
+                                    <li class="nav-item">
+                                        <a href="#" class="btn warn"  data-toggle="modal" data-target="#modal-add-item"><i class="fa fa-plus"></i>&nbsp;&nbsp;Tambah Item</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="40%" class="text-center">Perusahaan</th>
+                                    <th width="25%" class="text-center">Grup Item</th>
+                                    <th width="5%" class="text-center">Jumlah</th>
+                                    <th width="15%" class="text-center">Total Biaya</th>
+                                    <th width="10%" class="text-center"></th>
+                                </tr>
+                                {foreach from=$rs_project_item key=index item=item}
+                                <tr>
+                                    <td class="text-center">{$item.item_no}</td>
+                                    <td>{$item.perusahaan_nama|cat:' ( '|cat:$item.kode_akun_alias|cat:' / '|cat:$item.nama_akun|cat:' )'|upper}</td>
+                                    <td>{$item.group_title|upper}</td>
+                                    <td class="text-center">{$item.item_volume}</td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($item.item_total, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="#" data-toggle="modal" data-target="#modal-edit-item" class="btn btn-xs white text-success update-item" item-id="{$item.item_id|default:''}" group-id="{$item.group_id|default:''}" kode-akun="{$item.kode_akun|default:''}" nama-akun="{$item.nama_akun|default:''}"
+                                            perusahaan-id="{$item.perusahaan_id|default:''}" perusahaan-nama="{$item.perusahaan_nama|default:''}" item-no="{$item.item_no|default:''}" item-uraian="{$item.item_uraian|default:''}" item-volume="{$item.item_volume}"
+                                            item-satuan="{$item.item_satuan|default:''}" item-harga="{$item.item_harga|default:''}" item-total="{$item.item_total|default:''}"><i class="fa fa-edit"></i></a>
+                                        <a href="#" data-toggle="modal" data-target="#modal-delete-item" class="btn btn-xs white text-danger" item-id="{$item.item_id|default:''}" group-title="{$item.group_title|default:''}" group-id="{$item.group_id|default:''}" kode-akun="{$item.kode_akun|default:''}" nama-akun="{$item.nama_akun|default:''}"
+                                            perusahaan-id="{$item.perusahaan_id|default:''}" perusahaan-nama="{$item.perusahaan_nama|default:''}" item-no="{$item.item_no|default:''}" item-uraian="{$item.item_uraian|default:''}" item-volume="{$item.item_volume}"
+                                            item-satuan="{$item.item_satuan|default:''}" item-harga="{$item.item_harga|default:''}" item-total="{$item.item_total|default:''}"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <td colspan="10" align="center" class="pad-all">
+                                    <br>
+                                    <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                    <i>Belum ada item pengajuan</i>
+                                    <br><br>
+                                </td>
+                                {/foreach}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer clearfix">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <a class="btn btn-success" href="{$config->site_url('project/rka_project/pengajuan/rencana_detail/'|cat:$rs_project_plant.plan_id)}">Step Selanjutnya &nbsp;<i class="fa fa-arrow-right"></i></a>
+                        </div>
+                        <div class="pull-left">
+                            <a class="btn btn-primary" href="{$config->site_url('project/rka_project/pengajuan/update_rencana/'|cat:$rs_project_plant.plan_id)}"><i class="fa fa-arrow-left"></i> &nbsp;Step Sebelumnya</a>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
+</section>
+<!-- Modal add item -->
+<form action="{$config->site_url('project/rka_project/pengajuan/add_rencana_item_process')}" method="post">
+    <div class="modal fade" id="modal-add-item" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Tambah Item Pengajuan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="plan_id" value="{$rs_project_plant.plan_id}" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Grup Item Pengajuan</label>
+                            <div class="col-md-5">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select name="group_id" class="form-control select-2" data-placeholder="Grup Item" style="width: 100%">
+                                    <option value=""></option>
+                                    {foreach from=$rs_project_group item=group}
+                                    <option value="{$group.group_id}" {if $group.group_id eq $result.group_id|default:''}selected="selected"{/if}>{$group.group_title|upper}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Perusahaan</label>
+                            <div class="col-md-7">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select id="perusahaan_id_add" name="perusahaan_id" class="form-control select-2" data-placeholder="Perusahaan" style="width: 100%">
+                                    <option value=""></option>
+                                    {foreach from=$rs_perusahaan item=perusahaan}
+                                    <option value="{$perusahaan.perusahaan_id|default:''}">{$perusahaan.perusahaan_nama|default:''}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small><br>
+                                <small class="label-notification help-block text-danger"></small>
+                            </div>
+                            <div class="col-md-2">
+                               <i class="wait fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Akun</label>
+                            <div class="col-md-7">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select disabled name="kode_akun" class="form-control select-2" data-placeholder="Akun" style="width: 100%">
+                                    <option value=""></option>
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor</label>
+                            <div class="col-md-2">
+                                <input type="number" name="item_no" class="form-control" min="0" value="{$rs_item_no|default:''}" readonly>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="item_uraian" class="form-control" maxlength="255" value="{$result.item_uraian|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Satuan</label>
+                            <div class="col-md-3">
+                                <input type="text" name="item_satuan" class="form-control" maxlength="50" value="{$result.item_satuan|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="number" name="item_volume" class="form-control" min="0" value="{$result.item_volume|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="item_harga" class="form-control autonumeric" value="{$result.item_harga|default:''}" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Total</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="text" name="item_total" class="form-control autonumeric" disabled="" value="{$result.item_total|default:''}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal edit item -->
+<form action="{$config->site_url('project/rka_project/pengajuan/update_rencana_item_process')}" method="post">
+    <div class="modal fade" id="modal-edit-item" tabindex="-1" role="dialog" aria-labelledby="modal-editLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-editLabel">Edit Item Pengajuan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="plan_id" value="{$rs_project_plant.plan_id|default:''}" />
+                        <input type="hidden" name="item_id" value="{$result.item_id|default:''}" />
+                        <input type="hidden" class="kode_akun" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Grup Item Pengajuan</label>
+                            <div class="col-md-5">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select name="group_id" class="form-control select-2" data-placeholder="Grup Item" style="width: 100%">
+                                    <option value=""></option>
+                                    {foreach from=$rs_project_group item=group}
+                                    <option value="{$group.group_id}">{$group.group_title|upper}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Perusahaan</label>
+                            <div class="col-md-7">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select id="perusahaan_id_edit" name="perusahaan_id" class="form-control select-2" data-placeholder="Perusahaan" style="width: 100%">
+                                    <option value=""></option>
+                                    {foreach from=$rs_perusahaan item=perusahaan}
+                                    <option value="{$perusahaan.perusahaan_id|default:''}">{$perusahaan.perusahaan_nama|default:''}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small><br>
+                                <small class="label-notification help-block text-danger"></small>
+                            </div>
+                            <div class="col-md-2">
+                                <i class="wait fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Akun</label>
+                            <div class="col-md-7">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select disabled name="kode_akun" class="form-control select-2" data-placeholder="Akun" style="width: 100%">
+                                    <option value=""></option>
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor</label>
+                            <div class="col-md-2">
+                                <input type="number" name="item_no" class="form-control" min="0" value="{$rs_item_no|default:''}" readonly>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="item_uraian" class="form-control" maxlength="255" value="{$result.item_uraian|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Satuan</label>
+                            <div class="col-md-3">
+                                <input type="text" name="item_satuan" class="form-control" maxlength="50" value="{$result.item_satuan|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <input type="number" name="item_volume" class="form-control" min="0" value="{$result.item_volume|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="item_harga" class="form-control autonumeric" value="{$result.item_harga|default:''}" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Total</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="text" name="item_total" class="form-control autonumeric" disabled="" value="{$result.item_total|default:''}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal delete item -->
+<form action="{$config->site_url('project/rka_project/pengajuan/delete_rencana_item_process')}" method="post"  onsubmit="return confirm('Apakah anda yakin akan menghapus data berikut ini?');">
+    <div class="modal fade" id="modal-delete-item" tabindex="-1" role="dialog" aria-labelledby="modal-deleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-deleteLabel">Hapus Item Pengajuan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Apakah anda yakin akan menghapus data berikut ini?</p>
+                    <div class="form-horizontal">
+                        <input type="hidden" name="plan_id" value="{$rs_project_plant.plan_id|default:''}" />
+                        <input type="hidden" name="item_id" value="{$result.item_id|default:''}" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Grup Item Pengajuan</label>
+                            <div class="col-md-5">
+                                <div id="nama_group"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Perusahaan</label>
+                            <div class="col-md-7">
+                               <div id="nama_perusahaan"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <i class="wait fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Akun</label>
+                            <div class="col-md-7">
+                                <div id="nama_akun"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nomor</label>
+                            <div class="col-md-2">
+                                <div id="nomor"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <div id="uraian"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Satuan</label>
+                            <div class="col-md-3">
+                                <div id="satuan"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah</label>
+                            <div class="col-md-2">
+                                <div id="jumlah"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Harga</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="hidden" name="item_harga" class="form-control autonumeric" value="{$result.item_harga|default:''}" />
+                                <div id="harga"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Total</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="hidden" name="item_total" class="form-control autonumeric" disabled="" value="{$result.item_total|default:''}"/>
+                                <div id="total"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i>&nbsp;HAPUS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+

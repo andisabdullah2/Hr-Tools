@@ -1,0 +1,188 @@
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        // Default file input style
+        $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-default'
+        });
+    });
+
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai_jabatan/')}">Data Pejabat</a></li>
+        <li class="breadcrumb-item active">Edit Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Edit Data Pejabat</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/pegawai_jabatan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body"> 
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <form action="{$config->site_url('kepegawaian/master/pegawai_jabatan/edit_process')}" method="post" id="form" data-plugin="parsley" data-option="{}" novalidate="" class="form-horizontal adminex-form" enctype="multipart/form-data">
+                        <input type="hidden" value="{$result.data_id}" name="data_id">
+                        <input type="hidden" value="{$result.lampiran_file_name}" name="lampiran_old">
+                        <div class="form-group row">
+                                <div class="col-md-6 no-padding-right">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Pejabat</label>
+                                                <div class="col-md-6">  
+                                                <select name="user_id" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Pejabat">
+                                                        <option value=""></option>
+                                                        {foreach from=$rs_pegawai item=data}
+                                                                <option value="{$data.user_id}" {if $data.user_id eq $result.user_id}selected="selected"{/if}>{$data.nama_lengkap}</option>
+                                                        {/foreach}
+                                                </select>
+                                                <small class="form-text text-danger"><i>* wajib diisi.</i></small>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Jabatan</label>
+                                                <div class="col-md-8">
+                                                <select name="jabatan_struktural_id" data-plugin="select2" class="select2-single form-control" data-placeholder="Jabatan">
+                                                        <option value=""></option>
+                                                        {foreach from=$rs_jabatan item=data}
+                                                                <option value="{$data.jabatan_struktural_id}" {if {$data.jabatan_struktural_id|default:''} eq $result.jabatan_struktural_id}selected="selected"{/if}>{$data.struktur_singkatan} - {$data.jabatan_alias|upper}</option>
+                                                        {/foreach}
+                                                </select>
+                                                <small class="form-text text-danger"><i>* wajib diisi.</i></small>
+                                                </div>
+                                        </div>
+                                </div>                                
+                        </div>  
+                        <div class="form-group row">
+                                <div class="col-md-6 no-padding-right">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Nomor SK</label>
+                                                <div class="col-md-6 no-padding">
+                                                        <input class="form-control" name="nomor_sk" type="text" value="{$result.nomor_sk|default:''}" size="45" maxlength="100" />
+                                                        <small class="form-text text-danger"><i>* wajib diisi.</i></small>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Tanggal SK</label>
+                                                <div class="col-md-8">
+                                                        <div class="input-group">
+                                                        <input tabindex="1" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal SK" name="tanggal_sk" value="{$result.tanggal_sk|default:''}"/>
+                                                        <span class="input-group-addon">
+                                                            <span class="fa fa-calendar"></span>
+                                                        </span>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>                                
+                        </div>                                                        
+                        <div class="form-group row">
+                                <div class="col-md-6 no-padding-right">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Pejabat SK</label>
+                                                <div class="col-md-6 no-padding">
+                                                        <input class="form-control" name="pejabat_sk" type="text" value="{$result.pejabat_sk|default:''}" size="10" maxlength="20" />
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Tanggal Mulai</label>
+                                                <div class="col-md-8">
+                                                        <div class="input-group">
+                                                        <input tabindex="1" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal Mulai" name="tanggal_mulai" value="{$result.tanggal_mulai|default:''}"/>
+                                                        <span class="input-group-addon">
+                                                            <span class="fa fa-calendar"></span>
+                                                        </span>
+                                                        </div>
+                                                        <small class="form-text text-danger"><i>* wajib diisi.</i></small>                                                                                      
+                                                </div>
+                                        </div>
+                                </div>                                
+                        </div>
+                        <div class="form-group row">
+                                <div class="col-md-6 no-padding-right">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Status</label>
+                                                <div class="col-md-6 no-padding">
+                                                        <select class="form-control" name="jabatan_status">
+                                                                <option>--Pilih--</option>
+                                                                <option value="1" {if {$result.jabatan_status|default:''} eq "1"}selected="selected"{/if}>Aktif</option>
+                                                                <option value="0" {if {$result.jabatan_status|default:''} eq "0"}selected="selected"{/if}>Tidak Aktif</option>
+                                                        </select>
+                                                        <small class="form-text text-danger"><i>* wajib diisi.</i></small>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Tanggal Selesai</label>
+                                                <div class="col-md-8">
+                                                        <div class="input-group">
+                                                        <input tabindex="1" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal Selesai" name="tanggal_selesai" value="{$result.tanggal_selesai|default:''}"/>
+                                                        <span class="input-group-addon">
+                                                            <span class="fa fa-calendar"></span>
+                                                        </span>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="form-group row">
+                                <div class="col-md-6 no-padding-right">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">Set Default</label>
+                                                <div class="col-md-3 no-padding">
+                                                        <select class="form-control" name="jabatan_default">
+                                                                <option>--Pilih--</option>
+                                                                <option value="1" {if {$result.jabatan_default|default:''} eq "1"}selected="selected"{/if}>Ya</option>
+                                                                <option value="0" {if {$result.jabatan_default|default:''} eq "0"}selected="selected"{/if}>Tidak</option>
+                                                        </select>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="form-group row">
+                                                <label class="col-md-4 col-form-label">File</label>
+                                                <div class="col-md-3 no-padding">
+                                                        <div class="form-file">
+                                                                <input type="file" name="lampiran_file_name" class="form-control file-styled" />
+                                                        </div>                                         
+                                                </div>
+                                        </div>
+                                </div>
+                        </div> 
+                        <div class="panel-footer">
+                                <div class="form-group row">
+                                <label class="col-md-2 col-form-label"></label>                                                
+                                    <div class="col-md-6 control-label">
+                                        <button type="submit" class="btn btn-success mr5 "><i class="fa fa-check"></i> Simpan</button> &nbsp
+                                        <button type="reset" class="btn btn-default mr5 "><i class="fa fa-times"></i> Reset</button>
+                                    </div>
+                                </div>
+                        </div>    
+                        </form>
+                </div>                                
+            </div>
+        </div>
+    </div>
+</section>

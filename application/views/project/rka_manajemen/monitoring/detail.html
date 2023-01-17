@@ -1,0 +1,167 @@
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Monitoring</a></li>
+        <li class="breadcrumb-item"><a href="#">Rencana & Anggaran</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/rka_manajemen/monitoring/')}">RKA Manajemen</a></li>
+        <li class="breadcrumb-item active">Pengajuan {$detail.project_alias|cat:' / '|cat:$detail.project_name}</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-9">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Monitoring Pengajuan {$detail.project_alias|cat:' / '|cat:$detail.project_name}</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/rka_manajemen/monitoring')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table class="table" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Project</td>
+                            <th width="80%">{$detail.project_alias|cat:' / '|cat:$detail.project_name|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nilai Biaya</td>
+                            <th width="80%">Rp {number_format($detail.nilai_biaya, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Catatan</td>
+                            <th width="80%">{$detail.catatan|default:'-'}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <p class="pad-all">
+                        Berikut merupakan daftar item dari pengajuan : 
+                    </p>
+                    <div class="streamline mb-2">
+                        {foreach from=$rs_id item=data}
+                        <div class="sl-item">
+                            <div class="sl-left"></div>
+                            <div class="sl-content">
+                                <div class="box">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            {$data.perusahaan_nama|upper} ( {$data.kode_akun_alias|cat:' / '|cat:$data.nama_akun|upper} )
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed">
+                                                <thead>
+                                                    <tr> 
+                                                        <th width="5%" class="text-center">No</th>
+                                                        <th width="45%" class="text-center">Keterangan</th>
+                                                        <th width="15%" class="text-center">Satuan</th>
+                                                        <th width="10%" class="text-center">Jumlah</th>
+                                                        <th width="25%" class="text-center">Biaya</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {foreach from=$data['detail'] item=item_detail}
+                                                    <tr>
+                                                        <td class="text-center">{$item_detail.detail_no}</td>
+                                                        <td>{$item_detail.detail_uraian|upper}</td>
+                                                        <td class="text-center">{$item_detail.detail_satuan|upper}</td>
+                                                        <td class="text-center">{$item_detail.detail_volume}</td>
+                                                        <td class="clearfix">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($item_detail.detail_sub_total, 2, ',', '.')}
+                                                            </div>
+                                                        </td>                           
+                                                    </tr>
+                                                    {foreachelse}
+                                                    <tr>
+                                                        <td class="text-center text-muted" colspan="6">
+                                                            <br>
+                                                            <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                            <i>Belum ada detail pengajuan</i>
+                                                            <br><br>
+                                                        </td>
+                                                    </tr>
+                                                    {/foreach}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th class="text-center" colspan="4">Biaya Item</th>
+                                                        <td class="clearfix text-center">
+                                                            <div class="pull-left">
+                                                                Rp
+                                                            </div>
+                                                            <div class="pull-right">
+                                                                {number_format($data.item_total, 2, ',', '.')}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {foreachelse}
+                        <div class="sl-item">
+                            <div class="sl-left"></div>
+                            <div class="sl-content text-muted text-center">
+                                <br>
+                                <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                <i>Belum ada item pengajuan</i>
+                                <br><br>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title"><i class="fa fa-binoculars"></i>&nbsp;&nbsp;Tahapan Pengajuan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <div class="streamline streamline-dotted">
+                        {foreach from=$rs_flow item=flow}
+                        <div class="sl-item">
+                            <div class="sl-content">
+                                <div class="box-color text-color pos-rlt">
+                                    <span class="arrow left pull-top b-white"></span>
+                                    <div class="box-body">
+                                        <strong>{$flow.task_desc}</strong> <br>
+                                        {if ($flow.process_st eq 'approve')}
+                                        <label class="badge badge-success">DISETUJUI</label>
+                                        {elseif ($flow.process_st eq 'reject')}
+                                        <label class="badge badge-danger">DITOLAK</label>
+                                        {else}
+                                        <label class="badge badge-warning">SEDANG DIPROSES</label>
+                                        {/if}
+                                        <p>
+                                            <small>{$flow.catatan|default:'-'}</small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

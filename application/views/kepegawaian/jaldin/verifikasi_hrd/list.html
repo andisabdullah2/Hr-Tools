@@ -1,0 +1,117 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">Perjalanan Dinas</a></li>
+        <li class="breadcrumb-item active">Verifikasi LPJ - HRD</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header">
+                    <h4>Data Verifikasi LPJ - HRD</h4>
+                </div>
+                <div class="box-search">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('kepegawaian/jaldin/verifikasi_hrd/search_process')}" method="post">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" name="nama" value="{$search.nama|default:''}" class="form-control" placeholder="Nama Karyawan"/>
+                            </div>                            
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="bulan" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Pilih Bulan">
+                                        <option value=""></option>
+                                        {foreach from=$rs_bulan key=i item=bulan}
+                                        <option value="{$i}" {if $search.bulan|default:'' eq $i}selected="selected"{/if}>{$bulan|upper}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="tahun" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih Tahun">
+                                        <option value=""></option>
+                                        {foreach from=$rs_tahun item=tahun}
+                                        <option value="{$tahun.tahun}" {if $search.tahun|default:'' eq $tahun.tahun}selected="selected"{/if}>{$tahun.tahun}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <button type="submit" class="btn dark" name="save" value="Cari"><i class="fa fa-search"></i> Cari</button>
+                                    <button type="submit" class="btn white" name="save" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                                </div>                              
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body pt-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="20%" class="text-center">Project Name</th>
+                                    <th width="15%" class="text-center">Location</th>
+                                    <th width="15%" class="text-center">Perihal</th>
+                                    <th width="15%" class="text-center">Karyawan</th>
+                                    <th width="10%" class="text-center">Mulai</th>
+                                    <th width="10%" class="text-center">Selesai</th>
+                                    <th width="5%" class="text-center">Status</th>
+                                    <th width="5%" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {$no = 1}
+                                {foreach from=$rs_id item=result}
+                                <tr>
+                                    <td align="center">{$no++}.</td>
+                                    <td>{$result.project_alias|upper}</td>
+                                    <td>{$result.lokasi_tujuan|upper}</td>
+                                    <td>{$result.uraian_tugas|upper}</td>
+                                    <td>{$result.nama_lengkap|upper}</td>
+                                    <td align="center">{$dtm->get_full_date($result.tanggal_berangkat)|upper}</td>
+                                    <td align="center">{$dtm->get_full_date($result.tanggal_pulang)|upper}</td>
+                                    <td class="text-center">
+                                        {if $result.flow_revisi_id neq NULL}
+                                        <span class="badge danger">REVISI</span>
+                                        {else}
+                                        <span class="badge success">WAITING</span>
+                                        {/if}
+                                    </td>
+                                    <td align="center">
+                                        <a href="{$config->site_url({'kepegawaian/jaldin/verifikasi_hrd/approval/'|cat:$result.spt_id|cat:'/'|cat:$result.process_id|default:''})}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td colspan="9">Data Tidak Dtemukan</td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

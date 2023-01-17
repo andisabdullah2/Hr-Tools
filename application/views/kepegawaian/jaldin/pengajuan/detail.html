@@ -1,0 +1,89 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/jaldin/pengajuan')}">Pengajuan Jaldin</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Detail Data Pengajuan Jaldin</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/jaldin/pengajuan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form class="form-horizontal">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Item Anggaran</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$result.item_uraian|default:''}</b></label>  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Project</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$result.project_name|default:''} [{$result.project_alias|default:''}]</b></label>  
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Nama Karyawan</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$result.nama_lengkap|default:''}</b></label>  
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Berangkat</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($result.tanggal_berangkat|default:'')}, Jam {$result.waktu_berangkat|default:'-'}</b></label>  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Pulang</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($result.tanggal_pulang|default:'')}, Jam {$result.waktu_pulang|default:'-'}</b></label>  
+                                    </div>
+                                </div> 
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Lokasi</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$result.lokasi_tujuan|default:''}</b></label>  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 control-label">Uraian</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$result.uraian_tugas|default:''}</b></label>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>                    
+                </form>
+                <div class="box-footer" align="right">
+                    <a href="{$config->site_url('kepegawaian/jaldin/pengajuan/download/'|cat:$result.spt_id)}" class="btn btn-default"><i class="fa fa-file-excel-o"></i> DOWNLOAD EXCEL</a> &nbsp
+                    <a href="{$config->site_url('kepegawaian/jaldin/pengajuan/submit_process/'|cat:$result.spt_id)}" class="btn btn-success"><i class="fa fa-sign-in"></i> SUBMIT PENGAJUAN</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

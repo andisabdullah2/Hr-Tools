@@ -1,0 +1,128 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('select').select2();
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Monitoring</a></li>
+        <li class="breadcrumb-item"><a href="#">Advance & Pembelian</a></li>
+        <li class="breadcrumb-item active">Advance Umum</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Pengajuan Advance Umum</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('keuangan/advance_umum/monitoring/search_process/')}" method="post">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <p class="form-control-static">
+                                    Uraian
+                                </p>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" name="item_uraian" class="form-control" placeholder="Cari dengan nama uraian" value="{$search.item_uraian|default:''}">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <select name="advance_status" class="form-control" data-placeholder="STATUS">
+                                        <option value=""></option>
+                                        <option value="approved" {if 'approved' eq $search.advance_status|default:''}selected="selected"{/if}>DISETUJUI</option>
+                                        <option value="rejected" {if 'rejected' eq $search.advance_status|default:''}selected="selected"{/if}>DITOLAK</option>
+                                        <option value="waiting" {if 'waiting' eq $search.advance_status|default:''}selected="selected"{/if}>DIPROSES</option>
+                                        <option value="draft" {if 'draft' eq $search.advance_status|default:''}selected="selected"{/if}>DRAFT</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-info" type="submit" name="save" value="Cari"><i class="fa fa-search mr5"></i>&nbsp; Cari</button>
+                                <button class="btn btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh mr5"></i>&nbsp; Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr> 
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="10%" class="text-center">Tanggal</th>
+                                    <th width="25%" class="text-center">Uraian</th>
+                                    <th width="20%" class="text-center">Asal Pengajuan</th>
+                                    <th width="20%" class="text-center">Nominal Pengajuan</th>
+                                    <th width="10%" class="text-center">Status</th>
+                                    <th width="10%" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$rs_id item=detail}
+                                <tr>
+                                    <td class="text-center">{$no++}</td>
+                                    <td class="text-center">{$dtm->get_date_short_only($detail.advance_tanggal)|upper}</td>
+                                    <td>{$detail.item_uraian|upper}</td>
+                                    <td>{$detail.struktur_singkatan|upper}</td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($detail.advance_total_requested, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {if ($detail.advance_status eq 'approved')}
+                                        <span class="badge badge-success"><i class="fa fa-check"></i> DISETUJUI</span>
+                                        {elseif ($detail.advance_status eq 'rejected')}
+                                        <span class="badge badge-danger"><i class="fa fa-times"></i> DITOLAK</span>
+                                        {elseif ($detail.advance_status eq 'draft')}
+                                        <span class="badge"><i class="fa fa-clock-o"></i> DRAFT</span>
+                                        {else}
+                                        <span class="badge badge-warning"><i class="fa fa-clock-o"></i> SEDANG DIPROSES</span>
+                                        {/if}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{$config->site_url('keuangan/advance_umum/monitoring/detail/'|cat:$detail.trx_id)}" class="btn btn-xs white text-primary"><i class="fa fa-bars"></i></a>
+                                        <a href="{$config->site_url('keuangan/advance_umum/monitoring/download/'|cat:$detail.trx_id)}" class="btn btn-xs white text-warn"><i class="fa fa-download"></i></a>
+                                    </td>                            
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td class="text-center text-muted" colspan="8">
+                                        <br>
+                                        <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                        <i>Belum ada pengajuan</i>
+                                        <br><br>
+                                    </td>                       
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</section>

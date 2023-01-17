@@ -1,0 +1,126 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/lembur/pengajuan')}">Pengajuan Lembur</a></li>
+        <li class="breadcrumb-item active">Review dan Kirim</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Review dan Kirim Pengajuan Lembur</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/lembur/pengajuan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <form class="form-horizontal">
+                    <input type="hidden" name="overtime_id" value="{$overtime_id}">
+                    <div class="box-body">
+                        
+                        <!-- TABS HEADER -->
+                        <div class="b-b b-primary nav-active-primary">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{$config->site_url('kepegawaian/lembur/pengajuan/edit/'|cat:$overtime_id)}">
+                                        <span class="badge badge-pill primary pos-rlt text-sm mr-2">1</span>
+                                    Data Lembur</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{$config->site_url('kepegawaian/lembur/pengajuan/personil_edit/'|cat:$overtime_id)}">
+                                        <span class="badge badge-pill primary pos-rlt text-sm mr-2">2</span>
+                                    Personil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#" data-toggle="tab" data-target="#tab3">
+                                        <span class="badge badge-pill primary pos-rlt text-sm mr-2">3</span>
+                                    Review &amp Kirim</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- END OF TABS HEADER-->
+                        <!-- TAB CONTENT -->
+                        <div class="tab-content p-3 mb-3">
+                            <!-- TAB 3 CONTENT-->
+                            <div class="tab-pane animate fadeIn active" id="tab3">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- notification template -->
+                                        {include file="base/templates/notification.html"}
+                                        <!-- end of notification template-->
+                                        <div class="col-md-8">
+                                            <label><b>SURAT PERINTAH LEMBUR</b></label>
+                                        </div>
+                                        <br />
+                                        <div class="col-md-8">
+                                            <label class="control-label col-md-2">PROJECT</label>
+                                            <label class="control-label col-sm-1">:</label>
+                                            <label class="control-label"><b>{$rs_overtime.project_alias|upper}</b></label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="control-label col-md-2">TANGGAL</label>
+                                            <label class="control-label col-sm-1">:</label>
+                                            <label class="control-label"><b>{$dtm->get_full_date($rs_overtime.overtime_date|default:'')|upper}</b></label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="control-label col-md-2">WAKTU</label>
+                                            <label class="control-label col-sm-1">:</label>
+                                            <label class="control-label"><b>{$rs_overtime.overtime_start|default:''} - {$rs_overtime.overtime_end|default:''}</b></label>
+
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="control-label col-md-2">KETERANGAN</label>
+                                            <label class="control-label col-sm-1">:</label>
+                                            <label class="control-label"><b>{$rs_overtime.overtime_reason|upper|default:''}</b></label>
+                                        </div>
+                                        <hr />
+                                        <div class="col-md-8">
+                                            <label><b>PERSONIL</b></label>
+                                        </div>
+                                        <br />
+                                        <table class="table table-bordered">
+                                            <tr class="text-center">
+                                                <th width="10%" class="text-center">No</th>
+                                                <th width="50%" class="text-center">Nama Personil</th>
+                                                <th width="40%" class="text-center">Unit Kerja</th>
+                                            </tr>
+                                            {$no = 1}
+                                            {foreach from=$rs_personil item=personil}
+                                            <tr>
+                                                <td class="text-center">{$no++}</td>
+                                                <td class="text-center">{$personil.nama_lengkap}</td>
+                                                <td class="text-center">{$rs_struktur}</td>
+                                            </tr>
+                                            {foreachelse}
+                                            <tr>
+                                                <td colspan="8">Data not found!</td>
+                                            </tr>
+                                            {/foreach}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END OF TAB 3 CONTENT-->
+                        </div>
+                        <!-- END OF TAB CONTENT-->
+                    </div>
+                    <div class="box-footer" align="right">
+                        <a class="btn btn-default" href="{$config->site_url('kepegawaian/lembur/pengajuan/cetak_process/'|cat:$overtime_id)}"><i class="fa fa-file-excel-o"></i> DOWNLOAD EXCEL </a> &nbsp
+                        <a class="btn btn-success" href="{$config->site_url('kepegawaian/lembur/pengajuan/kirim_process/'|cat:$overtime_id)}"><i class="fa fa-sign-in"></i> SUBMIT PENGAJUAN </a>
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

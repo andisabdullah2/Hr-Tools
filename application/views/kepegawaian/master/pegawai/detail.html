@@ -1,0 +1,120 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/')}">Data Karyawan</a></li>
+        <li class="breadcrumb-item active">{$result.nama_lengkap|default:''}</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Detail Karyawan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/pegawai')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="d-flex flex" data-plugin="user">
+                    <div class="d-flex flex" id="content-body">
+                        <div class="d-flex flex-column flex">
+                            <div class="scroll-y">
+                                <div class="scroll-y">
+                                    <div class="p-4 mt-3 d-flex flex-column align-items-center">
+                                        <img src="{$employee_img|default:''}" class="w circle animate fadeInUp" alt="." />
+                                        <span class="text-md mt-3 block">{$result.nama_lengkap|default:''}</span>
+                                        <small class="text-muted">{$result.jabatan|default:''}</small>
+                                        <small class="text-muted">{$result.struktur_nama|default:''}</small>
+                                        <div class="block clearfix mt-3">
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/edit/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="Data Pribadi">
+                                                <i class="fa fa-user"></i>
+                                                <i class="fa fa-user indigo"></i>
+                                            </a>
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/edit_foto/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="Foto Profil">
+                                                <i class="fa fa-image"></i>
+                                                <i class="fa fa-image blue"></i>
+                                            </a>
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/unit_kerja/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="Unit Kerja">
+                                                <i class="fa fa-sitemap"></i>
+                                                <i class="fa fa-sitemap red"></i>
+                                            </a>
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/jabatan_struktural/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="Jabatan Struktural">
+                                                <i class="fa fa-list"></i>
+                                                <i class="fa fa-list green"></i>
+                                            </a>
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/jabatan_fungsional/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="Jabatan Fungsional">
+                                                <i class="fa fa-check-square-o"></i>
+                                                <i class="fa fa-check-square-o cyan"></i>
+                                            </a>
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/user_account/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="User Account">
+                                                <i class="fa fa-gear"></i>
+                                                <i class="fa fa-gear orange"></i>
+                                            </a>
+                                            <a href="{$config->site_url('kepegawaian/master/pegawai/user_role/')}/{$result.user_id}" class="btn btn-icon white btn-social btn-rounded" title="User Role">
+                                                <i class="fa fa-toggle-on"></i>
+                                                <i class="fa fa-toggle-on grey"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="p-2">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex flex-row text-muted">
+                                                    <span class="flex">{$result.pegawai_nik|default:'-'}</span>
+                                                    <span class="text-sm">
+                                                        <i class="fa fa-fw fa-address-card"></i>
+                                                    </span>
+                                                </a>
+                                            </li>                                          
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex flex-row text-muted">
+                                                    <span class="flex">{$result.alamat_tinggal|default:'-'}</span>
+                                                    <span class="text-sm">
+                                                        <i class="fa fa-fw fa-map-marker"></i>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex flex-row text-muted">
+                                                    <span class="flex">{$result.nomor_telepon|default:'-'}</span>
+                                                    <span class="text-sm">
+                                                        <i class="fa fa-fw fa-phone"></i>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex flex-row text-muted">
+                                                    <span class="flex">{$dtm->get_full_date($result.tanggal_lahir)|default:'-'}</span>
+                                                    <span class="text-sm">
+                                                        <i class="fa fa-fw fa-birthday-cake"></i>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex flex-row text-muted">
+                                                    <span class="flex">{$result.user_mail|default:'-'}</span>
+                                                    <span class="text-sm">
+                                                        <i class="fa fa-fw fa-envelope"></i>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                             
+            </div>
+        </div>
+    </div>
+</section>

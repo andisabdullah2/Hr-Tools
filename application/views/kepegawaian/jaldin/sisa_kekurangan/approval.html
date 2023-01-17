@@ -1,0 +1,172 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">Perjalanan Dinas</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/jaldin/sisa_kekurangan')}">Sisa / Kekurangan Jaldin</a></li>
+        <li class="breadcrumb-item active">Detail Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Detail Data Sisa / Kekurangan Jaldin</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/jaldin/sisa_kekurangan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Item Anggaran</label>
+                                <div class="col-md-7">
+                                    {if $detail.kode_item neq ''}
+                                    <label class="form-control-static"><b>[{$detail.kode_item|default:''}] {$detail.item_uraian|default:''}</b></label>  
+                                    {/if}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Project</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.project_name|default:''} [{$detail.project_alias|default:''}]</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Nama Karyawan</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.nama_lengkap|default:''}</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Berangkat</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_berangkat|default:'')}, Jam {$detail.waktu_berangkat|default:'-'}</b></label>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Pulang</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_pulang|default:'')}, Jam {$detail.waktu_pulang|default:'-'} [{$detail.total_hari|default:''} Hari]</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Lokasi</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.lokasi_tujuan|default:''}</b></label>  
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Uraian</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.uraian_tugas|default:''}</b></label>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ======== -->
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="4" class="table-info">ADVANCE PERJALANAN DINAS</th>
+                        </tr>
+                        <tr>
+                            <td width="5%" class="text-center"><b>No</b></td>
+                            <td width="25%" class="text-center"><b>Uraian</b></td>
+                            <td width="45%" class="text-center"><b>Keterangan</b></td>
+                            <td width="15%" class="text-center"><b>Jumlah</b></td>
+                        </tr>
+                        {$no = 1}
+                        {$total_biaya = 0}
+                        {foreach from=$rs_id item=data}
+                        <tr>
+                            <td class="text-center">{$no++}</td>
+                            <td>{$data.jenis_biaya}</td>
+                            <td>{$data.keterangan}</td>
+                            <td align="right">{number_format($data.jumlah, 0, ',', '.')}</td>
+                        </tr>
+                        {$total_biaya = $total_biaya + $data.jumlah}
+                        {foreachelse}
+                        <tr>
+                            <td colspan="5">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                        <tr class="red-row">
+                            <td colspan="3" class="text-center"><b style="font-size: 16px;">TOTAL</b></td>
+                            <td align="right"><b style="font-size: 16px;">Rp. {number_format($total_biaya, 0, ',', '.')}</b></td>
+                        </tr>                                               
+                    </table>
+                    <!-- ======== -->
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="7" class="table-info">LAPORAN PERJALANAN DINAS</th>
+                        </tr>
+                        <tr>
+                            <td width="4%" class="text-center"><b>No</b></td>
+                            <td width="10%" class="text-center"><b>Tanggal</b></td>
+                            <td width="56%" class="text-center"><b>Uraian</b></td>
+                            <td width="15%" class="text-center"><b>Kredit</b></td>
+                            <td width="15%" class="text-center"><b>Debet</b></td>
+                        </tr>
+                        <tr class="red-row">
+                            <td class="text-center"></td>
+                            <td class="text-center"></td>
+                            <td><b>Penerimaan Dari Kasir</b></td>
+                            <td class="text-right"><b>{number_format($total_biaya, 0, ',', '.')}</b></td>
+                            <td class="text-right">-</td>
+                        </tr>
+                        {$no = 1}
+                        {$total_debit = 0}
+                        {$total_kredit = 0}
+                        {foreach from=$rs_lpj item=data}
+                        <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                            <td class="text-center">{$no++}</td>
+                            <td class="text-center">{$dtm->get_short_date($data.tanggal)}</td>
+                            <td>{$data.keterangan|default:''}</td>
+                            <td class="text-right">{number_format($data.kredit, 0, ',', '.')}</td>
+                            <td class="text-right">{number_format($data.debit, 0, ',', '.')}</td>
+                        </tr>
+                        {$total_kredit = $total_kredit + $data.kredit}
+                        {$total_debit = $total_debit + $data.debit}
+                        {foreachelse}
+                        <tr>
+                            <td colspan="5">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                        {$total_kredit = $total_kredit + $total_biaya}
+                        {$total_sisa = $total_kredit - $total_debit}
+                        <tr class="red-row">
+                            <td colspan="3" class="text-center"><b style="font-size: 16px;">TOTAL</b></td>
+                            <td class="text-right"><b style="font-size: 16px;">{number_format($total_kredit, 0, ',', '.')}</b></td>
+                            <td class="text-right"><b style="font-size: 16px;">{number_format($total_debit, 0, ',', '.')}</b></td>
+                        </tr>
+                        <tr class="red-row">
+                            <td colspan="3" class="text-center"><b style="font-size: 16px; color: red;">SISA</b></td>
+                            <td class="text-right"></td>
+                            <td class="text-right"><b style="font-size: 16px; color: red;">{number_format($total_sisa, 0, ',', '.')}</b></td>
+                        </tr>                                                 
+                    </table>
+                </div>
+                <form action="{$config->site_url('kepegawaian/jaldin/sisa_kekurangan/approval_process')}" method="post">
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-success" name="save" value="SUDAH DIAMBIL dan SELESAI" onclick="return confirm('Apakah anda yakin akan memproses data berikut ini?');"><i class="fa fa-check"></i> SUDAH DIAMBIL dan SELESAI</button>
+                    </div>
+                    <input type="hidden" name="process_id" value="{$detail.process_id}" />
+                    <input type="hidden" name="spt_id" value="{$detail.spt_id}" />
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

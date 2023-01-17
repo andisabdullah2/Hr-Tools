@@ -1,0 +1,116 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/administrasi/Rekrutment/')}">Rekrutment</a>
+        </li>
+        <li class="breadcrumb-item active">Tambah Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Input Data Agenda Rekrutment</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/administrasi/Rekrutment/')}"
+                                    class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i>
+                                    Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('kepegawaian/administrasi/Rekrutment/add_process')}" method="post"
+                    class="form-horizontal">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Periode</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input name="periode_start" value="{$result.periode_start|default:''}"
+                                        type="text" class="form-control" data-plugin="datepicker"
+                                        data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:0}{/literal}"
+                                        placeholder="Tanggal" maxlength="10" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                            <label control-label">Sampai</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input name="periode_end" value="{$result.periode_end|default:''}"
+                                        type="text" class="form-control" data-plugin="datepicker"
+                                        data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:0}{/literal}"
+                                        placeholder="Tanggal" maxlength="10" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nama Agenda</label>
+                            <div class="col-md-4">
+                                <select name="agenda_id" id="agenda_id" data-plugin="select2" class="form-control"
+                                    placeholder="Nama Agenda">
+                                    <option value=""></option>
+                                    {foreach from=$rs_agenda item=data}
+                                    <option value="{$data.agenda_id}" >{$data.judul}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Media</label>
+                            <div class="col-md-4">
+                                <select name="media_id" id="media_id" data-plugin="select2" class="form-control"
+                                    placeholder="Nama Agenda">
+                                    <option value=""></option>
+                                    {foreach from=$rs_media item=data}
+                                    <option value="{$data.media_id}" >{$data.nama}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jumlah Pelamar</label>
+                            <div class="col-md-4">
+                                <input type="number" name="jumlah_pelamar" class="form-control"
+                                    value="{$result.jumlah_pelamar|default:''}">
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+
+                    </div>
+                    <div class="box-footer clearfix">
+                        <div class="form-group row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Simpan Dan Lanjutkan&nbsp;&nbsp;<i class="fa fa-arrow-right"></i></button>
+                                <!--begitu disimpan, redirect ke page selanjutnya-->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

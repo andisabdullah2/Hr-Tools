@@ -1,0 +1,398 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".nilai").autoNumeric("init", {
+            aSep: '.',
+            aDec: ',',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+        $("#nilai,#ppn,#pph").change(function(){
+            $('#total').autoNumeric('destroy');
+            total = parseInt($('#nilai').autoNumeric('get')) + parseInt($('#ppn').autoNumeric('get')) + parseInt($('#pph').autoNumeric('get'));
+            $("#total").val(total).autoNumeric("init", {
+                aSep: '.',
+                aDec: ',',
+                aSign: 'Rp ',
+                unSetOnSubmit: true
+            }).focusin();
+        });
+        //add
+        $(".add").click(function () {
+            $('#modal_add').modal('show');
+        });
+        //edit
+        $(".edit").click(function () {
+            $(".nilai_edit").autoNumeric("init", {
+                aSep: '.',
+                aDec: ',',
+                aSign: 'Rp ',
+                unSetOnSubmit: true
+            });
+            $("#nilai_edit,#ppn_edit,#pph_edit").change(function(){
+                $('#total_edit').autoNumeric('destroy');
+                total = parseInt($('#nilai_edit').autoNumeric('get')) + parseInt($('#ppn_edit').autoNumeric('get')) + parseInt($('#pph_edit').autoNumeric('get'));
+                $("#total_edit").val(total).autoNumeric("init", {
+                    aSep: '.',
+                    aDec: ',',
+                    aSign: 'Rp ',
+                    unSetOnSubmit: true
+                }).focusin();
+            });
+            $("#invoices_id").val($(this).data('invoices_id')).change();        
+            $("#invoices_tanggal").val($(this).data('invoices_tanggal')).change();        
+            $("#invoices_jatuh_tempo").val($(this).data('invoices_jatuh_tempo')).change();        
+            $("#nilai_edit").val($(this).data('nilai')).change();
+            $("#ppn_edit").val($(this).data('ppn')).change();
+            $("#pph_edit").val($(this).data('pph')).change();
+            $("#total_edit").val($(this).data('total')).change();
+            $("#invoices_status").val($(this).data('invoices_status')).change();
+            $("#invoices_uraian").val($(this).data('invoices_uraian')).change();
+            $('#modal_edit').modal('show');
+            $("#nilai_edit,#ppn_edit,#pph_edit").focusout();
+        });
+    });
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Penagihan & Pembayaran</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/tools/penagihan/')}">Daftar Penagihan</a></li>
+        <li class="breadcrumb-item active">Detail Penagihan</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Data Detail Penagihan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="#modal_add" class="add btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Invoice </a>                            
+                                <a href="{$config->site_url('project/tools/penagihan')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Project</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.project_alias|default:''}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Kontrak</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.judul_kontrak|default:''}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Nilai Termin</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>Rp. {number_format($detail.termin_nilai, 0, ',', '.')}</b></label>
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Tanggal Termin</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($detail.termin_tanggal|default:'')}</b></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Status</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.termin_status|upper|default:''}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Keterangan</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.termin_uraian|upper|default:'-'}</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Data Invoices</h6>
+                            </div>
+                        </div>                       
+                        <table class="table table-bordered" width="100%">
+                            <tr class="text-center">
+                                <th width="5%">No</th>
+                                <th width="15%">Nomor Invoice</th>
+                                <th width="15%">Tanggal Invoice</th>
+                                <th width="15%">Tanggal Jatuh Tempo</th>
+                                <th width="9%">Total Nilai</th>
+                                <th width="9%">Status</th>
+                                <th width="10%"></th>
+                            </tr>
+                            {assign var="no" value=1}
+                            {foreach from=$data item=result}
+                            <tr>
+                                <td align="center">{$no++}</td>  
+                                <td align="center">{$result.invoices_nomor}</td>  
+                                <td align="center">{$dtm->get_full_date($result.invoices_tanggal)}</td>
+                                <td align="center">{$dtm->get_full_date($result.invoices_jatuh_tempo)}</td>
+                                <td>Rp. {number_format($result.invoices_total, 0, ',', '.')}</td>
+                                <td align="center"> 
+                                    {if $result.invoices_status == 'process'}
+                                        <span class="badge badge-warning">{$result.invoices_status|upper}</span>
+                                    {elseif $result.invoices_status == 'paid'}
+                                        <span class="badge badge-success">{$result.invoices_status|upper}</span>
+                                    {elseif $result.invoices_status == 'draft'}
+                                        <span class="badge badge-primary">{$result.invoices_status|upper}</span>
+                                    {elseif $result.invoices_status == 'cancel'}
+                                        <span class="badge badge-danger">{$result.invoices_status|upper}</span>
+                                    {/if}
+                                </td>                              
+                                <td align="center">
+                                    <a href="{$config->site_url('project/tools/penagihan/print_process/'|cat:$result.invoices_id)}" class="btn btn-xs white text-success"><i class="fa fa-print"></i></a>
+                                    <a href="#modal_edit" class="edit btn btn-xs white text-success" data-invoices_id="{$result.invoices_id}" data-invoices_tanggal="{$result.invoices_tanggal}" data-invoices_jatuh_tempo="{$result.invoices_jatuh_tempo}" 
+                                    data-nilai="{$result.invoices_jumlah}" data-ppn="{$result.invoices_pajak_ppn}" data-pph="{$result.invoices_pajak_ppn}" data-total="{$result.invoices_total}" data-invoices_status="{$result.invoices_status}" data-invoices_uraian="{$result.invoices_uraian}" ><i class="fa fa-edit"></i></a>
+                                    <a onclick="return confirm('Apakah anda yakin akan menghapus data ini?');" href="{$config->site_url('project/tools/penagihan/delete_process/'|cat:$result.invoices_id)}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {foreachelse}
+                            <tr>                
+                                <td colspan="7">Data not found!</td>
+                            </tr>
+                            {/foreach}
+                        </table>                        
+                        <div class="box-footer clearfix">
+                        </div>    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--MODAL ADD-->
+<!--===================================================-->
+<div class="modal fade" id="modal_add" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah data invoices</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('project/tools/penagihan/add_process/')}" method="post" >
+            <input type="hidden" value="{$detail.termin_id}" name="termin_id" class="form-control" />
+            <input type="hidden" value="{$invoices}" name="invoices_id" class="form-control" />
+                <!--Modal body-->
+                <div class="modal-body">
+                    <!-- auto generate invoices_id -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">ID Invoice</label>
+                        <div class="col-sm-9 col-form-label"><b>{$invoices}</b></div>
+                    </div>
+                    <!-- field to input invoices_nomor -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nomor Invoice</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="invoices_nomor" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- field to input invoices_tanggal -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tanggal Invoice</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input name="invoices_tanggal" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}" placeholder="Tanggal Termin" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- field to input invoices_jatuh_tempo -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tanggal Jatuh Tempo</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input name="invoices_jatuh_tempo" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}" placeholder="Tanggal Termin" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- field to input invoices_jumlah -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nilai</label>
+                        <div class="col-sm-9">
+                            <input id="nilai" class="form-control" name="invoices_jumlah" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- PPn -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">PPn</label>
+                        <div class="col-sm-9">
+                            <input id="ppn" class="form-control" name="invoices_pajak_ppn" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- PPh -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">PPh</label>
+                        <div class="col-sm-9">
+                            <input id="pph" class="form-control" name="invoices_pajak_pph" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- invoices_total -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Total Nilai</label>
+                        <div class="col-sm-9">
+                            <input id="total" class="form-control" name="invoices_total" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- Status invoice -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Status Penagihan</label>
+                        <div class="col-sm-6">
+                            <select name="invoices_status" class="form-control" data-plugin="select2" data-option="{}"  data-placeholder="Status">
+                                <option value=""></option>
+                                <option value="draft">DRAFT</option>
+                                <option value="process">PROCESS</option>
+                                <option value="paid">PAID</option>
+                                <option value="cancel">CANCEL</option>
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <!-- Keterangan invoice -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Keterangan</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="3" name="invoices_uraian"></textarea>
+                        </div>
+                    </div>                    
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL ADD-->
+<!--MODAL EDIT-->
+<!--===================================================-->
+<div class="modal fade" id="modal_edit" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Edit data invoice</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('project/tools/penagihan/edit_process/')}" method="post" >
+            <input type="hidden" value="{$detail.termin_id}" name="termin_id" class="form-control" />
+            <input type="hidden" id="invoices_id" name="invoices_id" value="{$detail.invoices_id|default:''}">
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tanggal Invoice</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input id="invoices_tanggal" name="invoices_tanggal" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}" placeholder="Tanggal Termin" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tanggal Jatuh Tempo</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <input id="invoices_jatuh_tempo" name="invoices_jatuh_tempo" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}" placeholder="Tanggal Termin" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nilai</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="invoices_jumlah" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">PPn</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="invoices_pajak_ppn" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">PPh</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="invoices_pajak_pph" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Total Nilai</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="invoices_total" type="text"/>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Status Penagihan</label>
+                        <div class="col-sm-6">
+                            <select id="invoices_status" name="invoices_status" class="form-control" data-plugin="select2" data-option="{}"  data-placeholder="Status">
+                                <option value=""></option>
+                                <option value="draft">DRAFT</option>
+                                <option value="process">PROCESS</option>
+                                <option value="paid">PAID</option>
+                                <option value="cancel">CANCEL</option>
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Keterangan</label>
+                        <div class="col-sm-9">
+                            <textarea id="invoices_uraian" class="form-control" rows="3" name="invoices_uraian"></textarea>
+                        </div>
+                    </div>                    
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL EDIT-->

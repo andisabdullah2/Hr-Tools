@@ -1,0 +1,299 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/')}">Data Karyawan</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}">{$result.nama_lengkap|default:''}</a></li>
+        <li class="breadcrumb-item active">Edit Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Edit Data Karyawan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">  
+                    <form action="{$config->site_url('kepegawaian/master/pegawai/edit_process')}" method="post" id="form" data-plugin="parsley" data-option="{}" novalidate="" class="form-horizontal adminex-form">
+                        <input name="user_id" type="hidden"  value="{$result.user_id|default:''}" />
+                        <input name="email_address_old" type="hidden"  value="{$result.user_mail|default:''}" />
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <h6 class="subtitle-form">Data Pribadi</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Jenis Identitas</label>
+                                    <div class="col-md-6 no-padding">
+                                        <input class="form-control" name="jenis_identitas" type="text" value="{$result.jenis_identitas|default:''}" size="45" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Nomor Identitas</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="nomor_identitas" type="text" value="{$result.nomor_identitas|default:''}" size="10" maxlength="20" />
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>                                          
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Nama Lengkap</label>
+                                    <div class="col-md-6 no-padding">
+                                        <input class="form-control" name="full_name" type="text" value="{$result.nama_lengkap|default:''}"  size="35" maxlength="50" />
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Alamat Asal</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="address_main" type="text" value="{$result.alamat_ktp|default:''}" size="45" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Jenis Kelamin</label>
+                                    <div class="col-md-6 no-padding">
+                                        <label><input type="radio" name="gender" value="L" {if {$result.jenis_kelamin|default:''} eq 'L'}checked="checked"{/if} />Laki-laki</label>
+                                        <label><input type="radio" name="gender" value="P" {if {$result.jenis_kelamin|default:''} eq 'P'}checked="checked"{/if} />Perempuan</label>
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Alamat Sekarang</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="address_current" type="text" value="{$result.alamat_tinggal|default:''}" size="45" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>                                  
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Tempat Lahir</label>
+                                    <div class="col-md-6 no-padding">
+                                        <input class="form-control" name="birth_place" type="text" value="{$result.tempat_lahir|default:''}" size="25" maxlength="50" />
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Nomor Telepon</label>
+                                    <div class="col-md-8 no-padding">
+                                        <input class="form-control" name="phone_number" type="text" value="{$result.nomor_telepon|default:''}" size="15" maxlength="30" />
+                                    </div>
+                                </div>
+                            </div>                                              
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Tanggal Lahir</label>
+                                    <div class="col-md-6 no-padding">
+                                        <div class="input-group">
+                                            <input tabindex="1" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal Lahir" name="birth_date" value="{$result.tanggal_lahir|default:''}"/>
+                                            <span class="input-group-addon">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <h6 class="subtitle-form">Data Pendidikan</h6>
+                            </div>
+                        </div>                                
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Nama Instansi</label>
+                                    <div class="col-md-6 no-padding">
+                                        <input class="form-control" name="edu_instansi_nm" type="text" value="{$result.edu_instansi_nm|default:''}"  size="35" maxlength="50" />
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Jenjang Pendidikan</label>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="edu_grade" data-plugin="select2" data-option="{}" data-placeholder='Pilih'>
+                                            <option></option>
+                                            <option value="SMA" {if {$result.edu_grade|default:''} eq "SMA"}selected="selected"{/if}>SMA / SMK</option>
+                                            <option value="D3" {if {$result.edu_grade|default:''} eq "D3"}selected="selected"{/if}>Diploma III</option>
+                                            <option value="S1" {if {$result.edu_grade|default:''} eq "S1"}selected="selected"{/if}>Strata I</option>
+                                            <option value="S2" {if {$result.edu_grade|default:''} eq "S2"}selected="selected"{/if}>Strata II</option>
+                                            <option value="S3" {if {$result.edu_grade|default:''} eq "S3"}selected="selected"{/if}>Strata III</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                
+
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Alamat Instansi</label>
+                                    <div class="col-md-6 no-padding">
+                                        <input class="form-control" name="edu_instansi_address" type="text" value="{$result.edu_instansi_address|default:''}"  size="45" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Spesialisasi</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" name="edu_spezialitation" type="text" value="{$result.edu_spezialitation|default:''}" size="35" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Tahun Lulus</label>
+                                    <div class="col-md-6 no-padding">
+                                        <input class="form-control" name="edu_graduation_year" type="text" value="{$result.edu_graduation_year|default:''}"  size="4" maxlength="4" />
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                
+
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <h6 class="subtitle-form">Informasi Kepegawaian</h6>
+                            </div>
+                        </div>                                
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">NIK</label>
+                                    <div class="col-md-6">
+                                        <input class="form-control" name="pegawai_nip" type="text" value="{$result.pegawai_nip|default:''}" size="35" maxlength="50" />
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Tanggal Masuk</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input tabindex="1" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal Masuk" name="employee_date_in" value="{$result.tanggal_masuk|default:''}"/>
+                                            <span class="input-group-addon">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Status Karyawan</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="employee_st" data-plugin="select2" data-option="{}" data-placeholder='Pilih'>
+                                            <option></option>
+                                            <option value="working" {if {$result.pegawai_status|default:''} eq "working"}selected="selected"{/if}>Working</option>
+                                            <option value="resign" {if {$result.pegawai_status|default:''} eq "resign"}selected="selected"{/if}>Resign</option>
+                                        </select>
+                                        <small class="form-text text-danger"><i>* wajib diisi</i></small>
+                                    </div>                                                
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Tanggal Keluar</label>
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input tabindex="1" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true}{/literal}" placeholder="Tanggal Keluar" name="employee_date_out" value="{$result.tanggal_keluar|default:''}"/>
+                                            <span class="input-group-addon">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                        <img src="{$BASEURL}resource/doc/images/icon/icon.delete.png" id="clear-field" style="cursor: pointer;" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Unit Kerja</label>
+                                    <div class="col-md-6" style="margin-top:7px;">
+                                        <a href="{$config->site_url('kepegawaian/master/pegawai/unit_kerja/')}/{$result.user_id}" style="color:#53A6FA;"> {$result.struktur_nama|default:'Tidak ada data.'}</a>
+                                    </div>
+                                </div>                        
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Jabatan Struktural</label>
+                                    <div class="col-md-8" style="margin-top:6px;">
+                                        <a href="{$config->site_url('kepegawaian/master/pegawai/jabatan_struktural/')}/{$result.user_id}" style="color:#53A6FA";> {$result.jabatan_struktural|upper|default:'Tidak ada data.'} </a>
+                                    </div>
+                                </div>
+                            </div>                                        
+                        </div>                                
+                        <div class="row">
+                            <div class="col-md-6 no-padding-right">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label">Jabatan Fungsional</label>
+                                    <div class="col-md-8" style="margin-top:7px;">
+                                        <a href="{$config->site_url('kepegawaian/master/pegawai/jabatan_fungsional/')}/{$result.user_id}" style="color:#53A6FA;"> {$result.jabatan_fungsional|upper|default:'Tidak ada data.'}</a>
+                                    </div>                                                        
+                                </div>                                        
+                            </div>                                    
+                        </div>
+                        <div class="row" style="margin-top:10px; margin-left:-10px;">
+                            <div class="col-md-6 no-padding-right" style="">
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label"></label>
+                                    <div class="col-md-6 no-padding">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button> &nbsp
+                                        <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                
+                    </form>
+                </div>                                
+            </div>
+        </div>
+    </div>
+</section>

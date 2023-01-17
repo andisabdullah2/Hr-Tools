@@ -1,0 +1,142 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+       <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">Perjalanan Dinas</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/jaldin/advance_verifikasi')}">Verifikasi Advance</a></li>
+        <li class="breadcrumb-item active">Detail Verifikasi Advance</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Detail Verifikasi Advance</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/jaldin/advance_verifikasi')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Item Anggaran</label>
+                                <div class="col-md-7">
+                                    {if $detail.kode_item neq ''}
+                                    <label class="form-control-static"><b>[{$detail.kode_item|default:''}] {$detail.item_uraian|default:''}</b></label>  
+                                    {/if}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Project</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.project_name|default:''} [{$detail.project_alias|default:''}]</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Nama Karyawan</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.nama_lengkap|default:''}</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Berangkat</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_berangkat|default:'')}, Jam {$detail.waktu_berangkat|default:'-'}</b></label>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Pulang</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$dtm->get_full_date($detail.tanggal_pulang|default:'')}, Jam {$detail.waktu_pulang|default:'-'} [{$detail.total_hari|default:''} Hari]</b></label>  
+                                </div>
+                            </div> 
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Lokasi</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.lokasi_tujuan|default:''}</b></label>  
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Uraian</label>
+                                <div class="col-md-7">
+                                    <label class="form-control-static"><b>{$detail.uraian_tugas|default:''}</b></label>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <!-- ======== -->
+                    <form action="{$config->site_url('kepegawaian/jaldin/advance_verifikasi/approval_process')}" method="post" class="form-horizontal">
+                        <input type="hidden" name="process_id" value="{$detail.process_id}" />
+                        <input type="hidden" name="spt_id" value="{$detail.spt_id}"  />
+                        <table class="table table-bordered">
+                            <tr>
+                                <th class="table-info">CHECKLIST ADVANCE PERJALANAN DINAS</th>
+                            </tr>                       
+                        </table>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="5%" class="text-center"></th>
+                                <th width="5%" class="text-center">No</th>
+                                <th width="20%" class="text-center">Uraian</th>
+                                <th width="40%" class="text-center">Keterangan</th>
+                                <th width="15%" class="text-center">Jumlah</th>
+                                <th width="15%" class="text-center">Dikeluarkan</th>
+                            </tr>
+                            {$no = 1}
+                            {$total_biaya = 0}
+                            {$total_kredit = 0}
+                            {foreach from=$rs_id item=data}
+                            <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                            <td class="text-center">
+                                <input class="form-control" type="hidden" name="advance_id[]" value="{$data.advance_id}"/>
+                                <input class="form-control" type="checkbox" name="kredit_status[{$data.advance_id}]" value="1" {if $data.kredit_status eq '1'}checked="checked"{/if} />
+                            </td>
+                            <td class="text-center">{$no++}</td>
+                            <td>{$data.jenis_biaya}</td>
+                            <td>{$data.keterangan}</td>
+                            <td class="text-right">{number_format($data.jumlah, 0, ',', '.')}</td>
+                            <td class="text-right">
+                                {if $data.kredit_status eq '1'}
+                                {$total_kredit = $total_kredit + $data.jumlah}
+                                {number_format($data.jumlah, 0, ',', '.')}
+                                {/if}                    
+                            </td>
+                        </tr>
+                        {$total_biaya = $total_biaya + $data.jumlah}
+                        {foreachelse}
+                        <tr>
+                            <td colspan="6">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                        <tr class="red-row">
+                            <td colspan="4" class="text-center"><b style="font-size: 16px; color: #666;">TOTAL</b></td>
+                            <td class="text-right"><b style="font-size: 16px; color: #666;">Rp. {number_format($total_biaya, 0, ',', '.')}</b></td>
+                            <td class="text-right"><b style="font-size: 16px;">Rp. {number_format($total_kredit, 0, ',', '.')}</b></td>
+                        </tr>
+                        </table>
+                    </div>                  
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary" name="save" value="SIMPAN"><i class="fa fa-edit"></i> SIMPAN</button>
+                        <button type="submit" class="btn btn-success" name="save" value="SELESAI" onclick="return confirm('Apakah anda yakin data telah sesuai dengan yang dikeluarkan?');"><i class="fa fa-check"></i>SIMPAN DAN SELESAI</button>
+                    </div> 
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

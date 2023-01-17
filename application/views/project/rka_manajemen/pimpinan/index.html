@@ -1,0 +1,153 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('select').select2();
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">RKA Manajemen</a></li>
+        <li class="breadcrumb-item active">Persetujuan oleh Pimpinan</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Persetujuan oleh Pimpinan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('project/rka_manajemen/pimpinan/search_process/')}" method="post">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <p class="form-control-static">
+                                        Nama Projek
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" name="project_alias" class="form-control" placeholder="Cari rencana dengan nama projek">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <select name="process_st" class="form-control" data-placeholder="STATUS">
+                                        <option value=""></option>
+                                        <option value="approve" {if 'approve' eq $search.process_st|default:''}selected="selected"{/if}>DISETUJUI</option>
+                                        <option value="rejected" {if 'rejected' eq $search.process_st|default:''}selected="selected"{/if}>DITOLAK</option>
+                                        <option value="waiting" {if 'waiting' eq $search.process_st|default:''}selected="selected"{/if}>SEDANG DIPROSES</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-info" type="submit" name="save" value="Cari"><i class="fa fa-search mr5"></i>&nbsp; Cari</button>
+                                <button class="btn btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh mr5"></i>&nbsp; Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr> 
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="21%" class="text-center">Project</th>
+                                    <th width="14%" class="text-center">Pendapatan</th>
+                                    <th width="14%" class="text-center">Pajak</th>
+                                    <th width="14%" class="text-center">Anggaran</th>
+                                    <th width="14%" class="text-center">Biaya</th>
+                                    <th width="8%" class="text-center">Status</th>
+                                    <th width="10%" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$rs_id item=detail}
+                                <tr>
+                                    <td class="text-center">{$no++}</td>
+                                    <td>{$detail.project_alias|upper}</td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($detail.nilai_pendapatan, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($detail.nilai_pajak, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($detail.nilai_anggaran, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($detail.nilai_biaya, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {if ($detail.process_st eq 'approve')}
+                                        <span class="badge badge-success"><i class="fa fa-check"></i> DISETUJUI</span>
+                                        {elseif ($detail.process_st eq 'rejected')}
+                                        <span class="badge badge-danger"><i class="fa fa-times"></i> DITOLAK</span>
+                                        {else}
+                                        <span class="badge badge-warning"><i class="fa fa-clock-o"></i> SEDANG DIPROSES</span>
+                                        {/if}
+                                    </td>
+                                    <td class="text-center">
+                                        {if ($detail.process_st eq 'waiting')}
+                                        <a href="{$config->site_url('project/rka_manajemen/pimpinan/detail/'|cat:$detail.process_id)}" class="btn btn-xs white text-primary"><i class="fa fa-pencil"></i></a>
+                                        {else}
+                                        <a href="{$config->site_url('project/rka_manajemen/pimpinan/detail/'|cat:$detail.process_id)}" class="btn btn-xs white text-primary"><i class="fa fa-eye"></i></a>
+                                        {/if}
+                                    </td>                            
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td class="text-center text-muted" colspan="8">
+                                        <br>
+                                        <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                        <i>Belum ada pengajuan</i>
+                                        <br><br>
+                                    </td>                       
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</section>

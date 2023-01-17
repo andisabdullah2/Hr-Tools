@@ -1,0 +1,232 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#transfer').hide(); 
+        $("#jenis").change(function() {
+            var id = $(this).val();
+            if (id == 'transfer') {
+                $("#transfer").show();
+            } else {
+                $('#transfer').hide(); 
+            }
+        });
+        $(".angka").autoNumeric("init", {
+            aSep:'',
+            vMax: '99999999999999999999999999999999999999999999999999',
+            aPad:false,
+            unSetOnSubmit: true
+        });        
+    })
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Pembayaran & Pembayaran</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/tools/pembayaran/')}">Daftar Pembayaran</a></li>
+        <li class="breadcrumb-item active">Tambah Kuitansi</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Tambah Data Kuitansi</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/tools/pembayaran/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('project/tools/pembayaran/add_kuitansi_process')}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" name="invoices_id" value="{$invoices_id|default:''}">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Project</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.project_alias|default:''}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Kontrak</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.judul_kontrak|default:''}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Nomor Invoices</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.invoices_nomor|default:''}</b></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Tanggal Invoice</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($detail.invoices_tanggal|default:'')}</b></label>
+                                    </div>
+                                </div>   
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Tanggal Jatuh Tempo</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$dtm->get_full_date($detail.invoices_jatuh_tempo|default:'')}</b></label>
+                                    </div>
+                                </div>                             
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Jumlah Pembayaran</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>Rp. {number_format($detail.invoices_jumlah, 0, ',', '.')}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Pajak PPh</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>Rp. {number_format($detail.invoices_pajak_pph, 0, ',', '.')}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Pajak PPn</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>Rp. {number_format($detail.invoices_pajak_ppn, 0, ',', '.')}</b></label>
+                                    </div>
+                                </div>                  
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Total</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>Rp. {number_format($detail.invoices_total, 0, ',', '.')}</b></label>
+                                    </div>
+                                </div>                    
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Keterangan</label>
+                                    <div class="col-md-7">
+                                        <label class="form-control-static"><b>{$detail.invoices_uraian|upper|default:'-'}</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-divider m-0"></div>
+                        <div class="row" style="margin-top:1rem">
+                            <div class="col-md-6">
+                                <h6>Form Kuitansi</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                        <label class="col-md-4 control-label">Nomor Kuitansi</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" disabled="disabled" name="nomor_kuitansi" type="text" value="{$kuitansi_nomor|default:''}"  size="50" maxlength="50"/>
+                                            <small class="help-block text-danger">wajib diisi</small>
+                                        </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Tanggal Kuitansi</label>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <input name="kuitansi_tanggal" value="{$result.kuitansi_tanggal|default:''}" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}" placeholder="Tanggal Kuitansi" maxlength="10" />
+                                            <span class="input-group-addon">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                        <small class="help-block text-danger">wajib diisi</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Jenis Pembayaran</label>
+                                    <div class="col-md-3">
+                                        <select id="jenis" name="jenis_pembayaran" class="select2-single form-control" data-plugin="select2" data-placeholder="Pilih Jenis">
+                                            <option value=""></option>
+                                            <option value="tunai">TUNAI</option>
+                                            <option value="transfer">TRANSFER</option>
+                                        </select>
+                                        <small class="help-block text-danger">wajib diisi</small>
+                                    </div>
+                                </div>                            
+                                <div class="form-group row">
+                                    <label class="col-md-4 control-label">Status Kuitansi</label>
+                                    <div class="col-md-3">
+                                        <select name="kuitansi_status" class="select2-single form-control" data-plugin="select2" data-placeholder="Pilih Status">
+                                            <option value=""></option>
+                                            <option value="draft">DRAFT</option>
+                                            <option value="lunas">LUNAS</option>
+                                        </select>
+                                        <small class="help-block text-danger">wajib diisi</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="transfer">
+                            <div class="row">
+                                <div class="col-md-6">                        
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <b>Dari :</b>
+                                        </div>
+                                    </div>                            
+                                    <div class="form-group row">
+                                            <label class="col-md-4 control-label">Bank</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="kuitansi_dari_bank" type="text" value="{$result.kuitansi_dari_bank|default:''}"  size="50" maxlength="50"/>
+                                                <small class="help-block text-danger">wajib diisi</small>
+                                            </div>
+                                    </div> 
+                                    <div class="form-group row">
+                                            <label class="col-md-4 control-label">No Rekening</label>
+                                            <div class="col-md-6">
+                                                <input class="angka form-control" name="kuitansi_dari_rekening" type="text" value="{$result.kuitansi_dari_rekening|default:''}"  size="50" maxlength="50"/>
+                                                <small class="help-block text-danger">wajib diisi</small>
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">   
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <b>Ke : </b>
+                                        </div>
+                                    </div>                            
+                                    <div class="form-group row">
+                                            <label class="col-md-4 control-label">Bank</label>
+                                            <div class="col-md-6">
+                                                <input class="form-control" name="kuitansi_ke_bank" type="text" value="{$result.kuitansi_ke_bank|default:''}"  size="50" maxlength="50"/>
+                                                <small class="help-block text-danger">wajib diisi</small>
+                                            </div>
+                                    </div> 
+                                    <div class="form-group row">
+                                            <label class="col-md-4 control-label">No Rekening</label>
+                                            <div class="col-md-6">
+                                                <input class="angka form-control" name="kuitansi_ke_rekening" type="text" value="{$result.kuitansi_ke_rekening|default:''}"  size="50" maxlength="50"/>
+                                                <small class="help-block text-danger">wajib diisi</small>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label"></label>
+                                <div class="col-md-7">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                                </div>                            
+                            </div>
+                        </div>                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

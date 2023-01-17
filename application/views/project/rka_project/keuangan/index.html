@@ -1,0 +1,143 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        //select 2
+        $(".select-2").select2();
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Approval</a></li>
+        <li class="breadcrumb-item"><a href="#">RKA Project</a></li>
+        <li class="breadcrumb-item active">Persetujuan oleh Keuangan</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">List Rencana RKA Project</h4>
+                </div>
+                <div class="box-search">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <form action="{$config->site_url('project/rka_project/keuangan/search_process/')}" method="post">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <p class="form-control-static">
+                                    Nama Projek
+                                </p>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" value="{$search.project|default:''}" name="project" class="form-control" placeholder="Cari rencana dengan nama projek">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <select name="process_st" class="form-control select-2" data-placeholder="STATUS">
+                                        <option value=""></option>
+                                        <option value="approved" {if 'approved' eq $search.process_st|default:''}selected="selected"{/if}>DISETUJUI</option>
+                                        <option value="rejected" {if 'rejected' eq $search.process_st|default:''}selected="selected"{/if}>DITOLAK</option>
+                                        <option value="waiting" {if 'waiting' eq $search.process_st|default:''}selected="selected"{/if}>WAITING</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-info" type="submit" name="save" value="Cari"><i class="fa fa-search mr5"></i>&nbsp; Cari</button>
+                                <button class="btn btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh mr5"></i>&nbsp; Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="5%" class="text-center">No</th>
+                            <th width="27%" class="text-center">Project</th>
+                            <th width="12%" class="text-center">Perusahaan</th>
+                            <th width="12%" class="text-center">Akun</th>
+                            <th width="12%" class="text-center">Anggaran</th>
+                            <th width="12%" class="text-center">Biaya</th>
+                            <th width="10%" class="text-center">Status</th>
+                            <th width="10%" class="text-center"></th>
+                        </tr>
+                        {foreach from=$rs_id item=result}
+                        <tr>
+                            <td align='center'>{$no++}.</td>
+                            <td>{$result.project_alias|upper|default:''}</td>
+                            <td class="clearfix">
+                                <div class="pull-left">
+                                    Rp
+                                </div>
+                                <div class="pull-right">
+                                    {number_format($result.nilai_pendapatan, 2, ',', '.')}
+                                </div>
+                            </td>
+                            <td class="clearfix">
+                                <div class="pull-left">
+                                    Rp
+                                </div>
+                                <div class="pull-right">
+                                    {number_format($result.nilai_pajak, 2, ',', '.')}
+                                </div>
+                            </td>
+                            <td class="clearfix">
+                                <div class="pull-left">
+                                    Rp
+                                </div>
+                                <div class="pull-right">
+                                    {number_format($result.nilai_anggaran, 2, ',', '.')}
+                                </div>
+                            </td>
+                            <td class="clearfix">
+                                <div class="pull-left">
+                                    Rp
+                                </div>
+                                <div class="pull-right">
+                                    {number_format($result.nilai_biaya, 2, ',', '.')}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {if $result.flow_process_st eq 'waiting'}
+                                <span class="badge badge-warning"><i class="fa fa-clock-o"></i> &nbsp;{$result.flow_process_st|upper|default:''}</span>
+                                {elseif $result.flow_process_st eq 'approve'}
+                                <span class="badge badge-success"><i class="fa fa fa-check"></i>&nbsp;{$result.flow_process_st|upper|default:''}</span>
+                                {elseif $result.flow_process_st eq 'reject'}
+                                <span class="badge badge-danger"><i class="fa fa fa-times"></i>&nbsp;{$result.flow_process_st|upper|default:''}</span>
+                                {/if}
+                            </td>
+                            <td class="text-center">
+                                <a href="{$config->site_url('project/rka_project/keuangan/detail/'|cat:$result.process_id|default:'')}" class="btn btn-xs white text-primary"><i class="fa fa-pencil"></i></a>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                <br>
+                                <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                <i>Belum ada item pengajuan</i>
+                                <br><br>
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

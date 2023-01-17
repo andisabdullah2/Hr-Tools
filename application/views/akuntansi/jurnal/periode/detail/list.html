@@ -1,0 +1,221 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        //add
+        $(".add").click(function () {
+            $('#modal_add').modal('show');
+        });
+        //edit
+        $(".edit").click(function () {            
+            $("#periode_id").val($(this).data('periode_id')).change();        
+            $("#periode_jenis").val($(this).data('periode_jenis')).change();        
+            $("#periode_label").val($(this).data('periode_label')).change();
+            $("#periode_awal").val($(this).data('periode_awal')).change();
+            $("#periode_akhir").val($(this).data('periode_akhir')).change();
+            $('#modal_edit').modal('show');
+        });
+    });
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Accounting</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('akuntansi/jurnal/periode/')}">Periode Akuntansi</a></li>
+        <li class="breadcrumb-item active">Detail Periode</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Rincian Periode Tahun {$tahun_index}</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a class="add btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a>
+                                <a href="{$config->site_url('akuntansi/jurnal/periode/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">               
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th>Jenis</th>
+                                    <th>Label</th>
+                                    <th>Periode</th>
+                                    <th width="10%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$rs_id key=no item=result}
+                                <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                                    <td align="center">{$no+1}.</td>
+                                    <td align="center">{$result.periode_jenis|upper}</td>
+                                    <td align="center">{$result.periode_label|upper}</td>
+                                    <td align="center">{$dtm->get_full_date($result.periode_awal)} s/d {$dtm->get_full_date($result.periode_akhir)}</td>
+                                    <td align="center">
+                                        <a class="edit btn btn-xs white text-success edit" data-periode_akhir="{$result.periode_akhir}" data-periode_awal="{$result.periode_awal}" data-periode_label="{$result.periode_label}" data-periode_id="{$result.periode_id}" data-periode_jenis="{$result.periode_jenis}" ><i class="fa fa-edit"></i></a>
+                                        <a onclick="return confirm('Apakah anda yakin akan menghapus data ini?');" href="{$config->site_url('akuntansi/jurnal/periode/delete_periode_process/'|cat:$result.periode_id)}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>                            
+                                    </td>
+                                </tr>    
+                                {foreachelse}
+                                <tr>
+                                    <td colspan="5">Data not found!</td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                       </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--MODAL ADD-->
+<!--===================================================-->
+<div class="modal fade" id="modal_add" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah data</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('akuntansi/jurnal/periode/add_periode_process/')}" method="post" >
+            <input type="hidden" value="{$tahun_index}" name="tahun_index" class="form-control" />
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tahun</label>
+                        <div class="col-sm-9 col-form-label"><b>{$tahun_index}</b></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Jenis</label>
+                        <div class="col-sm-6">
+                            <select name="periode_jenis" class="form-control" data-plugin="select2" data-option="{}"  data-placeholder="Jenis">
+                                <option value=""></option>
+                                <option value="bulan">BULAN</option>
+                                <option value="triwulan">TRIWULAN</option>
+                                <option value="caturwulan">CATURWULAN</option>
+                                <option value="semester">SEMESTER</option>
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>      
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Label</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="periode_label" class="form-control" size="50" maxlength="50"/>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>                     
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Periode</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <input name="periode_awal" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:1}{/literal}" placeholder="Periode Mulai" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>                        
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <span style="margin-top:8px">s/d</span>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <input name="periode_akhir" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:1}{/literal}" placeholder="Periode Selesai" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>                        
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL ADD-->
+<!--MODAL EDIT-->
+<!--===================================================-->
+<div class="modal fade" id="modal_edit" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Edit data termin</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('akuntansi/jurnal/periode/edit_periode_process/')}" method="post" >
+                <input type="hidden" id="periode_id" name="periode_id" value="">
+                <input type="hidden" id="tahun_index" name="tahun_index" value="{$tahun_index}">
+                <!--Modal body-->
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Jenis</label>
+                        <div class="col-sm-6">
+                            <select id="periode_jenis" name="periode_jenis" class="form-control" data-plugin="select2" data-option="{}"  data-placeholder="Jenis">
+                                <option value=""></option>
+                                <option value="bulan">BULAN</option>
+                                <option value="triwulan">TRIWULAN</option>
+                                <option value="caturwulan">CATURWULAN</option>
+                                <option value="semester">SEMESTER</option>
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>      
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Label</label>
+                        <div class="col-sm-9">
+                            <input id="periode_label" type="text" name="periode_label" class="form-control" size="50" maxlength="50"/>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>                     
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Periode</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <input id="periode_awal" name="periode_awal" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:1}{/literal}" placeholder="Periode Mulai" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>                        
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <span style="margin-top:8px">s/d</span>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <input id="periode_akhir" name="periode_akhir" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:1}{/literal}" placeholder="Periode Selesai" maxlength="10" />
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>                 
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL EDIT-->

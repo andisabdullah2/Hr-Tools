@@ -1,0 +1,132 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/Files_karyawan/')}">Files Data Karyawan
+                Karyawan</a></li>
+        <li class="breadcrumb-item active">Tambah Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Tambah Files Data Karyawan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/Files_karyawan/')}"
+                                    class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i>
+                                    Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('kepegawaian/master/Files_karyawan/add_process')}" method="post"
+                    class="form-horizontal">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Field</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="file_field" type="text"
+                                    value="{$rs_files.file_field|default:''}" size="35" maxlength="100" />
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Judul Files</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="file_title" type="text"
+                                    value="{$rs_files.file_title|default:''}" size="35" maxlength="100" />
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Deskripsi Files</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="file_desc" type="text"
+                                    value="{$rs_files.file_desc|default:''}" size="35" maxlength="255" />
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Ukuran Files</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="file_size" type="text"
+                                    value="{$rs_files.file_size|default:''}" size="35" maxlength="10" />
+                            </div>
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Jenis Files</label>
+                            <div class="col-md-4">
+                                <!-- <input type="text" value="{$rs_files.file_allowed|default:''}" data-role="tagsinput" name="file_allowed" placeholder="Add tags" /> -->
+                                <input type="text" data-role="tagsinput" name="file_allowed" class="form-control"
+                                    value="{$rs_files.file_allowed|default:''}" placeholder="Add">
+                                <!-- <input class="form-control" data-role="tagsinput" name="file_allowed" type="tags" value="{$rs_files.file_allowed|default:''}"  size="35"  /> -->
+                            </div>
+
+                            <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="box-footer clearfix">
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>
+                                    Simpan</button>
+                                <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css"
+    integrity="sha512-xmGTNt20S0t62wHLmQec2DauG9T+owP9e6VU8GigI0anN7OXLip9i7IwEhelasml2osdxX71XcYm6BQunTQeQg=="
+    crossorigin="anonymous" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"
+    integrity="sha512-VvWznBcyBJK71YKEKDMpZ0pCVxjNuKwApp4zLF3ul+CiflQi6aIJR+aZCP/qWsoFBA28avL5T5HA+RE+zrGQYg=="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput-angular.min.js"
+    integrity="sha512-KT0oYlhnDf0XQfjuCS/QIw4sjTHdkefv8rOJY5HHdNEZ6AmOh1DW/ZdSqpipe+2AEXym5D0khNu95Mtmw9VNKg=="
+    crossorigin="anonymous"></script>
+<style type="text/css">
+    .bootstrap-tagsinput {
+        width: 100%;
+    }
+
+    .label-info {
+        background-color: #17a2b8;
+
+    }
+
+    .label {
+        display: inline-block;
+        padding: .25em .4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: .25rem;
+        transition: color .15s ease-in-out, background-color .15s ease-in-out,
+            border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+</style>
+

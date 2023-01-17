@@ -1,0 +1,87 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Pendukung</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/jabatan_struktural/')}">Jabatan Struktural</a></li>
+        <li class="breadcrumb-item active">Edit Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Edit Data Jabatan Struktural</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/master/jabatan_struktural')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('kepegawaian/master/jabatan_struktural/edit_process')}" method="post" class="form-horizontal">
+                <input type="hidden" name="jabatan_struktural_id" value="{$result.jabatan_struktural_id}">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nama Jabatan</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="jabatan_nama" type="text" value="{$result.jabatan_nama|default:''}"  size="100" maxlength="100" />
+                                <small class="help-block text-danger">wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Alias</label>
+                            <div class="col-md-4">
+                                <input class="form-control" name="jabatan_alias" type="text" value="{$result.jabatan_alias|default:''}"  size="50" maxlength="50" />
+                                <small class="help-block text-danger">wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Level</label>
+                            <div class="col-md-2">
+                                <input class="form-control" name="jabatan_level" type="number" min="0" max="999" value="{$result.jabatan_level|default:''}" />
+                                <small class="help-block text-danger">wajib diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Unit Kerja</label>
+                            <div class="col-md-4">
+                                <select name="struktur_cd" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Unit Kerja">
+                                <option value=""></option>
+                                {foreach from=$rs_struktur item=data}
+                                        <option value="{$data.struktur_cd}" {if {$result.struktur_cd|default:''} eq $data.struktur_cd}selected="selected"{/if}>{$data.struktur_nama|upper}</option>
+                                {/foreach}
+                              </select>       
+                               <small class="help-block text-danger">wajib diisi</small>                              
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Keterangan</label>
+                            <div class="col-md-4">
+                                <textarea class="form-control" name="jabatan_keterangan" rows="3">{$result.jabatan_keterangan|default:''}</textarea>
+                            </div>
+                        </div>		                        
+                    </div>
+                    <div class="box-footer clearfix">
+                    <div class="form-group row">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                                <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                            </div>
+                        </div>	                    
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

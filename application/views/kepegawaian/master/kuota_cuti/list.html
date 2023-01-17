@@ -1,0 +1,104 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <!-- <h1> -->
+        <!-- Human Resource Tools -->
+    <!-- </h1> -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item active">Data Kuota Cuti Karyawan</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                  <h4 class="box-title">Data Kuota Cuti Karyawan</h4>
+                  <div class="box-tool">
+                      <ul class="nav nav-xs">
+                          <li class="nav-item">
+                              <a href="{$config->site_url('kepegawaian/master/kuota_cuti/add/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a>                          
+                          </li>
+                      </ul>
+                  </div>
+                </div>
+                <div class="box-search clearfix">
+                    <form action="{$config->site_url('kepegawaian/master/kuota_cuti/proses_cari/')}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                      <input type="text" name="full_name" value="{$search.full_name|default:''}" class="form-control" placeholder="Nama Karyawan"/>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group">
+                                            <input tabindex="1" maxlength="4" size="4" type="number" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy', clearBtn: true, viewMode:'years',minViewMode:'years'}{/literal}" placeholder="Tahun" name="tahun" value="{$search.tahun|default:''}" style="font-weight: bold; text-align: center;"/>
+                                            <span class="input-group-addon-custom">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>                                      
+                                    <div class="col-md-4">
+                                        <button class="btn  btn-dark" type="submit" name="save" value="Cari"><i class="fa fa-search"></i>&nbsp; Cari</button>
+                                        <button class="btn  btn-default" type="submit" name="save" value="Reset"><i class="fa fa-refresh"></i>&nbsp; Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                                <th width="4%">No</th>
+                                <th width="13%">Nama</th>
+                                <th width="6%">Jenis Cuti</th>
+                                <th width="7%">Tahun</th>
+                                <th width="8%">Kuota Cuti</th>
+                                <th width="4%"></th>
+                        </tr>
+                        {foreach from=$rs_id item=result}
+                        {assign var=total_data_presented value=$total_data_presented+1}
+                        <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                                <td align="center">{$no++}.</td>
+                                <td>{$result.nama_lengkap}</td>
+                                <td align="center"> {$result.jenis} </td>
+                                <td align="center">{$result.tahun}</td>
+                                <td align="center">{$result.total}</td>
+                                <td align="center">
+                                  <a href="{$config->site_url('kepegawaian/master/kuota_cuti/edit/'|cat:$result.user_id)}/{$result.tahun}/{$result.jenis_id}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                  <a href="{$config->site_url('kepegawaian/master/kuota_cuti/delete/'|cat:$result.user_id)}/{$result.tahun}/{$result.jenis_id}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                                <td colspan="6">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+                <div class="box-body pt-0">
+                        <div class="row">
+                                <div class="col-md-6">
+                                        <ul class="pagination">
+                                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                                        </ul>
+                                </div>
+                                <div class="col-md-6">
+                                        <nav class="pull-right">
+                                                <ul class="pagination">
+                                                        <li class="page-item"></li>{$pagination.data|default:''}</li>
+                                                </ul>
+                                        </nav>
+                                </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

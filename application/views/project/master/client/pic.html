@@ -1,0 +1,196 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        //add
+        $(".add").click(function () {
+            $('#modal_add').modal('show');
+        });
+
+        //edit
+        $(".edit").click(function () {
+            $("#pic_id").val($(this).data('id'));
+            $("#pic_name").val($(this).data('name'));
+            $("#pic_position").val($(this).data('pos'));
+            $("#pic_phone_number").val($(this).data('phone'));
+            $("#pic_email").val($(this).data('email'));
+            $('#modal_edit').modal('show');
+        });
+    });
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <!-- </h1> -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/master/client/')}">Client Data</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/master/client/edit/'|cat:$result.client_id)}">{$result.client_nm|default:''}</a></li>
+        <li class="breadcrumb-item active">Contact Person</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Daftar Contact Person</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="#" class="btn btn-outline b-primary text-primary add" data-toogle="modal" data-toggle="tooltip" data-placement="top" ><i class="fa fa-plus"></i> Tambah Data</a>
+                                <a href="{$config->site_url('project/master/client/edit/'|cat:$result.client_id)}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/master/client/edit/'|cat:$result.client_id|default:'')}">Data Client</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/master/client/alamat/'|cat:$result.client_id|default:'')}">Data Alamat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="">Contact Person</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                            <th width="4%">No</th>
+                            <th width="25%">Nama</th>
+                            <th width="30%">Jabatan</th>
+                            <th width="15%">Telepon</th>
+                            <th width="15%">Email</th>
+                            <th width="11%"></th>
+                        </tr>
+                        {foreach from=$rs_id key=no item=data}
+                        <tr>
+                            <td class="text-center">{$no + 1}.</td>
+                            <td>{$data.pic_name|default:''}</td>
+                            <td>{$data.pic_position|default:''}</td>
+                            <td class="text-center">{$data.pic_phone_number|default:''}</td>
+                            <td>{$data.pic_email|default:''}</td>
+                            <td class="text-center">
+                                <a href="#" class="btn btn-xs white text-success edit" data-toogle="modal" data-id="{$data.pic_id}" data-name="{$data.pic_name}" data-pos="{$data.pic_position}" data-phone="{$data.pic_phone_number}" data-email="{$data.pic_email}" data-toggle="tooltip" data-placement="top" ><i class="fa fa-edit"></i></a>
+                                <a href="{$config->site_url('project/master/client/pic_delete_process/'|cat:$result.client_id|cat:'/'|cat:$data.pic_id)}" class="btn btn-xs white text-danger"  onclick="return confirm('Apakah anda yakin akan menghapus data ini?')"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>    
+                        {foreachelse}
+                        <tr>
+                            <td colspan="5">Data tidak ditemukan!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--MODAL ADD-->
+<!--===================================================-->
+<div class="modal fade" id="modal_add" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah data contact person</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('project/master/client/pic_add_process/')}" method="post" >
+                <!--Modal body-->
+                <div class="modal-body">
+                    <input type="hidden" value="{$result.client_id}" name="client_id" class="form-control" />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nama</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_name" type="text" value="{$result.pic_name|default:''}" />
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Jabatan</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_position" type="text" value="{$result.pic_position|default:''}" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Telepon</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_phone_number" type="text" value="{$result.pic_phone_number|default:''}" />
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_email" type="text" value="{$result.pic_email|default:''}" />
+                        </div>
+                    </div>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL ADD-->
+<!--MODAL EDIT-->
+<!--===================================================-->
+<div class="modal fade" id="modal_edit" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Edit data contact person</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('project/master/client/pic_edit_process/')}" method="post" >
+                <!--Modal body-->
+                <div class="modal-body">
+                    <input type="hidden" value="{$result.client_id}" name="client_id" class="form-control" />
+                    <input type="hidden" id="pic_id" name="pic_id" class="form-control" />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nama</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_name" type="text" value="" id="pic_name" />
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Jabatan</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_position" type="text" value="" id="pic_position" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Telepon</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_phone_number" type="text" value="" id="pic_phone_number" />
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" name="pic_email" type="text" value="" id="pic_email" />
+                        </div>
+                    </div>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL EDIT-->

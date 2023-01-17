@@ -1,0 +1,136 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Monitoring</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/ijin/monitoring')}">Pengajuan Ijin</a></li>
+        <li class="breadcrumb-item active">Detail Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Data Pengajuan Ijin Karyawan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('kepegawaian/ijin/monitoring')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Nama Lengkap</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{$detail.nama_lengkap|upper|default:''}</b></label>
+                                </div>
+                            </div>  
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Unit Kerja</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{$detail.struktur_nama|upper|default:''}</b></label>
+                                </div>
+                            </div>    
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Jenis Ijin</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{$detail.jenis_izin|upper|default:''}</b></label>
+                                </div>
+                            </div>      
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Nomor Ijin</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{$detail.izin_nomor|upper|default:''}</b></label>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Tanggal Ijin</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{$dtm->get_full_date($detail.izin_tanggal|default:'')|upper}</b></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Jam</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{if !empty($detail.izin_waktu_mulai) && !empty(izin_waktu_selesai)}{$detail.izin_waktu_mulai|default:''} s/d {$detail.izin_waktu_selesai|default:''}{/if}</b></label>
+                                </div>
+                            </div>                            
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Keterangan</label>
+                                <div class="col-md-9">
+                                    <label class="control-label"><b>{$detail.izin_uraian|default:''}</b></label>
+                                </div>
+                            </div>                        
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:1rem">
+                        <div class="col-md-12"><h6 style="font-size:0.9rem">History Persetujuan</h6></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="streamline">
+                        {assign var="iterasi" value=1}
+                        {foreach from=$proses item=result}
+                            <div class="sl-item {if $result.process_st == 'waiting'} b-warning {elseif $result.process_st == 'approve'} b-success {else} b-danger {/if}">
+                                <div class="sl-icon">
+                                    <i class="fa {if $result.process_st == 'waiting'} fa-clock-o {elseif $result.process_st == 'approve'} fa-check {else} fa-times {/if}"></i>
+                                </div>
+                                <div class="sl-content">
+                                    <div class="sl-date text-info">{$result.role_name}</div>
+                                    <div>
+                                        {if $result.process_st == 'waiting'} 
+                                            {$result.task_label_waiting}
+                                            {if !empty($result.mdb_name) && !empty($result.mdd)}
+                                                , diajukan oleh {$result.mdb_name} pada
+                                                <span>{$dtm->get_full_date($result.mdd_finish|default:'')}</span>                                                                                            
+                                            {/if}
+                                        {elseif $result.process_st == 'approve' && $result.task_number == 1} 
+                                            Diajukan oleh {$result.mdb_finish_name} pada 
+                                                <span>
+                                                    {if $iterasi == 1}
+                                                    {$dtm->get_full_date($result.izin_send_date|default:'')}
+                                                    {else}
+                                                    {$dtm->get_full_date($result.mdd_finish|default:'')}
+                                                    {/if}
+                                                </span>
+                                        {elseif $result.process_st == 'approve' && $result.task_number != 1} 
+                                            {$result.task_label_approve} oleh {$result.mdb_finish_name} pada 
+                                            <span>{$dtm->get_full_date($result.mdd_finish|default:'')}</span>                                            
+                                            {if !empty($result.catatan)} <div style="width:330px"> Dengan catatan : {$result.catatan} </div>{/if}
+                                        {elseif $result.process_st == 'reject'} 
+                                            {$result.task_label_reject} oleh {$result.mdb_finish_name} pada 
+                                            <span>{$dtm->get_full_date($result.mdd_finish|default:'')}</span>
+                                            {if !empty($result.catatan)} <div style="width:330px"> Dengan catatan : {$result.catatan} </div>{/if}                                            
+                                        {/if}
+                                    </div>
+                                </div>
+                            </div>
+                        {assign var=iterasi value=$iterasi+1}
+                        {foreachelse}
+                            <div class="row" style="margin-bottom:1rem">
+                                <div class="col-md-12"><h6 style="font-size:0.9rem">Data tidak ditemukan</h6></div>
+                            </div>
+                        {/foreach}                            
+                        </div>
+                    </div>  
+                    <div class="box-footer" align="left">
+                        <a href="{$config->site_url('kepegawaian/ijin/monitoring/print_process/'|cat:$detail.izin_id)}" class="btn btn-default"><i class="fa fa-file-excel-o"></i> DOWNLOAD EXCEL</a> &nbsp
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,124 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Akuntansi</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Pendukung</a></li>
+        <li class="breadcrumb-item active">Hapus Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Hapus Data Bagan Akun</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('akuntansi/pendukung/bagan_akun')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('akuntansi/pendukung/bagan_akun/delete_process')}" method="post" class="form-horizontal" onsubmit="return confirm('Apakah anda yakin akan menghapus data berikut ini?');">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <input type="hidden" name="kode_akun" value="{$result.kode_akun|default:''}" />
+                        <div class="form-group row">
+                          <label class="col-md-3 control-label">Level Akun</label>
+                          <div class="col-md-4">
+                            <select name="level_akun" id="level_akun" data-plugin="select2" data-option="{}" data-placeholder="Pilih Level Akun" class="form-control" disabled="true">
+                              <option value=""></option>
+                                {for $no=1 to 5}
+                                    <option value="{$no}" {if $no eq $result.level_akun} selected="selected"{/if}>
+                                        {if $no eq 1}
+                                            Kelompok
+                                        {elseif $no eq 2}
+                                            Golongan
+                                        {elseif $no eq 3}
+                                            Sub Golongan
+                                        {elseif $no eq 4}
+                                            Akun
+                                        {else}
+                                            Sub Akun
+                                        {/if}
+                                    </option>
+                                {/for}
+                            </select>
+                          </div>
+                          <small class="help-block text-danger">wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-3 control-label">Induk Bagan Akun</label>
+                          <div class="col-md-4">
+                            <select name="induk_akun" id="induk_akun" data-plugin="select2" data-option="{}" data-placeholder="Pilih Induk" class="form-control" disabled="true">
+                                <option value=""></option>
+                                {foreach from=$rs_id item=data}
+                                <option
+                                    {if $result.level_akun eq 1}
+                                        value="" selected="selected"
+                                    {elseif $result.level_akun eq 2 && $data.level_akun eq 1}
+                                        value="{$data.kode_akun}"
+                                        {if substr($data.kode_akun, 0, 1) eq substr($result.kode_akun, 0, 1)}
+                                            selected="selected"
+                                        {/if}
+                                    {elseif $result.level_akun eq 3 && $data.level_akun eq 2}
+                                        value="{$data.kode_akun}"
+                                        {if substr($data.kode_akun, 0, 2) eq substr($result.kode_akun, 0, 2)}
+                                            selected="selected"
+                                        {/if}
+                                    {elseif $result.level_akun eq 4 && $data.level_akun eq 3}
+                                        value="{$data.kode_akun}"
+                                        {if substr($data.kode_akun, 0, 4) eq substr($result.kode_akun, 0, 4)}
+                                            selected="selected"
+                                        {/if}
+                                    {elseif $result.level_akun eq 5 && $data.level_akun eq 4}
+                                        value="{$data.kode_akun}"
+                                        {if substr($data.kode_akun, 0, 6) eq substr($result.kode_akun, 0, 6)}
+                                            selected="selected"
+                                        {/if}
+                                    {/if}>
+                                    {$data.kode_akun} - {$data.nama_akun}
+                                    </option>
+                                {/foreach}
+                            </select>
+                          </div>
+                          <small class="help-block text-danger">* wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-3 control-label">Nama Bagan Akun</label>
+                          <div class="col-md-4">
+                            <select name="nama_akun" id="nama_akun" data-plugin="select2" data-option="{}" data-placeholder="Pilih Bagan Akun" class="form-control" disabled="true">
+                                <option {if $result.nama_akun eq NULL}value=""{else}value="{$result.nama_akun}" selected=""{/if}>{$result.nama_akun}</option>
+                            </select>
+                          </div>
+                          <small class="help-block text-danger">* wajib diisi</small>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Penjelasan</label>
+                            <div class="col-md-4">
+                                <textarea name="penjelasan" class="form-control" disabled="true">{$result.penjelasan|default:''}</textarea>
+                            </div>
+                            <small class="help-block text-danger">* wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="box-footer clearfix">
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label"></label>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Hapus</button>
+                                <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                            </div>                            
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

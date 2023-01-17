@@ -1,0 +1,119 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Project</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/tools/documentation/')}">Project Documentation</a></li>
+        <li class="breadcrumb-item active">Hapus Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Hapus Data Dokumentasi</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/tools/documentation')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('project/tools/documentation/delete_process')}" method="post" class="form-horizontal" onsubmit="return confirm('Apakah anda yakin akan menghapus data berikut ini?');">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <p class="text-danger">Apakah anda yakin akan menghapus data berikut ini?</p>
+                        <input type="hidden" name="doc_id" value="{$result.doc_id|default:''}" />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- notification template -->
+                                {include file="base/templates/notification.html"}
+                                <!-- end of notification template-->
+                                <div class="box-header">
+                                    <h7 class="text-info"><b>DOKUMENTASI PROJECT</b></h7>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Project</label>
+                                            <div class="col-md-7">
+                                                <label class="form-control-static"><b>{$detail.project_name|default:''} [{$detail.project_alias|default:''}]</b></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Client</label>
+                                            <div class="col-md-7">
+                                                <label class="form-control-static"><b>{$detail.client_nm|default:''}</b></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Jenis Dokumen</label>
+                                            <div class="col-md-7">
+                                                <label class="form-control-static"><b>{$detail.doc_name|default:''}</b></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Keterangan</label>
+                                            <div class="col-md-7">
+                                                <label class="form-control-static"><b>{$detail.doc_notes|default:''}</b></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Total File</label>
+                                            <div class="col-md-7">
+                                                <label class="form-control-static"><b>{$detail.jumlah_file|default:'0'} Dokumen</b></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box-header">
+                                    <h7 class="text-info"><b>LIST DOKUMEN</b></h7>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="5%">No</th>
+                                                <th width="95%">File</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="myTable">
+                                            {$no = 1}
+                                            {foreach $rs_file as $result}
+                                            <tr>
+                                                <td>{$no++}</td>
+                                                <td>
+                                                    {if !empty($result.file_name)}
+                                                    <a href="{$config->site_url('project/tools/documentation/download/'|cat:$detail.doc_id|cat:'/'|cat:$result.files_id)}"><i class="fa fa-download"></i> {$result.file_name|default:''}</a>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {/foreach}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="box-footer clearfix">
+                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i>&nbsp;  HAPUS</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

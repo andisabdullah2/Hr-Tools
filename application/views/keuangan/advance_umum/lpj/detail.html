@@ -1,0 +1,499 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        var process_id = '{$detail.process_id}';
+        $(".biaya").autoNumeric("init", {
+            aSep: '.',
+            aDec: ',',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+        //
+        $('#btn-konfirmasi').click(function(event) {
+            var url = $(this).attr('href');
+            swal({
+                title: "Konfirmasi Proses",
+                text: "Pengajuan yang sudah diproses tidak dapat dibatalkan, lanjutkan proses pengajuan?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.value) {
+                    window.location = url;
+                }
+            });
+            return false;
+        });
+        // modal add
+        $('#modal-add').on('shown.bs.modal', function (e) {
+            var target = $(e.relatedTarget);
+            var parent = $('#modal-add');
+            // input data
+            parent.find('[name="process_id"]').val( process_id );
+        });
+        // modal edit
+        $('#modal-edit').on('shown.bs.modal', function (e) {
+            var target = $(e.relatedTarget);
+            var parent = $('#modal-edit');
+            // input data
+            parent.find('[name="process_id"]').val( process_id );
+            parent.find('[name="lpj_id"]').val(target.attr('data-lpj_id'));
+            parent.find('[name="uraian"]').val(target.attr('data-uraian'));
+            parent.find('[name="tanggal"]').val(target.attr('data-tanggal'));
+            parent.find('[name="debit"]').autoNumeric('set', target.attr('data-debit'));
+            parent.find('[name="kredit"]').autoNumeric('set', target.attr('data-kredit'));
+        });
+        // modal delete
+        $('#modal-delete').on('shown.bs.modal', function (e) {
+            var target = $(e.relatedTarget);
+            var parent = $('#modal-delete');
+            // input data
+            parent.find('[name="process_id"]').val( process_id );
+            parent.find('[name="lpj_id"]').val(target.attr('data-lpj_id'));
+            parent.find('.uraian').html(target.attr('data-uraian'));
+            parent.find('.tanggal').html(target.attr('data-tanggal-format'));
+            parent.find('[name="debit"]').autoNumeric('set', target.attr('data-debit'));
+            parent.find('.debit').html(parent.find('[name="debit"]').val());
+            parent.find('[name="kredit"]').autoNumeric('set', target.attr('data-kredit'));
+            parent.find('.kredit').html(parent.find('[name="kredit"]').val());
+        });
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">LPJ</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('keuangan/advance_umum/lpj')}">Advance Umum</a></li>
+        <li class="breadcrumb-item active">Pengajuan {'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-9">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Pengajuan {'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('keuangan/advance_umum/lpj')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-striped" style="font-size: 11px; background-color: #fefbdb">
+                        <tr>
+                            <th width="100%" colspan="2">Data Rencana Pengajuan</td>
+                        </tr>
+                        <tr>
+                            <td width="20%">Nomor Pengajuan</td>
+                            <th width="80%">{$detail.advance_no}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Tanggal Pengajuan</td>
+                            <th width="80%">{$dtm->get_full_date($detail.advance_tanggal)|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Item Anggaran</td>
+                            <th width="80%">{'[ '|cat:$detail.kode_output|cat:'.'|cat:$detail.item_no|cat:' ] '|cat:$detail.item_uraian|upper}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Uraian</td>
+                            <th width="80%">{$detail.advance_uraian|default:'-'}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Biaya Diajukan</td>
+                            <th width="80%">Rp {number_format($detail.advance_total_requested, 2, ',', '.')}</th>
+                        </tr>
+                        <tr>
+                            <td width="20%">Biaya Disetujui</td>
+                            <th width="80%">Rp {number_format($detail.advance_total_approved, 2, ',', '.')}</th>
+                        </tr>
+                    </table>
+                    <!--  -->
+                    <p class="pad-all">
+                        Berikut merupakan daftar rincian dari pengajuan : 
+                    </p>
+                    <!-- Basic Forms -->
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Daftar Rincian dari Pengajuan</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr> 
+                                            <th width="5%" class="text-center">No</th>
+                                            <th width="45%" class="text-center">Uraian</th>
+                                            <th width="5%" class="text-center">Jumlah</th>
+                                            <th width="25%" class="text-center">Total</th>
+                                            <th width="20%" class="text-center">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {$no = 1}
+                                        {$total = 0}
+                                        {foreach from=$rs_id item=data}
+                                        {$total = $total + ($data.item_total * $data.item_jumlah)}
+                                        <tr>
+                                            <td class="text-center">{$no++}</td>
+                                            <td>{$data.item_uraian|upper}</td>
+                                            <td class="text-center">{$data.item_jumlah}</td>
+                                            <td class="clearfix">
+                                                <div class="pull-left">
+                                                    Rp
+                                                </div>
+                                                <div class="pull-right">
+                                                    {number_format($data.item_total, 2, ',', '.')}
+                                                </div>
+                                            </td>
+                                            <td>{$data.item_keterangan|upper}</td>                           
+                                        </tr>
+                                        {foreachelse}
+                                        <tr>
+                                            <td class="text-center text-muted" colspan="6">
+                                                <br>
+                                                <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                                <i>Belum ada rincian pengajuan</i>
+                                                <br><br>
+                                            </td>            
+                                        </tr>
+                                        {/foreach}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="text-center" colspan="3">Total Rincian</th>
+                                            <th class="text-center">
+                                                <div class="pull-left">
+                                                    Rp
+                                                </div>
+                                                <div class="pull-right">
+                                                    {number_format($total, 2, ',', '.')}
+                                                </div>
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Daftar Laporan Pertanggungjawaban</h4>
+                    {if ($detail.process_st eq 'waiting')}
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="#" class="btn btn-xs warn"  data-toggle="modal" data-target="#modal-add"><i class="fa fa-plus"></i>&nbsp;&nbsp;Tambah Laporan</a>
+                            </li>
+                        </ul>
+                    </div>
+                    {/if}
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr> 
+                                    <th width="5%" class="text-center">No</th>
+                                    <th width="15%" class="text-center">Tanggal</th>
+                                    <th width="34%" class="text-center">Uraian</th>
+                                    <th width="18%" class="text-center">Pengeluaran</th>
+                                    <th width="18%" class="text-center">Penerimaan</th>
+                                    <th width="10%" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {$no = 1}
+                                {$total_debit = 0}
+                                {$total_kredit = 0}
+                                {foreach from=$rs_lpj item=data}
+                                {$total_debit = $total_debit + $data.debit}
+                                {$total_kredit = $total_kredit + $data.kredit}
+                                <tr>
+                                    <td class="text-center">{$no++}</td>
+                                    <td class="text-center">{$dtm->get_date_short_only($data.tanggal)|upper}</td>
+                                    <td>{$data.uraian|upper}</td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($data.debit, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($data.kredit, 2, ',', '.')}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {if ($detail.process_st eq 'waiting')}
+                                        <a href="#" class="btn btn-xs white text-success" data-toggle="modal" data-target="#modal-edit" data-lpj_id="{$data.lpj_id}" data-uraian="{$data.uraian}" data-tanggal="{$data.tanggal}" data-tanggal-format="{$dtm->get_full_date($data.tanggal)}" data-debit="{$data.debit}" data-kredit="{$data.kredit}"><i class="fa fa-edit"></i></a>
+                                        <a href="#" class="btn btn-xs white text-danger" data-toggle="modal" data-target="#modal-delete" data-lpj_id="{$data.lpj_id}" data-uraian="{$data.uraian}" data-tanggal="{$data.tanggal}" data-tanggal-format="{$dtm->get_full_date($data.tanggal)}" data-debit="{$data.debit}" data-kredit="{$data.kredit}"><i class="fa fa-trash"></i></a>
+                                        {/if}
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td class="text-center text-muted" colspan="6">
+                                        <br>
+                                        <i class="fa fa-3x fa-file-text-o"></i> <br><br>
+                                        <i>Belum ada laporan pertanggungjawaban</i>
+                                        <br><br>
+                                    </td>            
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="text-center" colspan="3">Saldo</th>
+                                    <th class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($total_debit, 2, ',', '.')}
+                                        </div>
+                                    </th>
+                                    <th class="clearfix">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($total_kredit, 2, ',', '.')}
+                                        </div>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" colspan="3">Sisa / Kekurangan</th>
+                                    <th class="clearfix" colspan="2">
+                                        <div class="pull-left">
+                                            Rp
+                                        </div>
+                                        <div class="pull-right">
+                                            {number_format($total_debit - $total_kredit, 2, ',', '.')}
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                {if ($detail.process_st eq 'waiting')}
+                <div class="box-divider m-0"></div>
+                <div class="box-footer text-right">
+                    <a href="{$config->site_url('keuangan/advance_umum/lpj/pengajuan_process/'|cat:$detail.process_id)}" class="btn btn-success" id="btn-konfirmasi">
+                        <i class="fa fa-check"></i>&nbsp;&nbsp;Proses Laporan Pertanggungjawaban
+                    </a>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Catatan Pengajuan</h4>
+                </div>
+                <div class="box-divider m-0"></div>
+                <div class="box-body">
+                    {if ($flow.process_st eq 'approve')}
+                    <label class="badge badge-success"><i class="fa fa-check"></i>&nbsp;&nbsp;DISETUJUI</label>
+                    {elseif ($flow.process_st eq 'reject')}
+                    <label class="badge badge-danger"><i class="fa fa-times"></i>&nbsp;&nbsp;DITOLAK</label>
+                    {/if}
+                    <p>
+                        {$flow.catatan|default:'<i>Belum ada catatan</i>'}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{if ($detail.process_st eq 'waiting')}
+<!-- Modal -->
+<form action="{$config->site_url('keuangan/advance_umum/lpj/lpj_add_process')}" method="post">
+    <div class="modal fade" id="modal-add" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Tambah Laporan Pertanggungjawaban</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="process_id" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Tanggal</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input name="tanggal" value="{$result.tanggal|default:''}" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:0}{/literal}" placeholder="Tanggal" maxlength="10" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="uraian" class="form-control" maxlength="255" value="{$result.uraian|default:''}">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Penerimaan</label>
+                            <div class="col-md-4">
+                                <!--autonumeric-->
+                                <input type="text" name="kredit" class="form-control biaya" value="{$result.kredit|default:''}" />
+                                <small class="help-block text-warning">* Jika menerima advance tambahan</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Pengeluaran</label>
+                            <div class="col-md-4">
+                                <!--autonumeric-->
+                                <input type="text" name="debit" class="form-control biaya" value="{$result.debit|default:''}" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal -->
+<form action="{$config->site_url('keuangan/advance_umum/lpj/lpj_edit_process')}" method="post">
+    <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Ubah Laporan Pertanggungjawaban</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" name="process_id" />
+                        <input type="hidden" name="lpj_id" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Tanggal</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input name="tanggal" value="" type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true,startView:0}{/literal}" placeholder="Tanggal" maxlength="10" />
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-7">
+                                <input type="text" name="uraian" class="form-control" maxlength="255" value="">
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Penerimaan</label>
+                            <div class="col-md-4">
+                                <!--autonumeric-->
+                                <input type="text" name="kredit" class="form-control biaya" value="" />
+                                <small class="help-block text-warning">* Jika menerima advance tambahan</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Pengeluaran</label>
+                            <div class="col-md-4">
+                                <!--autonumeric-->
+                                <input type="text" name="debit" class="form-control biaya" value="" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Simpan</button>
+                    <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal -->
+<form action="{$config->site_url('keuangan/advance_umum/lpj/lpj_delete_process')}" method="post" onsubmit="return confirm('Laporan LPJ yang sudah dihapus tidak dapat dikembalikan lagi, hapus laporan ini?')">
+    <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="modal-addLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addLabel">Hapus Laporan Pertanggungjawaban</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <p class="text-danger">
+                            * Laporan LPJ yang sudah dihapus tidak dapat dikembalikan lagi, hapus laporan ini?
+                        </p>
+                        <input type="hidden" name="process_id" />
+                        <input type="hidden" name="lpj_id" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Uraian</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static"><strong class="uraian"></strong></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Tanggal</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static"><strong class="tanggal"></strong></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Penerimaan</label>
+                            <div class="col-md-9">
+                                <input type="hidden" name="kredit" class="form-control biaya" value="" />
+                                <p class="form-control-static"><strong class="kredit"></strong></p>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Pengeluaran</label>
+                            <div class="col-md-9">
+                                <input type="hidden" name="debit" class="form-control biaya" value="" />
+                                <p class="form-control-static"><strong class="debit"></strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{/if}

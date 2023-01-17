@@ -1,0 +1,115 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Tugas & Fasilitas Saya</a></li>
+        <li class="breadcrumb-item"><a href="#">Jobs & Project</a></li>
+        <li class="breadcrumb-item active">Catatan Harian</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header">
+                    <h2>Catatan Kerja Harian</h2>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('home/task/daily_notes/add')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-plus"></i> Tambah Data</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- notification template -->
+                {include file="base/templates/notification.html"}
+                <!-- end of notification template-->
+                <div class="calendar-widget">
+                    <div id="fullcalendar" data-plugin="fullCalendar">
+                        <div class="fc-toolbar fc-header-toolbar">
+                            <div class="fc-left">
+                                <a href="{$config->site_url('home/task/daily_notes/index/'|cat:$last.tahun|cat:'/'|cat:$last.bulan)}" class="fc-prev-button fc-button fc-state-default fc-corner-left fc-corner-right" type="button"><span class="fc-icon fc-icon-left-single-arrow"></span></a>
+                            </div>
+                            <div class="fc-right">
+                                <a href="{$config->site_url('home/task/daily_notes/index/'|cat:$next.tahun|cat:'/'|cat:$next.bulan)}" class="fc-next-button fc-button fc-state-default fc-corner-left fc-corner-right" type="button"><span class="fc-icon fc-icon-right-single-arrow"></span></a>
+                            </div>
+
+
+
+                            <!-- <form action="{$config->site_url('home/task/daily_notes/index/'|cat:$last.tahun|cat:'/'|cat:$last.bulan)}" method="post">
+                                <div class="fc-left">
+                                    <button type="button" class="fc-prev-button fc-button fc-state-default fc-corner-left fc-corner-right">
+                                        <span class="fc-icon fc-icon-left-single-arrow"></span>
+                                    </button>
+                                </div>
+                            </form>
+                            <form action="{$config->site_url('home/task/daily_notes/index/'|cat:$next.tahun|cat:'/'|cat:$next.bulan)}" method="post">
+                                <div class="fc-right">                
+                                    <button type="button" class="fc-next-button fc-button fc-state-default fc-corner-left fc-corner-right">
+                                        <span class="fc-icon fc-icon-right-single-arrow"></span>
+                                    </button>
+                                </div>
+                            </form> -->
+                            <div class="fc-center"><h2>{$dtm->arr_lang['in'][$now.bulan]} {$now.tahun}</h2></div>
+                            <div class="fc-clear"></div>
+                        </div>
+                        <div class="fc-view-container" style="">
+                            <div class="fc-view fc-month-view fc-basic-view">
+                                <table width="100%" class="table-calendar">
+                                    <thead class="fc-head">
+                                        <tr>
+                                            <th width="16%" class="text-center">Minggu</th>
+                                            <th width="14%" class="text-center">Senin</th>
+                                            <th width="14%" class="text-center">Selasa</th>
+                                            <th width="14%" class="text-center">Rabu</th>
+                                            <th width="14%" class="text-center">Kamis</th>
+                                            <th width="14%" class="text-center">Jumat</th>
+                                            <th width="14%" class="text-center">Sabtu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            {while $calendar.blank > 0}
+                                            <td class="text-center"></td>    
+                                            {$calendar.blank = $calendar.blank - 1}
+                                            {$calendar.day_count = $calendar.day_count + 1}
+                                            {/while}
+
+                                            {while $calendar.day_num <= $calendar.days_in_month}
+                                            {if $calendar.day_num|strlen eq 1}
+                                            {$calendar.day_num = '0'|cat:$calendar.day_num}
+                                            {/if}
+                                            <td class="{if $date_now eq $now.tahun|cat:'-'|cat:$now.bulan|cat:'-'|cat:$calendar.day_num}current{elseif $calendar.day_count eq 1}holiday{else}workingday{/if} text-center">
+                                                <b>{$calendar.day_num}</b>
+                                                {if !empty($tasks[$now.tahun|cat:'-'|cat:$now.bulan|cat:'-'|cat:$calendar.day_num])}
+                                                {foreach from=$tasks[$now.tahun|cat:'-'|cat:$now.bulan|cat:'-'|cat:$calendar.day_num] item=data}
+                                                <p>
+                                                    <a href="{$config->site_url('task/daily_notes/edit/'|cat:$data.task_id)}" title="{$data.task_desc}"><b style="font-size: 10px;">{$data.project_alias|upper}</b>, {$data.project_modul}</a>
+                                                </p>
+                                                {/foreach}
+                                                {/if}
+
+                                            </td>
+                                            {$calendar.day_num = $calendar.day_num + 1}
+                                            {$calendar.day_count = $calendar.day_count + 1}
+                                            {if $calendar.day_count > 7}
+                                        </tr>
+                                        <tr>
+                                            {$calendar.day_count = 1}
+                                            {/if}
+                                            {/while}
+                                            {while $calendar.day_count > 1 && $calendar.day_count <= 7}
+                                            <td class="text-center"></td> 
+                                            {$calendar.day_count = $calendar.day_count + 1}
+                                            {/while}
+                                        </tr>
+                                    <tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

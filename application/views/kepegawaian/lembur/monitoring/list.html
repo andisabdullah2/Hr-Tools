@@ -1,0 +1,129 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <!-- <h1> -->
+        <!-- Human Resource Tools -->
+    <!-- </h1> -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Monitoring</a></li>
+        <li class="breadcrumb-item"><a href="#">Kepegawaian</a></li>
+        <li class="breadcrumb-item active">Pengajuan Lembur</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="box">
+                <div class="box-header with-border">
+                  <h4 class="box-title">Data Lembur Karyawan</h4>
+                    <div class="box-tool">
+                    </div>                  
+                </div>
+                <!-- SEARCH BOX -->
+                <div class="box-search clearfix">
+                    <form action="{$config->site_url('kepegawaian/lembur/monitoring/proses_cari/')}" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <select name="project_id" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Pilih Project">
+                                                <option value=""></option>
+                                                {foreach from=$rs_project item=project}
+                                                <option value="{$project.project_id}" {if $search.project_id|default:'' eq $project.project_id}selected="selected"{/if}>{$project.project_alias|upper}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <select name="bulan" id="select2-single" data-plugin="select2" class="form-control" data-option="{}" data-placeholder="Pilih Bulan">
+                                                <option value=""></option>
+                                                {foreach from=$rs_bulan key=i item=bulan}
+                                                <option value="{$i}" {if $search.bulan|default:'' eq $i}selected="selected"{/if}>{$bulan|upper}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <select name="tahun" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih Tahun">
+                                                <option value=""></option>
+                                                {foreach from=$rs_tahun item=tahun}
+                                                <option value="{$tahun.tahun}" {if $search.tahun|default:'' eq $tahun.tahun}selected="selected"{/if}>{$tahun.tahun}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn dark" name="save" value="Cari"><i class="fa fa-search"></i> Cari</button>
+                                            <button type="submit" class="btn white" name="save" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                                        </div>                              
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-body">
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                            <th width="5%" class="text-center">No</th>
+                            <th width="20%" class="text-center">Nama Project</th>
+                            <th width="15%" class="text-center">Tanggal</th>
+                            <th width="10%" class="text-center">Mulai</th>
+                            <th width="10%" class="text-center">Selesai</th>
+                            <th width="15%" class="text-center">Total Karyawan</th>
+                            <th width="20%" class="text-center">Status</th>
+                            <th width="5%" class="text-center"></th>
+                        </tr>          
+                        {foreach from=$rs_id item=result}
+                        <tr {if ($no % 2) <> 1}class="blink-row"{/if}>
+                            <td class="text-center">{$no++}</td>
+                            <td class="text-left">{$result.project_alias|upper}</td>
+                            <td class="text-center">{$dtm->get_full_date($result.overtime_date)|upper}</td>
+                            <td class="text-center">{$result.overtime_start}</td>
+                            <td class="text-center">{$result.overtime_end}</td>
+                            <td class="text-center">{$result.total_personel}</td>
+                            <td>
+                                {if $result.process_st == 'reject'}
+                                <img src="{$BASEURL}resource/doc/images/icon/icon.reject.png" alt="{$result.process_st}" title="{$result.process_st|capitalize} | {$result.role_name|default:''}"/>
+                                {elseif $result.process_st == 'approve'}
+                                <img src="{$BASEURL}resource/doc/images/icon/icon.approve.png" alt="{$result.process_st}" title="{$result.process_st|capitalize} | {$result.role_name|default:''}"/>
+                                {elseif $result.process_st == 'waiting'}
+                                <img src="{$BASEURL}resource/doc/images/icon/icon.waiting.png" alt="{$result.process_st}" title="{$result.process_st|capitalize} | {$result.role_name|default:''}"/>
+                                {/if}
+                                &nbsp;<b>{$result.role_name|capitalize}</b>
+                                <br /><em style="color: #666; font-style: normal;">{$result.last_process|capitalize}</em>  
+                            </td>
+                            <td align="center">
+                                <a href="{$config->site_url('kepegawaian/lembur/monitoring/detail/'|cat:$result.overtime_id|default:'')}" class="btn btn-xs white text-success"><i class="fa fa-bars"></i></a>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                            <td colspan="8">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm">
+                                <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="pagination pagination-sm pull-right">
+                                {$pagination.data|default:''}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

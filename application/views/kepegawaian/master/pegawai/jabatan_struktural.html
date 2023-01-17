@@ -1,0 +1,302 @@
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        // Default file input style
+        $(".file-styled").uniform({
+            fileButtonClass: 'action btn btn-default'
+        });
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //add
+        $(".add").click(function () {
+            $('#modal_add').modal('show');
+        });
+
+        //edit
+        $(".edit").click(function () {
+            $("#data_id").val($(this).data('id'));
+            $("#jabatan_struktural_id").val($(this).data('jabatan')).change();
+            $("#tanggal_sk").val($(this).data('sk_tanggal'));
+            $("#nomor_sk").val($(this).data('sk_nomor'));
+            $("#pejabat_sk").val($(this).data('sk_pejabat'));
+            $("#tanggal_mulai").val($(this).data('mulai'));
+            $("#tanggal_selesai").val($(this).data('selesai'));
+            $("#jabatan_status").val($(this).data('status')).change();
+            $("#jabatan_default").val($(this).data('default')).change();
+            $("#lampiran_file_name").val($(this).data('file'));
+            $('#modal_edit').modal('show');
+        });
+    });
+</script>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-HR</a></li>
+        <li class="breadcrumb-item"><a href="#">Data Kepegawaian</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/')}">Data Karyawan</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}">{$result.nama_lengkap|default:''}</a></li>
+        <li class="breadcrumb-item active">Edit Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Data Jabatan Struktural</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="#" class="btn btn-outline b-primary text-primary add" data-toogle="modal" data-toggle="tooltip" data-placement="top" ><i class="fa fa-plus"></i> Tambah Data</a>
+                                <a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <div class="box-body">  
+                    <!-- notification template -->
+                    {include file="base/templates/notification.html"}
+                    <!-- end of notification template-->
+                    <table class="table table-bordered">
+                        <tr class="text-center">
+                            <th width="4%">No</th>
+                            <th width="20%">Jabatan Struktural</th>
+                            <th width="15%">Surat Keputusan</th>
+                            <th width="15%">Tanggal Mulai</th>
+                            <th width="15%">Tanggal Selesai</th>
+                            <th width="10%">Status</th>
+                            <th width="10%">Set Default</th>
+                            <th width="11%"></th>
+                        </tr>
+                        {foreach from=$rs_pegawai_jabatan item=data}
+                        <tr>
+                            <td class="text-center">{$no++}.</td>
+                            <td>{$data.struktur_nama} <br> {$data.jabatan_nama|upper}</td>
+                            <td><a style="color:#4596E7;" href="{$filepath}/{$data.lampiran_file_name}"> {$data.nomor_sk|upper} </a></td>
+                            <td class="text-center">{$dtm->get_full_date($data.tanggal_mulai|default:'')}</td>
+                            <td class="text-center">{$dtm->get_full_date($data.tanggal_selesai|default:'')}</td>
+                            <td class="text-center">{if $data.jabatan_status == '1'}Aktif{else}Tidak Aktif{/if}</td>
+                            <td class="text-center">{if $data.jabatan_default == '1'}Ya{else}Tidak{/if}</td>
+                            <td class="text-center">
+                                <a href="#" class="btn btn-xs white text-success edit" data-toogle="modal" data-id="{$data.data_id}" data-jabatan="{$data.jabatan_struktural_id}" data-sk_tanggal="{$data.tanggal_sk}" data-sk_nomor="{$data.nomor_sk}" data-sk_pejabat="{$data.pejabat_sk}" data-mulai="{$data.tanggal_mulai}" data-selesai="{$data.tanggal_selesai}" data-status="{$data.jabatan_status}" data-default="{$data.jabatan_default}" data-file="{$data.lampiran_file_name}" data-toggle="tooltip" data-placement="top" ><i class="fa fa-edit"></i></a>
+                                <a href="{$config->site_url('kepegawaian/master/pegawai/jabatan_struktural_delete_process/'|cat:$result.user_id|cat:'/'|cat:$data.data_id)}" class="btn btn-xs white text-danger" onclick="return confirm('Apakah anda yakin akan menghapus data ini?')"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr>
+                            <td colspan="8">Data not found!</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>                                
+            </div>
+        </div>
+    </div>
+</section>
+<!--MODAL ADD-->
+<!--===================================================-->
+<div class="modal fade" id="modal_add" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah data jabatan struktural</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('kepegawaian/master/pegawai/jabatan_struktural_add_process/')}" method="post" enctype="multipart/form-data">
+                <!--Modal body-->
+                <div class="modal-body">
+                    <input type="hidden" value="{$result.user_id}" name="user_id" class="form-control" />
+                    <div class="form-group row">    
+                        <label class="col-md-3 col-form-label">Jabatan</label>
+                        <div class="col-md-8">
+                            <select name="jabatan_struktural_id" id="select2-single" data-plugin="select2" class="form-control" data-placeholder="Jabatan Struktural" style="width: 100%">
+                                <option value=""></option>
+                                {foreach from=$rs_jabatan item=data}
+                                <option value="{$data.jabatan_struktural_id}" {if {$results.jabatan_struktural_id|default:''} eq $data.jabatan_struktural_id}selected="selected"{/if}>{$data.struktur_singkatan} - {$data.jabatan_nama|upper}</option>
+                                {/foreach}
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Nomor SK</label>
+                        <div class="col-md-8">
+                            <input class="form-control" name="nomor_sk" type="text" value="{$results.nomor_sk|default:''}" size="45" maxlength="100" />
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Pejabat SK</label>
+                        <div class="col-md-8">
+                            <input class="form-control" name="pejabat_sk" type="text" value="{$results.pejabat_sk|default:''}" size="10" maxlength="20" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Tanggal SK</label>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true, defaultDate: null}{/literal}" placeholder="Tanggal SK" name="tanggal_sk" value="{$results.tanggal_sk|default:''}"/>
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Periode Jabatan</label>
+                        <div class="col-md-5">
+                            <div class='input-group input-daterange mb-3' data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}">
+                                <input type='text' class="form-control" name="tanggal_mulai" value="{$results.tanggal_mulai|default:''}">
+                                <span class="input-group-addon">to</span>
+                                <input type='text' class="form-control" name="tanggal_selesai" value="{$results.tanggal_selesai|default:''}">
+                            </div>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Status</label>
+                        <div class="col-md-3">
+                            <select name="jabatan_status" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih" style="width: 100%">
+                                <option></option>
+                                <option value="1" {if {$results.jabatan_status|default:''} eq "1"}selected="selected"{/if}>Aktif</option>
+                                <option value="0" {if {$results.jabatan_status|default:''} eq "0"}selected="selected"{/if}>Tidak Aktif</option>
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>                                                    
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Set Default</label>
+                        <div class="col-md-3">
+                            <select name="jabatan_default" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Pilih" style="width: 100%">
+                                <option></option>
+                                <option value="1" {if {$result.jabatan_default|default:''} eq "1"}selected="selected"{/if}>Ya</option>
+                                <option value="0" {if {$result.jabatan_default|default:''} eq "0"}selected="selected"{/if}>Tidak</option>
+                            </select>
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">File</label>
+                        <div class="col-md-8">
+                            <input type="file" name="lampiran_file_name" class="form-control file-styled" />
+                        </div>
+                    </div>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL ADD-->
+<!--MODAL EDIT-->
+<!--===================================================-->
+<div class="modal fade" id="modal_edit" role="dialog"  aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content box-shadow-md mb-3">
+            <!--Modal header-->
+            <div class="modal-header">
+                <h5 class="modal-title">Edit data jabatan struktural</h5>
+            </div>
+            <form class="form-horizontal" action="{$config->site_url('kepegawaian/master/pegawai/jabatan_struktural_edit_process/')}" method="post" enctype="multipart/form-data">
+                <!--Modal body-->
+                <div class="modal-body">
+                    <input type="hidden" value="{$result.user_id}" name="user_id" class="form-control" />
+                    <input type="hidden" value="" id="data_id" name="data_id" class="form-control" />
+                    <div class="form-group row">    
+                        <label class="col-md-3 col-form-label">Jabatan</label>
+                        <div class="col-md-8">
+                            <select name="jabatan_struktural_id" id="jabatan_struktural_id" data-plugin="select2" class="form-control" data-placeholder="Jabatan Struktural" style="width: 100%">
+                                <option value=""></option>
+                                {foreach from=$rs_jabatan item=data}
+                                <option value="{$data.jabatan_struktural_id}" {if {$results.jabatan_struktural_id|default:''} eq $data.jabatan_struktural_id}selected="selected"{/if}>{$data.struktur_singkatan} - {$data.jabatan_nama|upper}</option>
+                                {/foreach}
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Nomor SK</label>
+                        <div class="col-md-8">
+                            <input class="form-control" name="nomor_sk" id="nomor_sk" type="text" value="" size="45" maxlength="100" />
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Pejabat SK</label>
+                        <div class="col-md-8">
+                            <input class="form-control" name="pejabat_sk" id="pejabat_sk" type="text" value="" size="10" maxlength="20" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Tanggal SK</label>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="tanggal_sk" data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true, defaultDate: null}{/literal}" placeholder="Tanggal SK" name="tanggal_sk" value=""/>
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                                <small class="form-text text-danger">wajib diisi</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Periode Jabatan</label>
+                        <div class="col-md-5">
+                            <div class='input-group input-daterange mb-3' data-plugin="datepicker" data-option="{literal}{format: 'yyyy-mm-dd', clearBtn: true, autoclose: true}{/literal}">
+                                <input type='text' class="form-control" id="tanggal_mulai" name="tanggal_mulai" value="">
+                                <span class="input-group-addon">to</span>
+                                <input type='text' class="form-control" id="tanggal_selesai" name="tanggal_selesai" value="">
+                                <small class="form-text text-danger">wajib diisi</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Status</label>
+                        <div class="col-md-3">
+                            <select name="jabatan_status" class="form-control" id="jabatan_status" data-plugin="select2" data-option="{}" data-placeholder="Pilih" style="width: 100%">
+                                <option></option>
+                                <option value="1" {if {$results.jabatan_status|default:''} eq "1"}selected="selected"{/if}>Aktif</option>
+                                <option value="0" {if {$results.jabatan_status|default:''} eq "0"}selected="selected"{/if}>Tidak Aktif</option>
+                            </select>
+                            <small class="form-text text-danger">wajib diisi</small>
+                        </div>
+                    </div>                                                      
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Set Default</label>
+                        <div class="col-md-3">
+                            <select name="jabatan_default" class="form-control" id="jabatan_default" data-plugin="select2" data-option="{}" data-placeholder="Pilih" style="width: 100%">
+                                <option></option>
+                                <option value="1" {if {$result.jabatan_default|default:''} eq "1"}selected="selected"{/if}>Ya</option>
+                                <option value="0" {if {$result.jabatan_default|default:''} eq "0"}selected="selected"{/if}>Tidak</option>
+                            </select>
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">File</label>
+                        <div class="col-md-8">
+                            <input type="file" name="lampiran_file_name" class="form-control file-styled" />
+                        </div>
+                    </div>
+                </div>
+                <!--Modal footer-->
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn dark-white" type="button">Close</button>
+                    <button class="btn primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--===================================================-->
+<!--End MODAL EDIT-->

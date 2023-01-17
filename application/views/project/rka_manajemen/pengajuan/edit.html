@@ -1,0 +1,119 @@
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('select').select2();
+        $(".biaya").autoNumeric("init", {
+            aSep: '.',
+            aDec: ',',
+            aSign: 'Rp ',
+            unSetOnSubmit: true
+        });
+    });
+</script>
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Task Manager</a></li>
+        <li class="breadcrumb-item"><a href="#">Rencana & Anggaran</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/rka_manajemen/pengajuan/')}">RKA Manajemen</a></li>
+        <li class="breadcrumb-item active">Ubah Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Ubah Data Pengajuan</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/rka_manajemen/pengajuan/')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="b-b nav-active-bg">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{$config->site_url('project/rka_manajemen/pengajuan/edit/'|cat:$detail.plan_id)}">1. Data Rencana</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/rka_manajemen/pengajuan/item/'|cat:$detail.plan_id)}">2. Rencana Item</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{$config->site_url('project/rka_manajemen/pengajuan/detail/'|cat:$detail.plan_id)}">3. Rencana Detail</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('project/rka_manajemen/pengajuan/edit_process')}" method="post" class="form-horizontal">
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <input type="hidden" name="plan_id" value="{$detail.plan_id}" />
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Project</label>
+                            <div class="col-md-7">
+                                <!--dropdown list project dengan jenis_kode_kegiatan = A-->
+                                <select name="project_id" class="form-control" data-placeholder="Nama Projek">
+                                    <option value=""></option>
+                                    {foreach from=$rs_projek item=projek}
+                                    <option value="{$projek.project_id}" {if $projek.project_id eq $result.project_id|default:$detail.project_id}selected="selected"{/if}>{$projek.project_alias|cat:' / '|cat:$projek.project_name|upper}</option>
+                                    {/foreach}
+                                </select>
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nilai Pendapatan</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="nilai_pendapatan" value="{$result.nilai_pendapatan|default:$detail.nilai_pendapatan}" class="form-control biaya" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nilai Pajak</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="nilai_pajak" value="{$result.nilai_pajak|default:$detail.nilai_pajak}" class="form-control biaya" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nilai Anggaran</label>
+                            <div class="col-md-3">
+                                <!--autonumeric-->
+                                <input type="text" name="nilai_anggaran" value="{$result.nilai_anggaran|default:$detail.nilai_anggaran}" class="form-control biaya" />
+                                <small class="help-block text-danger">* Wajib Diisi</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Nilai Biaya</label>
+                            <div class="col-md-3">
+                                <!--autonumeric, nilainya didapat dari summary item_total di project_budget_item-->
+                                <input type="text" name="nilai_biaya" value="{$result.nilai_biaya|default:$detail.nilai_biaya}" class="form-control biaya" disabled=""/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label">Catatan</label>
+                            <div class="col-md-7">
+                                <textarea name="catatan" class="form-control" rows="5">{$result.catatan|default:$detail.catatan}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer clearfix">
+                        <div class="form-group row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Step Selanjutnya&nbsp;&nbsp;<i class="fa fa-arrow-right"></i></button>
+                                <!--begitu disimpan, redirect ke page selanjutnya-->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

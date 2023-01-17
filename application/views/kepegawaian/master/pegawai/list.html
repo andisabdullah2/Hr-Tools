@@ -1,0 +1,102 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Kepegawaian</li>
+        <li class="breadcrumb-item">Data Induk</li>
+        <li class="breadcrumb-item active">Data Pegawai</li>
+    </ol>
+</nav>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h2>Daftar Pegawai</h2>
+                <div class="box-tool">
+                    <ul class="nav nav-xs">
+                        <li class="nav-item">
+                            <a href="{$config->site_url('kepegawaian/master/pegawai/add/')}" class="btn btn-sm btn-outline b-primary text-primary">
+                                <i class="fa fa-plus mr-1"></i> Tambah Data
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="box-search">
+                <form action="{$config->site_url('kepegawaian/master/pegawai/proses_cari')}" method="post">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <input type="text" name="nama_lengkap" value="{$search.nama_lengkap|default:''}" class="form-control" placeholder="Cari Nama Pegawai" />
+                        </div>
+                        <div class="col-md-5 mb-2">
+                            <select name="department_id" class="form-control" data-plugin="select2" data-option="{}" data-placeholder="Cari Unit Kerja">
+                                <option value=""></option>
+                                {foreach from=$rs_department item=data}
+                                <option value="{$data.struktur_cd}" {if $search.department_id|default:'' eq $data.struktur_cd}selected="selected"{/if}>{$data.struktur_nama|upper}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-dark mb-2" name="save" value="Cari"><i class="fa fa-search mr-2"></i>Cari</button>
+                            <button type="submit" class="btn btn-default mb-2" name="save" value="Reset"><i class="fa fa-times mr-2"></i>Reset</button>
+                            <a href="{$config->site_url('kepegawaian/master/pegawai/export_excel')}" class="btn btn-success mb-2"><i class="fa fa-file-excel-o mr-2"></i>Excel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body pt-0">
+                <div class="table-responsive">
+                    <table class="table table-striped" style="font-size: 12px;">
+                        <thead class="grey">
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="20%">Nama Lengkap</th>
+                                <th width="20%">Unit Kerja</th>
+                                <th width="18%">Email</th>
+                                <th width="12%">Nomor Telepon</th>
+                                <th width="7%">Jenis Kelamin</th>
+                                <th width="10%">Status Pegawai</th>
+                                <th width="8%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$rs_id item=result}
+                            <tr>
+                                <td align="center">{$no++}.</td>
+                                <td><b>{$result.nama_lengkap|upper|default:''}</b></td>
+                                <td align="center">{$result.struktur_nama|upper|default:''}</td>
+                                <td align="center">{$result.user_mail|default:''}</td>
+                                <td align="center">{$result.nomor_telepon|default:''}</td>
+                                <td align="center">{if $result.jenis_kelamin != ''}{if $result.jenis_kelamin eq 'L'}LAKI-LAKI{else}PEREMPUAN{/if}{/if}</td>
+                                <td align="center">{$result.pegawai_status|upper|default:''}</td>
+                                <td align="center">
+                                    <a href="{$config->site_url('kepegawaian/master/pegawai/detail/'|cat:$result.user_id|default:'')}" class="btn btn-xs white text-success"><i class="fa fa-edit"></i></a>
+                                    <a href="{$config->site_url('kepegawaian/master/pegawai/delete/'|cat:$result.user_id|default:'')}" class="btn btn-xs white text-danger"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {foreachelse}
+                            <tr>
+                                <td colspan="8">Data not found!</td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box-body pt-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="pagination">
+                            <li>Menampilkan {$pagination.start|default:0} - {$pagination.end|default:0} dari total {$pagination.total|default:0} data</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <nav class="pull-right">
+                            <ul class="pagination">
+                                <li class="page-item"></li>{$pagination.data|default:''} </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

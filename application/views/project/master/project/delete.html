@@ -1,0 +1,91 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">E-Projects</a></li>
+        <li class="breadcrumb-item"><a href="#">Project</a></li>
+        <li class="breadcrumb-item"><a href="{$config->site_url('project/master/project/')}">Project Data</a></li>
+        <li class="breadcrumb-item active">Hapus Data</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Basic Forms -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Hapus Data Project</h4>
+                    <div class="box-tool">
+                        <ul class="nav nav-xs">
+                            <li class="nav-item">
+                                <a href="{$config->site_url('project/master/project')}" class="btn btn-outline b-primary text-primary"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box-divider m-0"></div>
+                <!-- /.box-header -->
+                <form action="{$config->site_url('project/master/project/hapus_process')}" method="post" class="form-horizontal" onsubmit="return confirm('Apakah anda yakin akan menghapus data berikut ini?');">
+                    <input name="project_id" type="hidden" value="{$result.project_id|default:''}" />                        
+                    <div class="box-body">
+                        <!-- notification template -->
+                        {include file="base/templates/notification.html"}
+                        <!-- end of notification template-->
+                        <p class="text-danger">Apakah anda yakin akan menghapus data berikut ini?</p>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Client</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.client_nm|upper|default:''}</b></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Nama Proyek</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.project_name|upper|default:''}</b></label>                                
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Alias</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.project_alias|upper}</b></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Keterangan</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.project_desc|upper}</b></label>                                
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Tanggal</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$dtm->get_full_date($result.project_start|default:'')} s/d {$dtm->get_full_date($result.project_end|default:'')}</b></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Status</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.project_st|upper}</b></label>                                
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Jenis Kegiatan</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.nama_kegiatan|upper}</b></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Unit Kerja</label>
+                            <div class="col-md-8">
+                                <label class="control-label"><b>{$result.struktur_nama|upper}</b></label>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer clearfix">
+                        <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i>&nbsp;  HAPUS</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
